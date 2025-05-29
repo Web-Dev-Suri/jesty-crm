@@ -44,7 +44,7 @@ const setup = async (req, res) => {
   const accountOwnner = {
     email,
     name,
-    role: 'owner',
+    role: 'admin',
   };
   const result = await new Admin(accountOwnner).save();
 
@@ -94,7 +94,7 @@ const setup = async (req, res) => {
   return res.status(200).json({
     success: true,
     result: {},
-    message: 'Successfully IDURAR App Setup',
+    message: 'Successfully CRM App Setup',
   });
 };
 

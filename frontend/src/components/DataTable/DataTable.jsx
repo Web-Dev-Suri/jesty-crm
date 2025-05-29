@@ -23,6 +23,49 @@ import { generate as uniqueId } from 'shortid';
 
 import { useCrudContext } from '@/context/crud';
 
+import { Tag } from 'antd';
+import 'antd/dist/reset.css';
+
+// Utility to assign a color based on a string (user name or id)
+const userColors = [
+  'magenta',
+  'red',
+  'volcano',
+  'orange',
+  'gold',
+  'lime',
+  'green',
+  'cyan',
+  'blue',
+  'geekblue',
+  'purple',
+];
+function getColorForUser(nameOrId) {
+  if (!nameOrId) return 'default';
+  let hash = 0;
+  for (let i = 0; i < nameOrId.length; i++) {
+    hash = nameOrId.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  return userColors[Math.abs(hash) % userColors.length];
+}
+
+// Specific color mapping for Source
+const sourceColors = {
+  Website: 'green',
+  'Google Form': 'gold',
+  'Meta Campaign A': 'blue',
+  'Meta Campaign B': 'blue',
+};
+
+// Specific color mapping for Status
+const statusColors = {
+  'New Lead': 'gold',
+  Contacted: 'orange',
+  'Did not pick': 'blue',
+  'Consultation Scheduled': 'green',
+  DND: 'red',
+};
+
 function AddNewItem({ config }) {
   const { crudContextAction } = useCrudContext();
   const { collapsedBox, panel } = crudContextAction;
@@ -99,6 +142,50 @@ export default function DataTable({ config, extra = [] }) {
   let dispatchColumns = [];
   if (fields) {
     dispatchColumns = [...dataForTable({ fields, translate, moneyFormatter, dateFormat })];
+
+    // Inject custom render for source
+    const sourceColIdx = dispatchColumns.findIndex((col) => col.dataIndex === 'Source');
+    if (sourceColIdx !== -1) {
+      dispatchColumns[sourceColIdx] = {
+        ...dispatchColumns[sourceColIdx],
+        render: (value) =>
+          value ? <Tag color={sourceColors[value] || 'default'}>{value}</Tag> : '-',
+      };
+    }
+
+    // Inject custom render for status
+    const statusColIdx = dispatchColumns.findIndex((col) => col.dataIndex === 'Status');
+    if (statusColIdx !== -1) {
+      dispatchColumns[statusColIdx] = {
+        ...dispatchColumns[statusColIdx],
+        render: (value) =>
+          value ? <Tag color={statusColors[value] || 'default'}>{value}</Tag> : '-',
+      };
+    }
+
+    // Assigned User column
+    const hasAssigned = dispatchColumns.some((col) => col.dataIndex === 'assigned');
+    if (!hasAssigned) {
+      dispatchColumns.push({
+        title: translate('Assigned User'),
+        dataIndex: ['assigned', 'name'],
+        key: 'assigned',
+        render: (value, record) => {
+          const assignedName =
+            record.assigned && record.assigned.name
+              ? record.assigned.name
+              : record.assigned && typeof record.assigned === 'string'
+              ? record.assigned
+              : '-';
+          if (assignedName && assignedName !== '-') {
+            return (
+              <Tag color={getColorForUser(assignedName)}>{assignedName}</Tag>
+            );
+          }
+          return '-';
+        },
+      });
+    }
   } else {
     dispatchColumns = [...dataTableColumns];
   }
@@ -152,10 +239,14 @@ export default function DataTable({ config, extra = [] }) {
 
   const dispatch = useDispatch();
 
-  const handelDataTableLoad = useCallback((pagination) => {
-    const options = { page: pagination.current || 1, items: pagination.pageSize || 10 };
-    dispatch(crud.list({ entity, options }));
-  }, []);
+  const handelDataTableLoad = useCallback(
+    (pagination) => {
+      const options = { page: pagination.current || 1, items: pagination.pageSize || 10 };
+      dispatch(crud.list({ entity, options }));
+    },
+    []
+
+  );
 
   const filterTable = (e) => {
     const value = e.target.value;

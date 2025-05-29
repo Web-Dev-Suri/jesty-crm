@@ -15,12 +15,19 @@ const errorHandlers = require('./handlers/errorHandlers');
 const erpApiRouter = require('./routes/appRoutes/appApi');
 
 const fileUpload = require('express-fileupload');
+
+const websiteLeadRoutes = require('./routes/websiteLead');
+const facebookLeadRoutes= require('./routes/facebookLeads');
+
 // create our Express app
 const app = express();
 
 app.use(
   cors({
-    origin: true,
+    origin: function (origin, callback) {
+      if (!origin) return callback(null, false);
+      return callback(null, origin);
+    },
     credentials: true,
   })
 );
@@ -31,11 +38,18 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(compression());
 
+app.use((req, res, next) => {
+  console.log('Route:', req.method, req.originalUrl);
+  next();
+});
+
 // // default options
-// app.use(fileUpload());
+app.use(fileUpload());
 
 // Here our API Routes
 
+app.use('/api', websiteLeadRoutes);
+app.use('/api', facebookLeadRoutes);
 app.use('/api', coreAuthRouter);
 app.use('/api', adminAuth.isValidAuthToken, coreApiRouter);
 app.use('/api', adminAuth.isValidAuthToken, erpApiRouter);

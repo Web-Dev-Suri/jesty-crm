@@ -29,9 +29,13 @@ const adminSchema = new Schema({
   },
   role: {
     type: String,
-    default: 'owner',
-    enum: ['owner'],
+    default: 'admin',
+    enum: ['admin', 'user'],
   },
+   permissions: [{  
+    type: String,  
+    enum: ['manage_users', 'edit_invoices', 'view_reports']
+  }] 
 });
 
 module.exports = mongoose.model('Admin', adminSchema);

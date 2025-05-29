@@ -47,7 +47,7 @@ export const register = async ({ registerData }) => {
 
 export const verify = async ({ userId, emailToken }) => {
   try {
-    const response = await axios.get(API_BASE_URL + `verify/${userId}/${emailToken}`);
+    const response = await axios.get(`${import.meta.env.VITE_API_URL}/admin/list`, { params: { role: 'user' } })
 
     const { status, data } = response;
 

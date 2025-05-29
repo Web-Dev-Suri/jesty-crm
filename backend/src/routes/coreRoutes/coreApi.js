@@ -8,6 +8,7 @@ const adminController = require('@/controllers/coreControllers/adminController')
 const settingController = require('@/controllers/coreControllers/settingController');
 
 const { singleStorageUpload } = require('@/middlewares/uploadMiddleware');
+const adminOnly = require('@/middlewares/adminonly/adminOnly');
 
 // //_______________________________ Admin management_______________________________
 
@@ -50,5 +51,18 @@ router
     ),
     catchErrors(settingController.updateBySettingKey)
   );
+
+router.patch('/user/update/:id', adminOnly, catchErrors(adminController.updateUser));
+router.delete('/user/delete/:id', adminOnly, catchErrors(adminController.deleteUser));
+
 router.route('/setting/updateManySetting').patch(catchErrors(settingController.updateManySetting));
+router.post('/user/create', adminOnly, catchErrors(adminController.createUser));
+
+router.get('/admin/list', adminOnly, async (req, res) => {
+  const { role } = req.query;
+  const Admin = require('@/models/coreModels/Admin');
+  const users = await Admin.find(role ? { role } : {});
+  res.json({ success: true, result: users });
+});
+
 module.exports = router;

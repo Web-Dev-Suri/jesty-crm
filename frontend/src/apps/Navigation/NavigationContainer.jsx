@@ -5,12 +5,15 @@ import { Button, Drawer, Layout, Menu } from 'antd';
 import { useAppContext } from '@/context/appContext';
 
 import useLanguage from '@/locale/useLanguage';
-import logoIcon from '@/style/images/logo-icon.svg';
-import logoText from '@/style/images/logo-text.svg';
+import logoIcon from '@/style/images/logo-icon.png';
+import logoText from '@/style/images/logo-text.png';
 
 import useResponsive from '@/hooks/useResponsive';
 
+import Integrations from '@/pages/Integrations';
+
 import {
+  DatabaseOutlined,
   SettingOutlined,
   CustomerServiceOutlined,
   ContainerOutlined,
@@ -55,21 +58,21 @@ function Sidebar({ collapsible, isMobile = false }) {
       label: <Link to={'/'}>{translate('dashboard')}</Link>,
     },
     {
-      key: 'customer',
-      icon: <CustomerServiceOutlined />,
-      label: <Link to={'/customer'}>{translate('customers')}</Link>,
+      key: 'leads',
+      icon: <DatabaseOutlined />,
+      label: <Link to={'/customer'}>{translate('leads')}</Link>,
     },
 
-    {
-      key: 'invoice',
-      icon: <ContainerOutlined />,
-      label: <Link to={'/invoice'}>{translate('invoices')}</Link>,
-    },
-    {
-      key: 'quote',
-      icon: <FileSyncOutlined />,
-      label: <Link to={'/quote'}>{translate('quote')}</Link>,
-    },
+    // {
+    //   key: 'invoice',
+    //   icon: <ContainerOutlined />,
+    //   label: <Link to={'/invoice'}>{translate('invoices')}</Link>,
+    // },
+    // {
+    //   key: 'quote',
+    //   icon: <FileSyncOutlined />,
+    //   label: <Link to={'/quote'}>{translate('quote')}</Link>,
+    // },
     {
       key: 'payment',
       icon: <CreditCardOutlined />,
@@ -77,15 +80,21 @@ function Sidebar({ collapsible, isMobile = false }) {
     },
 
     {
+      key: 'integrations',
+      icon: <ContainerOutlined />,
+      label: <Link to={'/integrations'}>{translate('integrations')}</Link>,
+    },
+
+    {
       key: 'paymentMode',
       label: <Link to={'/payment/mode'}>{translate('payments_mode')}</Link>,
       icon: <WalletOutlined />,
     },
-    {
-      key: 'taxes',
-      label: <Link to={'/taxes'}>{translate('taxes')}</Link>,
-      icon: <ShopOutlined />,
-    },
+    // {
+    //   key: 'taxes',
+    //   label: <Link to={'/taxes'}>{translate('taxes')}</Link>,
+    //   icon: <ShopOutlined />,
+    // },
     {
       key: 'generalSettings',
       label: <Link to={'/settings'}>{translate('settings')}</Link>,

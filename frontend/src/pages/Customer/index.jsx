@@ -1,8 +1,10 @@
 import CrudModule from '@/modules/CrudModule/CrudModule';
-import DynamicForm from '@/forms/DynamicForm';
+import CustomerForm from '@/forms/CustomerForm';
 import { fields } from './config';
+import { useEffect, useState } from 'react';
 
 import useLanguage from '@/locale/useLanguage';
+import request from '@/request/request';
 
 export default function Customer() {
   const translate = useLanguage();
@@ -29,10 +31,24 @@ export default function Customer() {
     searchConfig,
     deleteModalLabels,
   };
+
+  const [userOptions, setUserOptions] = useState([]);
+
+  useEffect(() => {
+    request.list({ entity: '/admin', options: { role: 'user' } }).then(res => {
+      setUserOptions(
+        (res.result || []).map(user => ({
+          label: user.name,
+          value: user._id,
+        }))
+      );
+    });
+  }, []);
+
   return (
     <CrudModule
-      createForm={<DynamicForm fields={fields} />}
-      updateForm={<DynamicForm fields={fields} />}
+      createForm={<CustomerForm userOptions={userOptions} />}
+      updateForm={<CustomerForm userOptions={userOptions} isUpdateForm={true} />}
       config={config}
     />
   );

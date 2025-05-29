@@ -114,7 +114,7 @@ function CrudModule({ config, createForm, updateForm, withUpload = false }) {
   }, []);
 
   return (
-    <CrudLayout
+    <CrudLayout 
       config={config}
       fixHeaderPanel={<FixHeaderPanel config={config} />}
       sidePanelBottomContent={

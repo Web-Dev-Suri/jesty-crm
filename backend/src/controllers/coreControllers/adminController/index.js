@@ -1,2 +1,9 @@
 const createUserController = require('@/controllers/middlewaresControllers/createUserController');
-module.exports = createUserController('Admin');
+const createUser = require('./createUser');
+const updateUser = require('./updateUser');
+const deleteUser = require('./deleteUser');
+const methods = createUserController('Admin');
+methods.createUser = createUser;
+methods.updateUser = updateUser;
+methods.deleteUser = deleteUser;
+module.exports = methods;

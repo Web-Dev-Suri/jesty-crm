@@ -28,6 +28,9 @@ export default ({ mode }) => {
           secure: false,
         },
       },
+      allowedHosts: [
+        'd323-122-162-150-234.ngrok-free.app'
+      ],
     },
   };
   return defineConfig(config);

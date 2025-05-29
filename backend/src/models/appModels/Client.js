@@ -18,8 +18,6 @@ const schema = new mongoose.Schema({
   country: String,
   address: String,
   email: String,
-  createdBy: { type: mongoose.Schema.ObjectId, ref: 'Admin' },
-  assigned: { type: mongoose.Schema.ObjectId, ref: 'Admin' },
   created: {
     type: Date,
     default: Date.now,
@@ -28,6 +26,23 @@ const schema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  status: {
+  type: String,
+  enum: [
+    'New Lead',
+    'Contacted',
+    'Did not pick',
+    'Consultation Scheduled',
+    'DND',
+  ],
+  default: 'New Lead',
+},
+source: {
+  type: String,
+  enum: ['Website', 'Google Form', 'Meta Campaign A', 'Meta Campaign B'],
+}, 
+  createdBy: { type: mongoose.Schema.ObjectId, ref: 'Admin', autopopulate: true },
+  assigned: { type: mongoose.Schema.ObjectId, ref: 'Admin', autopopulate: true },
 });
 
 schema.plugin(require('mongoose-autopopulate'));
