@@ -29,7 +29,7 @@ export default ({ mode }) => {
         },
       },
       allowedHosts: [
-        'https://cc61-122-162-146-143.ngrok-free.app'
+        'web.jestycrm.com'
       ],
     },
   };
