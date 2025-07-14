@@ -3,7 +3,11 @@ const { catchErrors } = require('@/handlers/errorHandlers');
 const router = express.Router();
 
 const appControllers = require('@/controllers/appControllers');
+const leadStatusSummary = require('../../controllers/coreControllers/leadStatusSummary');
+const leadAssignedSummary = require('../../controllers/coreControllers/leadAssignedSummary');
+const leadPerDay = require('../../controllers/coreControllers/leadPerDay');
 const { routesList } = require('@/models/utils');
+const ClientModel = require('@/models/appModels/Client');
 
 const routerApp = (entity, controller) => {
   router.route(`/${entity}/create`).post(catchErrors(controller['create']));
@@ -25,6 +29,16 @@ const routerApp = (entity, controller) => {
     router.route(`/${entity}/convert/:id`).get(catchErrors(controller['convert']));
   }
 };
+
+router.get('/lead-status-summary', (req, res) => leadStatusSummary(ClientModel, req, res));
+router.get('/lead-assigned-summary', (req, res) => leadAssignedSummary(ClientModel, req, res));
+router.get('/lead-created-per-day', (req, res) => {
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  res.set('Pragma', 'no-cache');
+  res.set('Expires', '0');
+  res.set('Surrogate-Control', 'no-store');
+  leadPerDay(ClientModel, req, res);
+});
 
 routesList.forEach(({ entity, controllerName }) => {
   const controller = appControllers[controllerName];

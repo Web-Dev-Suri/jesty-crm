@@ -1,7 +1,7 @@
 // src/pages/Integrations.jsx
 import React, { useState } from 'react';
-import { Button, Card } from 'antd';
-import { GlobalOutlined } from '@ant-design/icons';
+import { Button, Card, Upload, message, Modal } from 'antd';
+import { GlobalOutlined, FileExcelOutlined, DownloadOutlined, UploadOutlined } from '@ant-design/icons';
 import facebookIcon from '@/style/images/facebook-icon.png';
 
 const Integrations = () => {
@@ -11,6 +11,9 @@ const Integrations = () => {
         formId: '',
     });
     const [submitted, setSubmitted] = useState(false);
+
+    // Bulk Import/Export state
+    const [bulkVisible, setBulkVisible] = useState(false);
 
     const handleChange = (e) => {
         setFormData(prev => ({
@@ -25,8 +28,39 @@ const Integrations = () => {
     };
 
     const handleFacebookConnect = () => {
-        window.location.href = `${import.meta.env.VITE_API_URL}/facebook/auth`;
+        const authData = JSON.parse(localStorage.getItem('auth'));
+
+        if (!authData?.current?.token) {
+            console.error('No JWT token found.');
+            return;
+        }
+
+        const token = authData.current.token;
+
+        // Open popup
+        const popup = window.open(
+            `${import.meta.env.VITE_BACKEND_SERVER}api/facebook/auth?token=${token}`,
+            'fbLogin',
+            'width=600,height=700'
+        );
+
+        // Listen for message from popup
+        const messageListener = (event) => {
+            if (event.data === 'facebook-connected') {
+                console.log('✅ Facebook connected successfully!');
+
+                // Optionally, refresh your auth data or UI here
+                window.location.reload(); // Optional: refresh the page to fetch updated user info
+
+                // Clean up listener
+                window.removeEventListener('message', messageListener);
+            }
+        };
+
+        window.addEventListener('message', messageListener);
     };
+
+
 
     const scriptSnippet = `
 <script>
@@ -49,15 +83,31 @@ const Integrations = () => {
   });
 </script>`.trim();
 
+    // Bulk Export handler (example: download template or data)
+    const handleDownload = () => {
+        // Replace with your actual API endpoint for export
+        window.open(`${import.meta.env.VITE_BACKEND_SERVER}api/client/export`, '_blank');
+    };
+
+    // Bulk Import handler
+    const handleUpload = (info) => {
+        if (info.file.status === 'done') {
+            message.success(`${info.file.name} file uploaded successfully`);
+            setBulkVisible(false);
+        } else if (info.file.status === 'error') {
+            message.error(`${info.file.name} file upload failed.`);
+        }
+    };
+
     return (
         <div className="p-6 max-w-3xl mx-auto">
             <h2 className="text-2xl font-bold mb-6">Integrations</h2>
 
             {step === 'select' && (
-                <>
+                <div>
                     {/* Website Integration Card */}
                     <Card
-                        className="mb-8"
+                        className="mb-6"
                         style={{
                             maxWidth: 800,
                             margin: '20px auto',
@@ -86,7 +136,7 @@ const Integrations = () => {
 
                     {/* Facebook Integration Card */}
                     <Card
-                        className="mb-8"
+                        className="mb-6"
                         style={{
                             maxWidth: 800,
                             margin: '0 auto',
@@ -109,8 +159,62 @@ const Integrations = () => {
                             </Button>
                         </div>
                     </Card>
-                </>
+
+                    {/* Bulk Import/Export Card */}
+                    <Card
+                        className="mb-6"
+                        style={{
+                            maxWidth: 800,
+                            margin: '20px auto',
+                            padding: '24px',
+                            display: 'flex',
+                            alignItems: 'center',
+                        }}
+                        bordered
+                        bodyStyle={{ width: '100%', padding: 0 }}
+                    >
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                            <div style={{ display: 'flex', alignItems: 'center' }}>
+                                <FileExcelOutlined style={{ fontSize: 40, color: '#52c41a', marginRight: 20 }} />
+                                <h3 className="text-lg font-semibold mb-0" style={{ margin: 0 }}>
+                                    Bulk Import/Export
+                                </h3>
+                            </div>
+                            <Button type="primary" onClick={() => setBulkVisible(true)}>
+                                Connect
+                            </Button>
+                        </div>
+                    </Card>
+                </div>
             )}
+
+            {/* Bulk Import/Export Modal */}
+            <Modal
+                title="Bulk Import/Export"
+                open={bulkVisible}
+                onCancel={() => setBulkVisible(false)}
+                footer={null}
+                centered
+            >
+                <div style={{ display: 'flex', gap: 16, marginBottom: 24 }}>
+                    <Button
+                        icon={<DownloadOutlined />}
+                        type="primary"
+                        onClick={handleDownload}
+                    >
+                        Download CSV
+                    </Button>
+                    <Upload
+                        name="file"
+                        accept=".xlsx,.xls"
+                        action={`${import.meta.env.VITE_BACKEND_SERVER}api/client/import`}
+                        showUploadList={false}
+                        onChange={handleUpload}
+                    >
+                        <Button icon={<UploadOutlined />}>Upload CSV</Button>
+                    </Upload>
+                </div>
+            </Modal>
 
             {step === 'form' && (
                 <Card style={{ maxWidth: 600, margin: '0 auto' }} bordered>

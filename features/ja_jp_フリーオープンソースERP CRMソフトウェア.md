@@ -1,4 +1,4 @@
-# IDURAR オープンソース ERP＆CRMソフトウェア
+#  JESTYCRM オープンソース ERP＆CRMソフトウェア
 
 GitHub：[https://github.com/idurar/idurar-erp-crm](https://github.com/idurar/idurar-erp-crm)
 デモ：[https://www.idurarapp.com/open-source-erp-crm/](https://www.idurarapp.com/open-source-erp-crm/)
@@ -6,7 +6,7 @@ GitHub：[https://github.com/idurar/idurar-erp-crm](https://github.com/idurar/id
 
 ## ソフトウェアスタック
 
-IDURARは、Node.js、React.js、Redux、Express.js、MongoDB、AntDesign（AntD）をベースにした無料のオープンソースERP＆CRMアプリです。
+ JESTYCRMは、Node.js、React.js、Redux、Express.js、MongoDB、AntDesign（AntD）をベースにした無料のオープンソースERP＆CRMアプリです。
 
 ## ユーザー管理：
 

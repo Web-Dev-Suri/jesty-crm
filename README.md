@@ -4,7 +4,7 @@
     </a>
     <h1>Open Source ERP / CRM Accounting Invoice Quote</h1>
     <p align="center">
-        <p>IDURAR ERP CRM | Simple To Use</p>
+        <p> JESTYCRM | Simple To Use</p>
     </p>
     
 
@@ -12,7 +12,7 @@
  Give a Star ⭐️ & Fork to this project ... Happy coding! 🤩`
 ```
 
-IDURAR is Open Source ERP / CRM (Invoice / Quote / Accounting ) Based on Advanced Mern Stack (Node.js / Express.js / MongoDb / React.js ) with Ant Design (AntD) and Redux
+ JESTYCRM is Open Source ERP / CRM (Invoice / Quote / Accounting ) Based on Advanced Mern Stack (Node.js / Express.js / MongoDb / React.js ) with Ant Design (AntD) and Redux
 
 </div>
 
@@ -21,20 +21,20 @@ IDURAR is Open Source ERP / CRM (Invoice / Quote / Accounting ) Based on Advance
 
 ## ⚠️ SECURITY WARNING for Developers & Web Agencies & Blockchain Developer
 
-We’ve been made aware of scammer contacting developers or web agencies, asking them to develop and run malicious or altered versions of IDURAR software.
+We’ve been made aware of scammer contacting developers or web agencies, asking them to develop and run malicious or altered versions of  JESTYCRM software.
 
-🚫 NEVER trust emails, messages, or DMs claiming to be from IDURAR unless they come from our official domain: **@idurarapp.com**  
+🚫 NEVER trust emails, messages, or DMs claiming to be from  JESTYCRM unless they come from our official domain: **@idurarapp.com**  
 🚫 DO NOT run unknown versions of the app sent via email or third-party GitHub repositories.
 
 ✅ Official GitHub Repo: [https://github.com/idurar/idurar-erp-crm](https://github.com/idurar/idurar-erp-crm)  
 ✅ Official Website: [https://idurarapp.com](https://idurarapp.com)
 
-🚨 WARNING: We have been informed that scammers are misusing this open-source project and falsely claiming to represent IDURAR.AI.
+🚨 WARNING: We have been informed that scammers are misusing this open-source project and falsely claiming to represent  JESTYCRM.AI.
 
 ⚠️ Only trust official information, updates, and licenses from our official website: [https://idurarapp.com](https://idurarapp.com). and official github repo: https://github.com/idurar/idurar-erp-crm
 We do **not** auhorize any third party to sell, license, or represent our software or brand.
 
-🚫 Never run versions of IDURAR downloaded from unofficial GitHub repositories.  
+🚫 Never run versions of  JESTYCRM downloaded from unofficial GitHub repositories.  
 These may be **fake**, **malicious**, or used to scam users.
 
 ✅ Stay safe. Verify the source and always contact us through our website if in doubt.
@@ -53,9 +53,9 @@ Ant Design Framework(AntD) 🐜
 
 Based on Mern Stack (Node.js / Express.js / MongoDb / React.js ) 👨‍💻
 
-### May i can use IDURAR for Commercial use :
+### May i can use  JESTYCRM for Commercial use :
 
-- Yes You can use IDURAR for free for personal or Commercial use.
+- Yes You can use  JESTYCRM for free for personal or Commercial use.
 
 ## Our Sponsors
 
@@ -69,7 +69,7 @@ Based on Mern Stack (Node.js / Express.js / MongoDb / React.js ) 👨‍💻
 
 ## Free Open Source ERP / CRM App
 
-IDURAR is Open "Fair-Code" Source ERP / CRM (Invoice / Inventory / Accounting / HR) Based on Mern Stack (Node.js / Express.js / MongoDb / React.js ) with Ant Design (AntD) and Redux
+ JESTYCRM is Open "Fair-Code" Source ERP / CRM (Invoice / Inventory / Accounting / HR) Based on Mern Stack (Node.js / Express.js / MongoDb / React.js ) with Ant Design (AntD) and Redux
 
 
 ## Getting started
@@ -117,4 +117,4 @@ Dont forget to give a ⭐️ to this project ... Happy coding!
 
 ## License
 
-IDURAR is Free Open Source Released under the GNU Affero General Public License v3.0.
+ JESTYCRM is Free Open Source Released under the GNU Affero General Public License v3.0.

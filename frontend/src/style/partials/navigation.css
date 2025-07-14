@@ -5,7 +5,7 @@
   overflow-x: hidden;
   top: 0;
   left: 0;
-  z-index: 1000;
+  z-index: 0;
   background: #fff;
   border-right: 1px solid #edf0f5;
 }

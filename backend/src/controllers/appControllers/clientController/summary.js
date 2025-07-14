@@ -51,8 +51,8 @@ const summary = async (Model, req, res) => {
           {
             $lookup: {
               from: InvoiceModel.collection.name,
-              localField: '_id', // Match _id from ClientModel
-              foreignField: 'client', // Match client field in InvoiceModel
+              localField: '_id',
+              foreignField: 'client',
               as: 'invoice',
             },
           },
@@ -70,16 +70,31 @@ const summary = async (Model, req, res) => {
             $count: 'count',
           },
         ],
+        totalRevenue: [
+          {
+            $match: {
+              removed: false,
+              enabled: true,
+            },
+          },
+          {
+            $group: {
+              _id: null,
+              total: { $sum: { $ifNull: ['$revenue', 0] } },
+            },
+          },
+        ],
       },
     },
   ];
 
   const aggregationResult = await Model.aggregate(pipeline);
 
-  const result = aggregationResult[0];
-  const totalClients = result.totalClients[0] ? result.totalClients[0].count : 0;
-  const totalNewClients = result.newClients[0] ? result.newClients[0].count : 0;
-  const activeClients = result.activeClients[0] ? result.activeClients[0].count : 0;
+  const result = aggregationResult[0] || {};
+  const totalClients = result.totalClients && result.totalClients[0] ? result.totalClients[0].count : 0;
+  const totalNewClients = result.newClients && result.newClients[0] ? result.newClients[0].count : 0;
+  const activeClients = result.activeClients && result.activeClients[0] ? result.activeClients[0].count : 0;
+  const totalRevenue = result.totalRevenue && result.totalRevenue[0] ? result.totalRevenue[0].total : 0;
 
   const totalActiveClientsPercentage = totalClients > 0 ? (activeClients / totalClients) * 100 : 0;
   const totalNewClientsPercentage = totalClients > 0 ? (totalNewClients / totalClients) * 100 : 0;
@@ -89,8 +104,9 @@ const summary = async (Model, req, res) => {
     result: {
       new: Math.round(totalNewClientsPercentage),
       active: Math.round(totalActiveClientsPercentage),
+      totalRevenue,
     },
-    message: 'Successfully get summary of new clients',
+    message: 'Successfully retrieved client summary',
   });
 };
 

@@ -1,90 +1,39 @@
 import { useLayoutEffect } from 'react';
-import { useEffect } from 'react';
-import { selectAppSettings } from '@/redux/settings/selectors';
 import { useDispatch, useSelector } from 'react-redux';
-
 import { Layout } from 'antd';
 
-import { useAppContext } from '@/context/appContext';
-
 import Navigation from '@/apps/Navigation/NavigationContainer';
-
 import HeaderContent from '@/apps/Header/HeaderContainer';
-import PageLoader from '@/components/PageLoader';
-
-import { settingsAction } from '@/redux/settings/actions';
-
-import { selectSettings } from '@/redux/settings/selectors';
-
 import AppRouter from '@/router/AppRouter';
-
+import PageLoader from '@/components/PageLoader';
 import useResponsive from '@/hooks/useResponsive';
 
-import storePersist from '@/redux/storePersist';
+import { settingsAction } from '@/redux/settings/actions';
+import { selectSettings } from '@/redux/settings/selectors';
+
+const { Sider, Content } = Layout;
 
 export default function ErpCrmApp() {
-  const { Content } = Layout;
-
-  // const { state: stateApp, appContextAction } = useAppContext();
-  // // const { app } = appContextAction;
-  // const { isNavMenuClose, currentApp } = stateApp;
-
-  const { isMobile } = useResponsive();
-
   const dispatch = useDispatch();
+  const { isMobile } = useResponsive();
+  const { isSuccess: settingIsloaded } = useSelector(selectSettings);
 
   useLayoutEffect(() => {
     dispatch(settingsAction.list({ entity: 'setting' }));
   }, []);
 
-  // const appSettings = useSelector(selectAppSettings);
+  if (!settingIsloaded) return <PageLoader />;
 
-  const { isSuccess: settingIsloaded } = useSelector(selectSettings);
+  return (
+    <Layout style={{ minHeight: '100vh' }}>
+      {!isMobile && <Navigation />}
 
-  // useEffect(() => {
-  //   const { loadDefaultLang } = storePersist.get('firstVisit');
-  //   if (appSettings.idurar_app_language && !loadDefaultLang) {
-  //     window.localStorage.setItem('firstVisit', JSON.stringify({ loadDefaultLang: true }));
-  //   }
-  // }, [appSettings]);
-
-  if (settingIsloaded)
-    return (
-      <Layout hasSider>
-        <Navigation />
-
-        {isMobile ? (
-          <Layout style={{ marginLeft: 0 }}>
-            <HeaderContent />
-            <Content
-              style={{
-                margin: '40px auto 30px',
-                overflow: 'initial',
-                width: '100%',
-                padding: '0 25px',
-                maxWidth: 'none',
-              }}
-            >
-              <AppRouter />
-            </Content>
-          </Layout>
-        ) : (
-          <Layout>
-            <HeaderContent />
-            <Content
-              style={{
-                margin: '40px auto 30px',
-                overflow: 'initial',
-                width: '100%',
-                padding: '0 50px',
-                maxWidth: 1400,
-              }}
-            >
-              <AppRouter />
-            </Content>
-          </Layout>
-        )}
+      <Layout style={{ background: '#fff' }}>
+        <HeaderContent />
+        <Content style={{ maxWidth: 1400, margin: 'auto', width: '100%', borderRadius: 90, }}>
+          <AppRouter />
+        </Content>
       </Layout>
-    );
-  else return <PageLoader />;
+    </Layout>
+  );
 }

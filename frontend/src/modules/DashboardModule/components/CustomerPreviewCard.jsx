@@ -4,13 +4,15 @@ import useLanguage from '@/locale/useLanguage';
 
 export default function CustomerPreviewCard({
   isLoading = false,
-  activeCustomer = 0,
+  totalRevenue = 0,
+  revenueAchievedPercent = 0,
   newCustomer = 0,
 }) {
   const translate = useLanguage();
+
   return (
     <Row className="gutter-row">
-      <div className="whiteBox shadow" style={{ height: 458 }}>
+      <div className="whiteBox shadow" style={{ height: 400 }}>
         <div
           className="pad20"
           style={{
@@ -19,7 +21,7 @@ export default function CustomerPreviewCard({
           }}
         >
           <h3 style={{ color: '#333', marginBottom: 40, marginTop: 15, fontSize: 'large' }}>
-            {translate('Customers')}
+            {translate('Revenue Target Progress')}
           </h3>
 
           {isLoading ? (
@@ -31,28 +33,15 @@ export default function CustomerPreviewCard({
                 justifyContent: 'center',
               }}
             >
-              <Progress type="dashboard" percent={newCustomer} size={148} />
-              <p>{translate('New Customer this Month')}</p>
+              <Progress type="dashboard" percent={revenueAchievedPercent} size={148} />
+              {/* <p>{translate('Revenue Target Progress')}</p> */}
               <Divider />
               <Statistic
-                title={translate('Active Customer')}
-                value={activeCustomer}
+                title={translate('Total Revenue Achieved')}
+                value={totalRevenue}
                 precision={2}
-                valueStyle={
-                  activeCustomer > 0
-                    ? { color: '#333' }
-                    : activeCustomer < 0
-                      ? { color: '#333' }
-                      : { color: '#000000' }
-                }
-                prefix={
-                  activeCustomer > 0 ? (
-                    <ArrowUpOutlined />
-                  ) : activeCustomer < 0 ? (
-                    <ArrowDownOutlined />
-                  ) : null
-                }
-                suffix="%"
+                valueStyle={{ color: '#333' }}
+                prefix="₹"
               />
             </div>
           )}

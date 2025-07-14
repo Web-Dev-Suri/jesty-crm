@@ -3,13 +3,32 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="generator" content="IDURAR" />
+    <meta name="generator" content=" JESTYCRM" />
     <link rel="icon" type="image/x-icon" href="./src/style/images/logo-icon.png" />
     <title>Leads Capturing CRM - Maximizze</title>
     <meta
       name="description"
       content="Maximizze Leads capture CRM based on node.js react.js Antd Redux"
     />
+
+    <script>
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId      : '1056406829738524',
+      xfbml      : true,
+      version    : 'v23.0'
+    });
+    FB.AppEvents.logPageView();
+  };
+
+  (function(d, s, id){
+     var js, fjs = d.getElementsByTagName(s)[0];
+     if (d.getElementById(id)) {return;}
+     js = d.createElement(s); js.id = id;
+     js.src = "https://connect.facebook.net/en_US/sdk.js";
+     fjs.parentNode.insertBefore(js, fjs);
+   }(document, 'script', 'facebook-jssdk'));
+</script>
   </head>
   <body>
     <div id="root"></div>

@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import dayjs from 'dayjs';
 
 import { useDispatch, useSelector } from 'react-redux';
@@ -18,30 +18,14 @@ export default function UpdateForm({ config, formElements, withUpload = false })
   const { current, isLoading, isSuccess } = useSelector(selectUpdatedItem);
 
   const { state, crudContextAction } = useCrudContext();
-
-  /////
-
   const { panel, collapsedBox, readBox } = crudContextAction;
+
+  const [form] = Form.useForm();
 
   const showCurrentRecord = () => {
     readBox.open();
   };
 
-  /////
-  const [form] = Form.useForm();
-
-  const onSubmit = (fieldsValue) => {
-    const id = current._id;
-
-    if (fieldsValue.file && withUpload) {
-      fieldsValue.file = fieldsValue.file[0].originFileObj;
-    }
-    // const trimmedValues = Object.keys(fieldsValue).reduce((acc, key) => {
-    //   acc[key] = typeof fieldsValue[key] === 'string' ? fieldsValue[key].trim() : fieldsValue[key];
-    //   return acc;
-    // }, {});
-    dispatch(crud.update({ entity, id, jsonData: fieldsValue, withUpload }));
-  };
   useEffect(() => {
     if (current) {
       let newValues = { ...current };
@@ -92,32 +76,28 @@ export default function UpdateForm({ config, formElements, withUpload = false })
   }, [isSuccess]);
 
   const { isEditBoxOpen } = state;
-
   const show = isEditBoxOpen ? { display: 'block', opacity: 1 } : { display: 'none', opacity: 0 };
+
+  const onSubmit = (values) => {
+    dispatch(crud.update({ entity, id: current._id, values }));
+  };
+
   return (
     <div style={show}>
       <Loading isLoading={isLoading}>
-        <Form form={form} layout="vertical" onFinish={onSubmit}>
-          {formElements}
-          <Form.Item
-            style={{
-              display: 'inline-block',
-              paddingRight: '5px',
-            }}
-          >
-            <Button type="primary" htmlType="submit">
-              {translate('Save')}
-            </Button>
-          </Form.Item>
-          <Form.Item
-            style={{
-              display: 'inline-block',
-              paddingLeft: '5px',
-            }}
-          >
-            <Button onClick={showCurrentRecord}>{translate('Cancel')}</Button>
-          </Form.Item>
-        </Form>
+        <div>
+          <Form form={form} layout="vertical" onFinish={onSubmit}>
+            {formElements}
+            <Form.Item style={{ display: 'inline-block', paddingRight: '5px' }}>
+              <Button type="primary" htmlType="submit">
+                {translate('Save')}
+              </Button>
+            </Form.Item>
+            <Form.Item style={{ display: 'inline-block', paddingLeft: '5px' }}>
+              <Button onClick={showCurrentRecord}>{translate('Cancel')}</Button>
+            </Form.Item>
+          </Form>
+        </div>
       </Loading>
     </div>
   );

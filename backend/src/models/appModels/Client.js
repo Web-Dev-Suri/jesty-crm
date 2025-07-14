@@ -27,20 +27,45 @@ const schema = new mongoose.Schema({
     default: Date.now,
   },
   status: {
-  type: String,
-  enum: [
-    'New Lead',
-    'Contacted',
-    'Did not pick',
-    'Consultation Scheduled',
-    'DND',
+    type: String,
+    enum: [
+      'New Lead',
+      'Contacted',
+      'Did not pick',
+      'Consultation Scheduled',
+      'DND',
+    ],
+    default: 'New Lead',
+  },
+  source: {
+    type: String,
+    enum: ['Website', 'Google Form', 'Meta Campaign A', 'Meta Campaign B'],
+  },
+
+
+  revenue: {
+    type: Number,
+    default: 0,
+    min: 0,
+  },
+
+
+  notes: [
+    {
+      heading: { type: String, required: true },
+      body: { type: String },
+      createdAt: { type: Date, default: Date.now },
+      createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'Admin' }
+    }
   ],
-  default: 'New Lead',
-},
-source: {
-  type: String,
-  enum: ['Website', 'Google Form', 'Meta Campaign A', 'Meta Campaign B'],
-}, 
+  followups: [
+    {
+      date: { type: Date, required: true },
+          createdAt: { type: Date, default: Date.now },
+      createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'Admin' }
+    }
+  ],
+
   createdBy: { type: mongoose.Schema.ObjectId, ref: 'Admin', autopopulate: true },
   assigned: { type: mongoose.Schema.ObjectId, ref: 'Admin', autopopulate: true },
 });

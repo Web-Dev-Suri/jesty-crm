@@ -24,11 +24,14 @@ import { useNavigate } from 'react-router-dom';
 
 import { DOWNLOAD_BASE_URL } from '@/config/serverApiConfig';
 
+
 function AddNewItem({ config }) {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const { ADD_NEW_ENTITY, entity } = config;
 
   const handleClick = () => {
+    dispatch(erp.currentAction({ actionType: 'create', data: {} }));
     navigate(`/${entity.toLowerCase()}/create`);
   };
 
@@ -135,15 +138,19 @@ export default function DataTable({ config, extra = [] }) {
                 default:
                   break;
               }
-              // else if (key === '2')handleCloseTask
             },
           }}
           trigger={['click']}
         >
-          <EllipsisOutlined
+          <span
+            onClick={(e) => {
+              e.stopPropagation(); // <-- Prevent row click event
+              e.preventDefault();
+            }}
             style={{ cursor: 'pointer', fontSize: '24px' }}
-            onClick={(e) => e.preventDefault()}
-          />
+          >
+            <EllipsisOutlined />
+          </span>
         </Dropdown>
       ),
     },
@@ -187,9 +194,9 @@ export default function DataTable({ config, extra = [] }) {
             displayLabels={['name']}
             searchFields={'name'}
             onChange={filterTable}
-            // redirectLabel={'Add New Client'}
-            // withRedirect
-            // urlToRedirect={'/customer'}
+            redirectLabel={'Add New Lead'}
+            withRedirect
+            urlToRedirect={'/customer'}
           />,
           <Button onClick={handelDataTableLoad} key={`${uniqueId()}`} icon={<RedoOutlined />}>
             {translate('Refresh')}
@@ -210,6 +217,9 @@ export default function DataTable({ config, extra = [] }) {
         loading={listIsLoading}
         onChange={handelDataTableLoad}
         scroll={{ x: true }}
+        onRow={(record) => ({
+          onClick: () => handleRead(record),
+        })}
       />
     </>
   );

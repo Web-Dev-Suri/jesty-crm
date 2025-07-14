@@ -22,7 +22,7 @@ export default function UpgradeButton() {
         }}
         icon={<RocketOutlined />}
         onClick={() => {
-          window.open(`https://cloud.idurarapp.com`);
+          window.open(`https://maximisemedia.co.in/`);
         }}
       >
         {translate('Try Entreprise Version')}
@@ -31,6 +31,4 @@ export default function UpgradeButton() {
   );
 }
 
-console.log(
-  '🚀 Welcome to IDURAR ERP CRM! Did you know that we also offer commercial customization services? Contact us at hello@idurarapp.com for more information.'
-);
+ 

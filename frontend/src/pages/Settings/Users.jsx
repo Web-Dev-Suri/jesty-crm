@@ -11,7 +11,7 @@ export default function AssignUser() {
   const [editingUser, setEditingUser] = useState(null);
 
   const fetchUsers = async () => {
-    const res = await axios.get(`${import.meta.env.VITE_API_URL}/admin/list`, { params: { role: 'user' } })
+    const res = await axios.get(`${import.meta.env.VITE_API_URL}admin/list`, { params: { role: 'user' } })
     setUsers(res.data.result || []);
   };
 

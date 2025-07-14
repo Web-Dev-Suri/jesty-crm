@@ -32,6 +32,12 @@ const adminSchema = new Schema({
     default: 'admin',
     enum: ['admin', 'user'],
   },
+  facebookIntegration: {
+    connected: { type: Boolean, default: false },
+    fbUserId: { type: String },
+    accessToken: { type: String },
+    connectedPageId: { type: String },
+  },
    permissions: [{  
     type: String,  
     enum: ['manage_users', 'edit_invoices', 'view_reports']

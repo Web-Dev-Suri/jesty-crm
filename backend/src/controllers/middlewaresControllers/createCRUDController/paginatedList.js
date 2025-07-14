@@ -15,13 +15,41 @@ const paginatedList = async (Model, req, res) => {
     fields.$or.push({ [field]: { $regex: new RegExp(req.query.q, 'i') } });
   }
 
-  //  Query the database for a list of all results
-  const resultsPromise = Model.find({
+  let query = {
     removed: false,
-
-    [filter]: equal,
     ...fields,
-  })
+  };
+
+  // Add this block for date range filtering
+  if (req.query.created_gte || req.query.created_lte) {
+    query.created = {};
+    if (req.query.created_gte) query.created.$gte = new Date(req.query.created_gte);
+    if (req.query.created_lte) query.created.$lte = new Date(req.query.created_lte);
+    // Remove empty object if no values set
+    if (Object.keys(query.created).length === 0) delete query.created;
+  }
+
+  if (filter && equal) {
+    // Support comma-separated values for $in
+    if (equal.includes(',')) {
+      query[filter] = { $in: equal.split(',') };
+    } else {
+      query[filter] = equal;
+    }
+  }
+
+  // Support multiple filters (e.g. status, assigned)
+  if (req.query.status) {
+    const statuses = req.query.status.split(',');
+    query.status = statuses.length > 1 ? { $in: statuses } : statuses[0];
+  }
+  if (req.query.assigned) {
+    const agents = req.query.assigned.split(',');
+    query.assigned = agents.length > 1 ? { $in: agents } : agents[0];
+  }
+
+  //  Query the database for a list of all results
+  const resultsPromise = Model.find(query)
     .skip(skip)
     .limit(limit)
     .sort({ [sortBy]: sortValue })

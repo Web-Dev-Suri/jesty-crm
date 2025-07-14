@@ -1,0 +1,71 @@
+/* Keep sidebar black */
+.custom-sidebar {
+  background-color: #000;
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  left: 0;
+  overflow-y: auto;
+}
+
+.custom-menu-item .anticon {
+  font-size: 20px !important;         /* slightly larger */
+  color: #1778f2 !important;
+}
+
+/* Logo styling */
+.sidebar-logo {
+  font-size: 40px;
+  font-weight: 600;
+  padding: 20px;
+  color: #fff;
+}
+.sidebar-logo .blue {
+  color: #1778f2;
+}
+
+/* Menu background (ensures entire menu is black) */
+.ant-menu-dark.custom-sidebar .ant-menu {
+  background-color: #000 !important;
+}
+
+/* Default menu item */
+.custom-menu-item {
+  font-size: 15px !important;
+  color: #aaa !important;
+  display: flex !important;
+  align-items: center;
+  gap: 12px;
+  height: 48px;
+  padding: 30px 24px !important;
+  background-color: transparent !important;
+  transition: background 0.3s, color 0.3s;
+  border-bottom: 1px solid #333;
+}
+
+/* Hover effect */
+.custom-menu-item:hover {
+  background-color: #fff !important;
+  color: #1778f2 !important;
+}
+
+.custom-menu-item:hover .anticon {
+  color: #1778f2 !important;
+  font-size: 24px !important;
+}
+
+/* Active state */
+.ant-menu-item-selected.custom-menu-item {
+  background: linear-gradient(90deg, #1778f2, #1e90ff) !important;
+  color: #fff !important;
+  border-top-right-radius: 12px;
+  border-bottom-right-radius: 12px;
+}
+
+.ant-menu-item-selected.custom-menu-item .anticon {
+  color: #fff !important;
+}
+
+.ant-menu-title-content{
+      margin-inline-start: 0 !important;
+}

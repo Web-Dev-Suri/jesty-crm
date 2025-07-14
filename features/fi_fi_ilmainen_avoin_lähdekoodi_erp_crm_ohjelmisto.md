@@ -1,4 +1,4 @@
-# IDURAR Avoin lähdekoodin ERP- ja CRM-ohjelmisto
+#  JESTYCRM Avoin lähdekoodin ERP- ja CRM-ohjelmisto
 
 GitHub: [https://github.com/idurar/idurar-erp-crm](https://github.com/idurar/idurar-erp-crm)
 Demo: [https://www.idurarapp.com/open-source-erp-crm/](https://www.idurarapp.com/open-source-erp-crm/)
@@ -6,7 +6,7 @@ Verkkosivusto: [https://www.idurarapp.com](https://www.idurarapp.com)
 
 ## Ohjelmistopino
 
-IDURAR on ilmainen avoimen lähdekoodin ERP- ja CRM-sovellus, joka perustuu "mern-stackiin": Node.js React.js Redux Express.js MongoDB AntDesign (AntD)
+ JESTYCRM on ilmainen avoimen lähdekoodin ERP- ja CRM-sovellus, joka perustuu "mern-stackiin": Node.js React.js Redux Express.js MongoDB AntDesign (AntD)
 
 ## Käyttäjähallinta:
 

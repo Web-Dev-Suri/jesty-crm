@@ -1,15 +1,17 @@
 export const fields = {
   name: {
     type: 'string',
+    required: true,
+    label: 'Name',
   },
-  // email: {
-  //   type: 'email',
-  // },
   phone: {
     type: 'phone',
+    required: false,
+    label: 'Phone',
   },
   status: {
     type: 'select',
+    label: 'Status',
     options: [
       { label: 'New Lead', value: 'New Lead' },
       { label: 'Contacted', value: 'Contacted' },
@@ -17,10 +19,11 @@ export const fields = {
       { label: 'Consultation Scheduled', value: 'Consultation Scheduled' },
       { label: 'DND', value: 'DND' },
     ],
-    default:'New Lead',
+    default: 'New Lead',
   },
-    source: {
+  source: {
     type: 'select',
+    label: 'Source',
     options: [
       { label: 'Website', value: 'Website' },
       { label: 'Google Form', value: 'Google Form' },
@@ -28,4 +31,10 @@ export const fields = {
       { label: 'Meta Campaign B', value: 'Meta Campaign B' },
     ],
   },
+  // revenue: {
+  //   type: 'number',
+  //   label: 'Revenue Generated',
+  //   required: false,
+  //   disableForForm: true,
+  // },
 };

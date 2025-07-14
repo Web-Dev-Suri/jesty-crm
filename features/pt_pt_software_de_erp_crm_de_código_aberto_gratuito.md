@@ -1,4 +1,4 @@
-# IDURAR Software ERP e CRM de código aberto
+#  JESTYCRM Software ERP e CRM de código aberto
 
 GitHub: [https://github.com/idurar/idurar-erp-crm](https://github.com/idurar/idurar-erp-crm)
 Demo: [https://www.idurarapp.com/open-source-erp-crm/](https://www.idurarapp.com/open-source-erp-crm/)
@@ -6,7 +6,7 @@ Website: [https://www.idurarapp.com](https://www.idurarapp.com)
 
 ## Pilha de Software
 
-IDURAR é um aplicativo ERP e CRM de código aberto gratuito, baseado em "mern-stack": Node.js React.js Redux Express.js MongoDB AntDesign (AntD)
+ JESTYCRM é um aplicativo ERP e CRM de código aberto gratuito, baseado em "mern-stack": Node.js React.js Redux Express.js MongoDB AntDesign (AntD)
 
 ## Gestão de Usuários:
 

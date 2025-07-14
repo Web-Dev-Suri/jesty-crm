@@ -9,12 +9,12 @@ import { request } from '@/request';
 import useFetch from '@/hooks/useFetch';
 import useOnFetch from '@/hooks/useOnFetch';
 
-import RecentTable from './components/RecentTable';
 
-import SummaryCard from './components/SummaryCard';
+import RecentTable from './components/RecentTable';
+import LeadsLineChart from './components/LeadsLineChart';
 import PreviewCard from './components/PreviewCard';
 import CustomerPreviewCard from './components/CustomerPreviewCard';
-
+import LeadPieCard from './components/LeadPieCard';
 import { selectMoneyFormat } from '@/redux/settings/selectors';
 import { useSelector } from 'react-redux';
 
@@ -47,6 +47,53 @@ export default function DashboardModule() {
   const { result: clientResult, isLoading: clientLoading } = useFetch(() =>
     request.summary({ entity: 'client' })
   );
+
+  const [leadPieData, setLeadPieData] = useState([]);
+  const [totalLeads, setTotalLeads] = useState(0);
+  const [leadLoading, setLeadLoading] = useState(true);
+
+  const [assignedPieData, setAssignedPieData] = useState([]);
+  const [totalAssigned, setTotalAssigned] = useState(0);
+
+
+  const revenueTarget = 1000000;
+  const revenueAchievedPercent = clientResult?.totalRevenue
+    ? Math.round((clientResult.totalRevenue / revenueTarget) * 100)
+    : 0;
+
+  console.log('Percentage of Revenue Achieved:', revenueAchievedPercent);
+
+  <CustomerPreviewCard
+    isLoading={clientLoading}
+    totalRevenue={clientResult?.totalRevenue}
+    revenueAchievedPercent={revenueAchievedPercent}
+    newCustomer={clientResult?.new}
+  />
+
+
+  useEffect(() => {
+    async function fetchLeadStatus() {
+      setLeadLoading(true);
+      const res = await request.get({ entity: '/lead-status-summary' });
+      if (res.success) {
+        setLeadPieData(res.result.data);
+        setTotalLeads(res.result.total);
+      }
+      setLeadLoading(false);
+    }
+    fetchLeadStatus();
+  }, []);
+
+  useEffect(() => {
+    async function fetchAssignedSummary() {
+      const res = await request.get({ entity: '/lead-assigned-summary' });
+      if (res.success) {
+        setAssignedPieData(res.result.data);
+        setTotalAssigned(res.result.total);
+      }
+    }
+    fetchAssignedSummary();
+  }, []);
 
   useEffect(() => {
     const currency = money_format_settings.default_currency_code || null;
@@ -124,73 +171,158 @@ export default function DashboardModule() {
     );
   });
 
+  const STATUS_COLORS = {
+    'New Lead': '#00C49F',
+    'Contacted': '#0088FE',
+    'Consultation Scheduled': '#FF8042',
+  };
+  const STATUS_LABELS = [
+    { label: 'New Lead', color: '#00C49F' },
+    { label: 'Contacted', color: '#0088FE' },
+    { label: 'Consultation Scheduled', color: '#FF8042' },
+  ];
+
+  // For assigned users, generate colors dynamically:
+  const assignedColors = {};
+  assignedPieData.forEach((item, idx) => {
+    // Use a color palette or fallback to a default
+    const palette = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#A28CFE', '#FF6699', '#00B8D9'];
+    assignedColors[item.name] = palette[idx % palette.length];
+  });
+  const assignedLabels = assignedPieData.map(item => ({
+    label: item.name,
+    color: assignedColors[item.name],
+  }));
+
+  const [leadsChartData, setLeadsChartData] = useState([]);
+  const [leadsChartLoading, setLeadsChartLoading] = useState(false);
+  const [leadsChartRange, setLeadsChartRange] = useState('week'); // 'week' | 'month' | 'year'
+
+  // Helper to get date range
+  function getDateRange(range) {
+    const end = new Date();
+    let start = new Date();
+    if (range === 'week') {
+      start.setDate(end.getDate() - 6);
+    } else if (range === 'month') {
+      start.setMonth(end.getMonth() - 1);
+      start.setDate(start.getDate() + 1);
+    } else if (range === 'year') {
+      start.setFullYear(end.getFullYear() - 1);
+      start.setDate(start.getDate() + 1);
+    }
+    return {
+      startDate: start.toISOString().slice(0, 10),
+      endDate: end.toISOString().slice(0, 10),
+    };
+  }
+
+  // Fetch leads per day for chart
+  useEffect(() => {
+    async function fetchLeadsChart() {
+      setLeadsChartLoading(true);
+      try {
+        const res = await request.get({ entity: `/lead-created-per-day` });
+        if (res.success && Array.isArray(res.result)) {
+          setLeadsChartData(res.result.map(item => ({ date: item._id, count: item.count })));
+        } else {
+          setLeadsChartData([]);
+        }
+      } catch {
+        setLeadsChartData([]);
+      }
+      setLeadsChartLoading(false);
+    }
+    fetchLeadsChart();
+  }, [leadsChartRange]);
+
+
   if (money_format_settings) {
     return (
       <>
-        <Row gutter={[32, 32]}>
-          <SummaryCard
-            title={translate('Invoices')}
-            prefix={translate('This month')}
-            isLoading={invoiceLoading}
-            data={invoiceResult?.total}
-          />
-          <SummaryCard
-            title={translate('Quote')}
-            prefix={translate('This month')}
-            isLoading={quoteLoading}
-            data={quoteResult?.total}
-          />
-          <SummaryCard
-            title={translate('paid')}
-            prefix={translate('This month')}
-            isLoading={paymentLoading}
-            data={paymentResult?.total}
-          />
-          <SummaryCard
-            title={translate('Unpaid')}
-            prefix={translate('Not Paid')}
-            isLoading={invoiceLoading}
-            data={invoiceResult?.total_undue}
-          />
-        </Row>
-        <div className="space30"></div>
-        <Row gutter={[32, 32]}>
-          <Col className="gutter-row w-full" sm={{ span: 24 }} md={{ span: 24 }} lg={{ span: 18 }}>
-            <div className="whiteBox shadow" style={{ height: 458 }}>
-              <Row className="pad20" gutter={[0, 0]}>
-                {statisticCards}
-              </Row>
-            </div>
+        <Row gutter={[20, 20]}>
+          <Col xs={24} sm={12} md={12} lg={6}>
+            <LeadPieCard
+              data={leadPieData}
+              total={totalLeads}
+              title="Leads Overview"
+              subtitle="Status of all leads in the system"
+              buttonText="View All Leads"
+              onButtonClick={() => {/* your handler */ }}
+              colors={STATUS_COLORS}
+              labels={STATUS_LABELS}
+            />
           </Col>
-          <Col className="gutter-row w-full" sm={{ span: 24 }} md={{ span: 24 }} lg={{ span: 6 }}>
-            <CustomerPreviewCard
-              isLoading={clientLoading}
-              activeCustomer={clientResult?.active}
-              newCustomer={clientResult?.new}
+          <Col xs={24} sm={12} md={12} lg={6}>
+            <LeadPieCard
+              data={assignedPieData}
+              total={totalAssigned}
+              title="Leads by Assigned User"
+              subtitle="Leads by assigned user"
+              buttonText="View All Leads"
+              onButtonClick={() => {/* your handler */ }}
+              colors={assignedColors}
+              labels={assignedLabels}
+            />
+          </Col>
+          <Col xs={24} sm={12} md={12} lg={6}>
+            <LeadPieCard
+              data={leadPieData}
+              total={totalLeads}
+              title="Leads Overview"
+              subtitle="Status of all leads in the system"
+              buttonText="View All Leads"
+              onButtonClick={() => {/* your handler */ }}
+              colors={STATUS_COLORS}
+              labels={STATUS_LABELS}
+            />
+          </Col>
+          <Col xs={24} sm={12} md={12} lg={6}>
+            <LeadPieCard
+              data={assignedPieData}
+              total={totalAssigned}
+              title="Leads by Assigned User"
+              subtitle="Leads by assigned user"
+              buttonText="View All Leads"
+              onButtonClick={() => {/* your handler */ }}
+              colors={assignedColors}
+              labels={assignedLabels}
             />
           </Col>
         </Row>
         <div className="space30"></div>
         <Row gutter={[32, 32]}>
-          <Col className="gutter-row w-full" sm={{ span: 24 }} lg={{ span: 12 }}>
-            <div className="whiteBox shadow pad20" style={{ height: '100%' }}>
-              <h3 style={{ color: '#22075e', marginBottom: 5, padding: '0 20px 20px' }}>
-                {translate('Recent Invoices')}
-              </h3>
-
-              <RecentTable entity={'invoice'} dataTableColumns={dataTableColumns} />
+          <Col className="gutter-row w-full" sm={{ span: 24 }} md={{ span: 24 }} lg={{ span: 18 }}>
+            <div className="whiteBox shadow" style={{ height: 'auto' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 20px 20px' }}>
+                <h3 style={{ color: '#22075e', marginBottom: 0 }}>
+                  {translate('Leads Over Past 30 Days')}
+                </h3>
+                {/* <div>
+                  <select
+                    value={leadsChartRange}
+                    onChange={e => setLeadsChartRange(e.target.value)}
+                    style={{ padding: '4px 8px', borderRadius: 4, border: '1px solid #d9d9d9' }}
+                  >
+                    <option value="week">Past Week</option>
+                    <option value="month">Past Month</option>
+                    <option value="year">Past Year</option>
+                  </select>
+                </div> */}
+              </div>
+              <LeadsLineChart data={leadsChartData} loading={leadsChartLoading} />
             </div>
           </Col>
-
-          <Col className="gutter-row w-full" sm={{ span: 24 }} lg={{ span: 12 }}>
-            <div className="whiteBox shadow pad20" style={{ height: '100%' }}>
-              <h3 style={{ color: '#22075e', marginBottom: 5, padding: '0 20px 20px' }}>
-                {translate('Recent Quotes')}
-              </h3>
-              <RecentTable entity={'quote'} dataTableColumns={dataTableColumns} />
-            </div>
+          <Col className="gutter-row w-full" sm={{ span: 24 }} md={{ span: 24 }} lg={{ span: 6 }}>
+            <CustomerPreviewCard
+              isLoading={clientLoading}
+              totalRevenue={clientResult?.totalRevenue}
+              revenueAchievedPercent={revenueAchievedPercent}
+              newCustomer={clientResult?.new}
+            />
           </Col>
         </Row>
+
       </>
     );
   } else {

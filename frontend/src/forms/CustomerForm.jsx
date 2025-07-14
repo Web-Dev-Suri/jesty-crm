@@ -1,9 +1,18 @@
-import { Form, Input, Select } from 'antd';
+import React, { useState } from 'react';
+import { Form, Input, Select, InputNumber, Button } from 'antd';
 import { validatePhoneNumber } from '@/utils/helpers';
 import useLanguage from '@/locale/useLanguage';
 
-export default function CustomerForm({ isUpdateForm = false, userOptions = [] }) {
+import { useSelector } from 'react-redux';
+import { selectCurrentAction } from '@/redux/erp/selectors';
+
+export default function CustomerForm({ isUpdateForm = false, userOptions = [], notes = [], onAddNote }) {
   const translate = useLanguage();
+  const [noteInput, setNoteInput] = useState('');
+
+  const { actionType = '', data = {} } = useSelector(selectCurrentAction) || {};
+
+  // ✅ Validate Empty Strings
   const validateEmptyString = (_, value) => {
     if (value && value.trim() === '') {
       return Promise.reject(new Error('Field cannot be empty'));
@@ -80,6 +89,24 @@ export default function CustomerForm({ isUpdateForm = false, userOptions = [] })
           allowClear
         />
       </Form.Item>
+      
+      {isUpdateForm && (
+        <>
+          <Form.Item
+            label={translate('Revenue Generated')}
+            name="revenue"
+            rules={[
+              { required: false },
+              { type: 'number', min: 0, message: 'Revenue must be a positive number' },
+            ]}
+          >
+            <InputNumber
+              placeholder={translate('Enter revenue generated')}
+              style={{ width: '100%' }}
+            />
+          </Form.Item>
+        </>
+      )}
     </>
   );
 }

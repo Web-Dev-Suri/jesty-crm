@@ -29,7 +29,7 @@ export default ({ mode }) => {
         },
       },
       allowedHosts: [
-        'd323-122-162-150-234.ngrok-free.app'
+        'https://cc61-122-162-146-143.ngrok-free.app'
       ],
     },
   };
