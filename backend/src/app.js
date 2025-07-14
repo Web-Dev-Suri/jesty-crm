@@ -24,21 +24,26 @@ const clientBulkRoutes = require('./routes/clientBulk');
 // create our Express app
 const app = express();
 
-const allowedOrigins = ['http://3.109.229.73:3000'];
+const allowedOrigins = [
+  'http://3.109.229.73:3000',
+  'http://web.jestycrm.com',
+  'https://web.jestycrm.com',
+];
 
-app.use(
-  cors({
-    origin: function (origin, callback) {
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      console.error('Blocked by CORS:', origin);
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+};
 
-      if (!origin) return callback(null, true);
-
-      if (allowedOrigins.includes(origin)) return callback(null, true);
-
-      return callback(new Error('Not allowed by CORS'));
-    },
-    credentials: true,
-  })
-);
+// 🧩 CORS Middleware
+app.use(cors(corsOptions));
 
 app.options('*', cors(corsOptions));
 
