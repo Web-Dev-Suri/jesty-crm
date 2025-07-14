@@ -24,7 +24,7 @@ const clientBulkRoutes = require('./routes/clientBulk');
 // create our Express app
 const app = express();
 
-const allowedOrigins = ['http://localhost:3000'];
+const allowedOrigins = ['http://3.109.229.73:3000'];
 
 app.use(
   cors({
