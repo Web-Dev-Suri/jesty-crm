@@ -16,8 +16,9 @@ export default function LeadPieCard({
       style={{
         minHeight: 320,
         textAlign: 'center',
+        borderRadius: 10 ,
       }}
-      bodyStyle={{ padding: 24 }}
+      bodyStyle={{ padding: 20 }}
     >
       <div style={{ fontWeight: 600, fontSize: 16, marginBottom: 4 }}>{title}</div>
       <div style={{ color: '#888', fontSize: 13, marginBottom: 20 }}>{subtitle}</div>

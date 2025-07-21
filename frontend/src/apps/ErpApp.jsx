@@ -28,9 +28,9 @@ export default function ErpCrmApp() {
     <Layout style={{ minHeight: '100vh' }}>
       {!isMobile && <Navigation />}
 
-      <Layout style={{ background: '#fff' }}>
+      <Layout style={{ background: '#f6f7fb' }}>
         <HeaderContent />
-        <Content style={{ maxWidth: 1400, margin: 'auto', width: '100%', borderRadius: 90, }}>
+        <Content style={{ maxWidth: 1400, margin: 'auto', width: '100%' }}>
           <AppRouter />
         </Content>
       </Layout>
