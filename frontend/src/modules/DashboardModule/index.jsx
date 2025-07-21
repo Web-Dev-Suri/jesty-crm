@@ -9,8 +9,6 @@ import { request } from '@/request';
 import useFetch from '@/hooks/useFetch';
 import useOnFetch from '@/hooks/useOnFetch';
 
-
-import RecentTable from './components/RecentTable';
 import LeadsLineChart from './components/LeadsLineChart';
 import PreviewCard from './components/PreviewCard';
 import CustomerPreviewCard from './components/CustomerPreviewCard';
