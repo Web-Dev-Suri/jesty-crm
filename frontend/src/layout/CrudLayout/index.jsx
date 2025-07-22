@@ -43,6 +43,7 @@ const ContentBox = ({ children }) => {
         width: '100%',
         maxWidth: '100%',
         flex: 'none',
+        borderRadius: '10px',
       }}
     >
       {children}
@@ -63,7 +64,6 @@ export default function CrudLayout({
         <SidePanel
           config={config}
           topContent={sidePanelTopContent}
-          bottomContent={sidePanelBottomContent}
           fixHeaderPanel={fixHeaderPanel}
         ></SidePanel>
 

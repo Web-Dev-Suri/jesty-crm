@@ -10,6 +10,7 @@ import {
 import { useNavigate, useLocation } from 'react-router-dom';
 import useLanguage from '@/locale/useLanguage';
 import './NavigationContainer.css';
+import jestyLogo from '@/style/images/logo.png';
 
 const { Sider } = Layout;
 
@@ -69,7 +70,7 @@ const selectedKey = pathKeyMap[location.pathname] || '';
       style={{ position: 'sticky', left: 0, top: 0, bottom: 0, zIndex: 1000, overflowY: 'hidden'}}
     >
       <div className="sidebar-logo">
-        <span className="bold">jesty</span><span className="blue">crm</span>
+        <img src={jestyLogo} alt="Logo" className="logo-image" />
       </div>
       <Menu
         mode="inline"

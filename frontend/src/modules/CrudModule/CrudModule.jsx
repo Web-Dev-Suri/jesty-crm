@@ -1,11 +1,8 @@
 import { useLayoutEffect } from 'react';
-import { Button } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
 
-import CreateForm from '@/components/CreateForm';
 import UpdateForm from '@/components/UpdateForm';
 import DeleteModal from '@/components/DeleteModal';
-import ReadItem from '@/components/ReadItem';
+
 import LeadsInsights from '@/components/LeadsInsights/LeadsInsights';
 import DataTable from '@/components/DataTable/DataTable';
 
@@ -47,7 +44,7 @@ function FixHeaderPanel({ config }) {
   return null;
 }
 
-function CrudModule({ config, createForm, updateForm, withUpload = false, filterOptions }) {
+function CrudModule({ config, updateForm, withUpload = false, filterOptions }) {
   const dispatch = useDispatch();
 
   useLayoutEffect(() => {
@@ -58,9 +55,6 @@ function CrudModule({ config, createForm, updateForm, withUpload = false, filter
     <CrudLayout 
       config={config}
       fixHeaderPanel={<FixHeaderPanel config={config} />}
-      sidePanelBottomContent={
-        <CreateForm config={config} formElements={createForm} withUpload={withUpload} />
-      }
       sidePanelTopContent={
         <SidePanelTopContent config={config} formElements={updateForm} withUpload={withUpload} />
       }

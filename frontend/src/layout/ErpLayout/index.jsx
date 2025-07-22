@@ -14,6 +14,7 @@ export default function ErpLayout({ children }) {
           width: '100%',
           maxWidth: '1100px',
           minHeight: '600px',
+          borderRadius: '10px',
         }}
       >
         {children}

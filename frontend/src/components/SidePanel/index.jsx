@@ -8,7 +8,7 @@ import CollapseBox from '../CollapseBox';
 const { useBreakpoint } = Grid;
 const { Sider } = Layout;
 
-export default function SidePanel({ config, topContent, bottomContent, fixHeaderPanel }) {
+export default function SidePanel({ config, topContent, fixHeaderPanel }) {
   const screens = useBreakpoint();
 
   const { ADD_NEW_ENTITY } = config;
@@ -61,6 +61,9 @@ export default function SidePanel({ config, topContent, bottomContent, fixHeader
       onClose={collapsePanel}
       open={!isPanelClose}
       width={'100%'}
+      style={{
+        backgroundColor: '#dfe4e8'
+      }}
     >
       <div
         className="sidePanelContent"
@@ -75,7 +78,6 @@ export default function SidePanel({ config, topContent, bottomContent, fixHeader
           isCollapsed={isBoxCollapsed}
           onCollapse={collapsePanelBox}
           topContent={topContent}
-          bottomContent={bottomContent}
         ></CollapseBox>
       </div>
     </Drawer>

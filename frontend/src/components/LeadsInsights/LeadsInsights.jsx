@@ -32,7 +32,7 @@ export default function LeadsInsights({
   const [editRevenue, setEditRevenue] = useState(client?.revenue || 0); // Revenue state
 
   // Handle adding a note (persist to backend)
-  const handleAddNote = async () => {
+const handleAddNote = async () => {
     if (!noteHeading.trim()) return; // Only heading is required
     const newNote = {
       heading: noteHeading,
@@ -149,9 +149,9 @@ export default function LeadsInsights({
   };
 
   return (
-    <div style={{ padding: 24 }}>
+    <div style={{ marginInline:200, backgroundColor: '#ffffff', borderRadius: 10, padding: 20}}>
       {/* 1. Header */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24, borderBottom: '1px solid #e8e8e8', paddingBottom: 15 }}>
         <div>
           <Button icon={<LeftOutlined />} onClick={handlePrev} style={{ marginRight: 8 }} disabled={currentIndex <= 0} />
           <Button icon={<RightOutlined />} onClick={handleNext} disabled={currentIndex === -1 || currentIndex >= clientList.length - 1} />
@@ -164,274 +164,276 @@ export default function LeadsInsights({
         </Dropdown>
       </div>
 
-      {/* 2. Client Name */}
-      <h2
-        style={{
-          marginBottom: 16,
-          fontSize: 40,
-          color: '#22304a',
-          fontWeight: 800,
-          letterSpacing: '-0.5px',
-          lineHeight: 1.2,
-        }}
-      >
-        {client?.name}
-      </h2>
-
-      {/* 3. Followup and Notes Buttons */}
-      <div style={{ display: 'flex', gap: 12, marginBottom: 24 }}>
-        <Button
-          icon={<CalendarOutlined />}
-          onClick={() => setFollowupModal(true)}
-          style={
-            nextFollowup
-              ? {
-                  background: '#fff1f0',
-                  color: '#cf1322',
-                  border: '1px solid #ffa39e',
-                  fontWeight: 600,
-                }
-              : undefined
-          }
-        >
-          {nextFollowup
-            ? `Followup scheduled for ${nextFollowup.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}, ${nextFollowup.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}`
-            : 'Schedule Followup'}
-        </Button>
-        <Button
-          icon={<PlusOutlined />}
-          onClick={() => setNotesModal(true)}
-        >
-          Add Note
-        </Button>
-
-        {/* WhatsApp Button (only if phone exists) */}
-        {client?.phone && (
-          <Button
-            icon={<WhatsAppOutlined />}
-            style={{
-              background: '#25D366',
-              color: '#fff',
-              border: 'none',
-              display: 'flex',
-              alignItems: 'center'
-            }}
-            href={`https://wa.me/+91${client.phone.replace(/\D/g, '')}?text=${encodeURIComponent('Hi I recieved a query from you')}`}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Whatsapp
-          </Button>
-        )}
-
-        {/* Phone Button (only if phone exists) */}
-        {client?.phone && (
-          <Button
-            icon={<PhoneOutlined />}
-            style={{
-              background: '#1890ff',
-              color: '#fff',
-              border: 'none',
-              display: 'flex',
-              alignItems: 'center'
-            }}
-            href={`tel:${client.phone}`}
-          >
-            Phone
-          </Button>
-        )}
-
-        {/* Email Button (only if email exists) */}
-        {client?.email && (
-          <Button
-            icon={<MailOutlined />}
-            style={{
-              background: '#ea4335',
-              color: '#fff',
-              border: 'none',
-              display: 'flex',
-              alignItems: 'center'
-            }}
-            href={`mailto:${client.email}`}
-          >
-            Email
-          </Button>
-        )}
-      </div>
-
-      {/* 5 & 6. Two-column layout with grey boxes and headings */}
-      <div style={{ display: 'flex', gap: 32 }}>
-        {/* Left: Client Info */}
+      {/* 2. Main Content Area with Avatar and Client Info */}
+      <div style={{ display: 'flex', gap: 24, marginBottom: 32, flexWrap: 'wrap' }}>
+        {/* Avatar Circle */}
         <div
           style={{
-            flex: 6,
-            background: '#f5f6fa',
-            borderRadius: 8,
-            padding: 24,
-            boxShadow: '0 1px 3px rgba(0,0,0,0.03)',
-            minHeight: 300,
-            maxHeight: 400,
-            overflowY: 'auto'
+            width: 120,
+            height: 120,
+            borderRadius: '50%',
+            border: '5px solid #94cf96',
+            background: '#effff0',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: 70,
+            fontWeight: 300,
+            color: '#94cf96',
+            flexShrink: 0,
+            marginTop: 8,
           }}
         >
-          <h3 style={{ marginTop: 0 }}>
-            Client Info
-          </h3>
-          <Divider style={{ margin: '16px 0 16px 0' }} />
-          <div style={{ display: 'flex', gap: 32 }}>
-            {/* Left column: labels and values */}
-            <div style={{ flex: 1 }}>
-              {/* STATUS FIRST */}
-              <div style={{ marginBottom: 20 }}>
-                <div style={{ fontSize: 13, fontWeight: 700, color: '#555', letterSpacing: 0.5, marginBottom: 2 }}>
-                  STATUS
-                </div>
-                <div>
-                  <span
-                    style={{ cursor: 'pointer' }}
-                    onClick={e => {
-                      e.stopPropagation();
-                      setShowStatusSelect(true);
-                    }}
-                    tabIndex={0}
-                    role="button"
-                  >
-                    {!showStatusSelect ? (
-                      <Tag color="blue" style={{ fontSize: 14, padding: '2px 12px' }}>
-                        {client?.status}
-                      </Tag>
-                    ) : (
-                      <Select
-                        size="small"
-                        value={client?.status}
-                        style={{ minWidth: 140 }}
-                        onChange={async value => {
-                          await dispatch(
-                            crud.update({
-                              entity: 'client',
-                              id: client._id,
-                              jsonData: { ...client, status: value },
-                            })
-                          );
-                          setShowStatusSelect(false);
-                        }}
-                        onBlur={() => setShowStatusSelect(false)}
-                        autoFocus
-                        options={[
-                          { value: 'New Lead', label: 'New Lead' },
-                          { value: 'Contacted', label: 'Contacted' },
-                          { value: 'Did not pick', label: 'Did not pick' },
-                          { value: 'Consultation Scheduled', label: 'Consultation Scheduled' },
-                          { value: 'DND', label: 'DND' },
-                        ]}
-                      />
-                    )}
-                  </span>
-                </div>
-              </div>
-              {/* MOBILE NUMBER */}
-              <div style={{ marginBottom: 20 }}>
-                <div style={{ fontSize: 13, fontWeight: 700, color: '#555', letterSpacing: 0.5, marginBottom: 2 }}>
-                  MOBILE NUMBER
-                </div>
-                <div style={{ fontSize: 16, color: '#22304a', minHeight: 24 }}>
-                  {client?.phone ? client.phone : <span style={{ color: '#888' }}>-</span>}
-                </div>
-              </div>
-              {/* EMAIL ADDRESS */}
-              <div style={{ marginBottom: 20 }}>
-                <div style={{ fontSize: 13, fontWeight: 700, color: '#555', letterSpacing: 0.5, marginBottom: 2 }}>
-                  EMAIL ADDRESS
-                </div>
-                <div style={{ fontSize: 16, color: '#22304a', minHeight: 24 }}>
-                  {client?.email || <span style={{ color: '#888' }}>-</span>}
-                </div>
-              </div>
-              {/* REVENUE */}
-              <div style={{ marginBottom: 0 }}>
-                <div style={{ fontSize: 13, fontWeight: 700, color: '#555', letterSpacing: 0.5, marginBottom: 2 }}>
-                  REVENUE
-                </div>
-                <div style={{ fontSize: 16, color: '#22304a', minHeight: 24 }}>
-                  ₹{client?.revenue ?? 0}
-                </div>
-              </div>
-            </div>
-          </div>
+          {client?.name?.charAt(0)?.toUpperCase() || '?'}
         </div>
-        {/* Right: Timeline */}
-        <div style={{
-          flex: 4,
-          background: '#f5f6fa',
-          borderRadius: 8,
-          padding: 24,
-          boxShadow: '0 1px 3px rgba(0,0,0,0.03)',
-          minHeight: 300,
-          maxHeight: 400,
-          overflowY: 'auto',
-          position: 'relative',
-          paddingTop: 24,      // Add this
-          paddingBottom: 24    // Add this
-        }}>
-          <div
-            style={{
-              position: 'sticky',
-              top: 0,
-              zIndex: 1,
-              background: '#f5f6fa',
-            }}
-          >
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <h3 style={{ marginTop: 0 }}>Timeline</h3>
-              <a
-                style={{
-                  marginLeft: 8,
-                  fontSize: 11,
-                  color: '#1890ff',
-                  cursor: 'pointer',
+
+        {/* Client Info Column */}
+        <div style={{ flex: 1 }}>
+          {/* Name and Status */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 20, marginBottom: 40 }}>
+            <h2
+              style={{
+                margin: 0,
+                fontSize: 40,
+                color: '#22304a',
+                fontWeight: 700,
+                letterSpacing: '-0.5px',
+                lineHeight: 1.2,
+              }}
+            >
+              {client?.name}
+            </h2>
+            
+            <div>
+              <span
+                style={{ cursor: 'pointer' }}
+                onClick={e => {
+                  e.stopPropagation();
+                  setShowStatusSelect(true);
                 }}
-                onClick={() => setAllNotesModal(true)}
                 tabIndex={0}
                 role="button"
               >
-                View Client Notes
-              </a>
+                {!showStatusSelect ? (
+                  <Tag 
+                    color="red" 
+                    style={{ 
+                      fontSize: 12, 
+                      padding: '4px 12px', 
+                      borderRadius: 16,
+                      border: 'none',
+                      background: '#ffebee',
+                      color: '#d32f2f'
+                    }}
+                  >
+                    {client?.status}
+                  </Tag>
+                ) : (
+                  <Select
+                    size="small"
+                    value={client?.status}
+                    style={{ minWidth: 140 }}
+                    onChange={async value => {
+                      await dispatch(
+                        crud.update({
+                          entity: 'client',
+                          id: client._id,
+                          jsonData: { ...client, status: value },
+                        })
+                      );
+                      setShowStatusSelect(false);
+                    }}
+                    onBlur={() => setShowStatusSelect(false)}
+                    autoFocus
+                    options={[
+                      { value: 'New Lead', label: 'New Lead' },
+                      { value: 'Contacted', label: 'Contacted' },
+                      { value: 'Did not pick', label: 'Did not pick' },
+                      { value: 'Consultation Scheduled', label: 'Consultation Scheduled' },
+                      { value: 'DND', label: 'DND' },
+                    ]}
+                  />
+                )}
+              </span>
             </div>
-            <Divider style={{ margin: '8px 0 16px 0' }} />
           </div>
-          <Timeline>
-            {timelineItems.map((item, idx) => (
-              <Timeline.Item
-                key={idx}
-                color={item.type === 'followup' ? '#fa8c16' : undefined}
-              >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span>
-                    {item.label}
-                    {item.type === 'followup' && item.scheduledFor && (
-                      <div
-                        style={{
-                          fontSize: 11,
-                          color: '#aaa',
-                          marginTop: 2,
-                          marginLeft: 2,
-                          fontWeight: 400,
-                        }}
-                      >
-                        for {new Date(item.scheduledFor).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}, {new Date(item.scheduledFor).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}
-                      </div>
-                    )}
-                  </span>
-                  <span style={{ fontSize: 12, color: '#888' }}>
-                    {item.createdAt
-                      ? `${new Date(item.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}, ${new Date(item.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}`
-                      : ''}
-                  </span>
+
+          {/* Client Details */}
+          <div style={{ display: 'flex', gap: 48, marginBottom: 40 }}>
+            <div>
+              <div style={{ fontSize: 13, fontWeight: 500, color: '#666', marginBottom: 4 }}>Mobile Number</div>
+              <div style={{ fontSize: 16, color: '#22304a', fontWeight: 600 }}>
+                {client?.phone || '-'}
+              </div>
+            </div>
+            <div>
+              <div style={{ fontSize: 13, fontWeight: 500, color: '#666', marginBottom: 4 }}>Email</div>
+              <div style={{ fontSize: 16, color: '#22304a', fontWeight: 600 }}>
+                {client?.email || '-'}
+              </div>
+            </div>
+            <div>
+              <div style={{ fontSize: 13, fontWeight: 500, color: '#666', marginBottom: 4 }}>Revenue</div>
+              <div style={{ fontSize: 16, color: '#22304a', fontWeight: 600 }}>
+                {client?.revenue ? client.revenue.toLocaleString() : '0'}
+              </div>
+            </div>
+          </div>
                 </div>
-              </Timeline.Item>
-            ))}
-          </Timeline>
+
+          {/* Action Buttons */}
+          <div style={{ display: 'flex', gap: 12 }}>
+            <Button
+              icon={<CalendarOutlined />}
+              onClick={() => setFollowupModal(true)}
+              style={
+                nextFollowup
+                  ? {
+                      background: '#fff1f0',
+                      color: '#cf1322',
+                      border: '1px solid #ffa39e',
+                      fontWeight: 600,
+                    }
+                  : undefined
+              }
+            >
+              {nextFollowup
+                ? `Followup scheduled for ${nextFollowup.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}, ${nextFollowup.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}`
+                : 'Schedule Followup'}
+            </Button>
+            <Button
+              icon={<PlusOutlined />}
+              onClick={() => setNotesModal(true)}
+            >
+              Add Note
+            </Button>
+
+            {/* WhatsApp Button (only if phone exists) */}
+            {client?.phone && (
+              <Button
+                icon={<WhatsAppOutlined />}
+                style={{
+                  background: '#25D366',
+                  color: '#fff',
+                  border: 'none',
+                  display: 'flex',
+                  alignItems: 'center'
+                }}
+                href={`https://wa.me/+91${client.phone.replace(/\D/g, '')}?text=${encodeURIComponent('Hi I recieved a query from you')}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Whatsapp
+              </Button>
+            )}
+
+            {/* Phone Button (only if phone exists) */}
+            {client?.phone && (
+              <Button
+                icon={<PhoneOutlined />}
+                style={{
+                  background: '#1890ff',
+                  color: '#fff',
+                  border: 'none',
+                  display: 'flex',
+                  alignItems: 'center'
+                }}
+                href={`tel:${client.phone}`}
+              >
+                Phone
+              </Button>
+            )}
+
+            {/* Email Button (only if phone exists) */}
+            {client?.email && (
+              <Button
+                icon={<MailOutlined />}
+                style={{
+                  background: '#ea4335',
+                  color: '#fff',
+                  border: 'none',
+                  display: 'flex',
+                  alignItems: 'center'
+                }}
+                href={`mailto:${client.email}`}
+              >
+                Email
+              </Button>
+            )}
+          </div>
         </div>
+
+      {/* 5. Timeline */}
+      <div style={{
+        background: '#f5f6fa',
+        borderRadius: 8,
+        padding: 24,
+        boxShadow: '0 1px 3px rgba(0,0,0,0.03)',
+        minHeight: 300,
+        maxHeight: 400,
+        overflowY: 'auto',
+        position: 'relative',
+        paddingTop: 24,
+        paddingBottom: 24
+      }}>
+        <div
+          style={{
+            position: 'sticky',
+            top: 0,
+            zIndex: 1,
+            background: '#f5f6fa',
+          }}
+        >
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <h3 style={{ marginTop: 0 }}>Timeline</h3>
+            <a
+              style={{
+                marginLeft: 8,
+                fontSize: 11,
+                color: '#1890ff',
+                cursor: 'pointer',
+              }}
+              onClick={() => setAllNotesModal(true)}
+              tabIndex={0}
+              role="button"
+            >
+              View Client Notes
+            </a>
+          </div>
+          <Divider style={{ margin: '8px 0 16px 0' }} />
+        </div>
+        <Timeline>
+          {timelineItems.map((item, idx) => (
+            <Timeline.Item
+              key={idx}
+              color={item.type === 'followup' ? '#fa8c16' : undefined}
+            >
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span>
+                  {item.label}
+                  {item.type === 'followup' && item.scheduledFor && (
+                    <div
+                      style={{
+                        fontSize: 11,
+                        color: '#aaa',
+                        marginTop: 2,
+                        marginLeft: 2,
+                        fontWeight: 400,
+                      }}
+                    >
+                      for {new Date(item.scheduledFor).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}, {new Date(item.scheduledFor).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}
+                    </div>
+                  )}
+                </span>
+                <span style={{ fontSize: 12, color: '#888' }}>
+                  {item.createdAt
+                    ? `${new Date(item.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}, ${new Date(item.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}`
+                    : ''}
+                </span>
+              </div>
+            </Timeline.Item>
+          ))}
+        </Timeline>
       </div>
 
       {/* Followup Modal */}

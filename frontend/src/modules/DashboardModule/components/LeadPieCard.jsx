@@ -1,5 +1,5 @@
 import { Card } from 'antd';
-import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 
 export default function LeadPieCard({
   total = 0,
@@ -16,7 +16,7 @@ export default function LeadPieCard({
       style={{
         minHeight: 320,
         textAlign: 'center',
-        borderRadius: 10 ,
+        borderRadius: 10,
       }}
       bodyStyle={{ padding: 20 }}
     >
@@ -26,13 +26,17 @@ export default function LeadPieCard({
       <div style={{ width: 160, height: 160, margin: '0 auto', position: 'relative' }}>
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
+            <Tooltip
+              contentStyle={{ backgroundColor: '#eceef3ff', border: '1px solid #eceef3ff' }}
+              formatter={(value) => [`${value}`]}
+            />
             <Pie
               data={data}
               dataKey="value"
               nameKey="name"
               cx="50%"
               cy="50%"
-              innerRadius={65}
+              innerRadius={60}
               outerRadius={75}
               paddingAngle={3}
               startAngle={90}

@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 import { Button, Card, Upload, message, Modal } from 'antd';
 import { GlobalOutlined, FileExcelOutlined, DownloadOutlined, UploadOutlined } from '@ant-design/icons';
 import facebookIcon from '@/style/images/facebook-icon.png';
+import shopifyIcon from '@/style/images/shopify.png';
+import wordpressIcon from '@/style/images/wordpress.png';
 
 const Integrations = () => {
     const [step, setStep] = useState('select');
@@ -60,8 +62,6 @@ const Integrations = () => {
         window.addEventListener('message', messageListener);
     };
 
-
-
     const scriptSnippet = `
 <script>
   document.addEventListener("DOMContentLoaded", function () {
@@ -100,89 +100,63 @@ const Integrations = () => {
     };
 
     return (
-        <div className="p-6 max-w-3xl mx-auto">
-            <h2 className="text-2xl font-bold mb-6">Integrations</h2>
+        <div className="p-6">
+            <h2 className="text-2xl font-bold mb-6" style={{maxWidth: '1000px', margin: '20px auto'}}>Integrations</h2>
 
             {step === 'select' && (
-                <div>
-                    {/* Website Integration Card */}
-                    <Card
-                        className="mb-6"
-                        style={{
-                            maxWidth: 800,
-                            margin: '20px auto',
-                            padding: '24px',
-                        }}
-                        bordered
-                        bodyStyle={{ width: '100%', padding: 0 }}
-                    >
-                        <div style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'space-between',
-                            width: '100%',
-                        }}>
-                            <div style={{ display: 'flex', alignItems: 'center' }}>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px', maxWidth: '1000px', margin: '0 auto' }}>
+                    {/* Website Integration */}
+                    <Card bordered style={{ padding: '24px', flex: '1', minWidth: '450px', borderRadius: '10px' }}>
+                        <div className="flex justify-between items-center">
+                            <div className="flex items-center">
                                 <GlobalOutlined style={{ fontSize: 40, color: '#1890ff', marginRight: 20 }} />
-                                <h3 className="text-lg font-semibold mb-0" style={{ margin: 0 }}>
-                                    Fetch Leads from Website
-                                </h3>
+                                <h3 className="text-lg font-semibold mb-0">Fetch Leads from Website</h3>
                             </div>
-                            <Button type="primary" onClick={() => setStep('form')}>
-                                Connect
-                            </Button>
+                            <Button type="primary" onClick={() => setStep('form')}>Connect</Button>
                         </div>
                     </Card>
 
-                    {/* Facebook Integration Card */}
-                    <Card
-                        className="mb-6"
-                        style={{
-                            maxWidth: 800,
-                            margin: '0 auto',
-                            padding: '24px',
-                            display: 'flex',
-                            alignItems: 'center',
-                        }}
-                        bordered
-                        bodyStyle={{ width: '100%', padding: 0 }}
-                    >
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                            <div style={{ display: 'flex', alignItems: 'center' }}>
+                    {/* Facebook Integration */}
+                    <Card bordered style={{ padding: '24px', flex: '1', minWidth: '450px', borderRadius: '10px' }}>
+                        <div className="flex justify-between items-center">
+                            <div className="flex items-center">
                                 <img src={facebookIcon} alt="Facebook" style={{ width: 40, marginRight: 20 }} />
-                                <h3 className="text-lg font-semibold mb-0" style={{ margin: 0 }}>
-                                    Capture Leads from Facebook
-                                </h3>
+                                <h3 className="text-lg font-semibold mb-0">Capture Leads from Facebook</h3>
                             </div>
-                            <Button type="primary" onClick={() => setStep('facebook')}>
-                                Connect
-                            </Button>
+                            <Button type="primary" onClick={() => setStep('facebook')}>Connect</Button>
                         </div>
                     </Card>
 
-                    {/* Bulk Import/Export Card */}
-                    <Card
-                        className="mb-6"
-                        style={{
-                            maxWidth: 800,
-                            margin: '20px auto',
-                            padding: '24px',
-                            display: 'flex',
-                            alignItems: 'center',
-                        }}
-                        bordered
-                        bodyStyle={{ width: '100%', padding: 0 }}
-                    >
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                            <div style={{ display: 'flex', alignItems: 'center' }}>
+                    {/* Bulk Import/Export */}
+                    <Card bordered style={{ padding: '24px', flex: '1', minWidth: '450px', borderRadius: '10px' }}>
+                        <div className="flex justify-between items-center">
+                            <div className="flex items-center">
                                 <FileExcelOutlined style={{ fontSize: 40, color: '#52c41a', marginRight: 20 }} />
-                                <h3 className="text-lg font-semibold mb-0" style={{ margin: 0 }}>
-                                    Bulk Import/Export
-                                </h3>
+                                <h3 className="text-lg font-semibold mb-0">Bulk Import/Export</h3>
                             </div>
-                            <Button type="primary" onClick={() => setBulkVisible(true)}>
-                                Connect
-                            </Button>
+                            <Button type="primary" onClick={() => setBulkVisible(true)}>Connect</Button>
+                        </div>
+                    </Card>
+
+                    {/* Shopify Integration */}
+                    <Card bordered style={{ padding: '24px', flex: '1', minWidth: '450px', borderRadius: '10px' }}>
+                        <div className="flex justify-between items-center">
+                            <div className="flex items-center">
+                                <img src={shopifyIcon} alt="Shopify" style={{ width: 40, marginRight: 20 }} />
+                                <h3 className="text-lg font-semibold mb-0">Capture Leads from Shopify</h3>
+                            </div>
+                            <Button type="primary" onClick={() => setStep('form')}>Connect</Button>
+                        </div>
+                    </Card>
+
+                    {/* WordPress Integration */}
+                    <Card bordered style={{ padding: '24px', flex: '1', minWidth: '450px', borderRadius: '10px' }}>
+                        <div className="flex justify-between items-center">
+                            <div className="flex items-center">
+                                <img src={wordpressIcon} alt="WordPress" style={{ width: 40, marginRight: 20 }} />
+                                <h3 className="text-lg font-semibold mb-0">Capture Leads from WordPress</h3>
+                            </div>
+                            <Button type="primary" onClick={() => setStep('form')}>Connect</Button>
                         </div>
                     </Card>
                 </div>
@@ -254,7 +228,7 @@ const Integrations = () => {
                                 {scriptSnippet}
                             </pre>
                             <p className="text-sm mt-2 text-gray-600">
-                                ✅ Paste this script just before your website’s closing <code>&lt;/body&gt;</code> tag.<br />
+                                ✅ Paste this script just before your website's closing <code>&lt;/body&gt;</code> tag.<br />
                                 ✅ Make sure your form has the selector: <code>{formData.formId}</code><br />
                                 ✅ The form should have inputs with <code>name</code> attributes like <code>name</code>, <code>email</code>, <code>phone</code>, etc.
                             </p>

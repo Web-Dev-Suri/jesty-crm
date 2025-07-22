@@ -59,8 +59,6 @@ export default function DashboardModule() {
     ? Math.round((clientResult.totalRevenue / revenueTarget) * 100)
     : 0;
 
-  console.log('Percentage of Revenue Achieved:', revenueAchievedPercent);
-
   <CustomerPreviewCard
     isLoading={clientLoading}
     totalRevenue={clientResult?.totalRevenue}
