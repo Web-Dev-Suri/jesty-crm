@@ -28,6 +28,7 @@ const allowedOrigins = [
   'http://3.109.229.73:3000',
   'http://web.jestycrm.com',
   'https://web.jestycrm.com',
+  'http://localhost:3000',
 ];
 
 const corsOptions = {

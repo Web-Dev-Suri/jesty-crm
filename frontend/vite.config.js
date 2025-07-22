@@ -29,7 +29,8 @@ export default ({ mode }) => {
         },
       },
       allowedHosts: [
-        'web.jestycrm.com'
+        'web.jestycrm.com',
+        'localhost:3000'
       ],
     },
   };
