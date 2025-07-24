@@ -4,6 +4,10 @@ import { selectCurrentItem, selectListItems } from '@/redux/crud/selectors';
 import { crud } from '@/redux/crud/actions';
 import { Button, Modal, Timeline, Input, DatePicker, Dropdown, Menu, Divider, Select, Tag, Tooltip } from 'antd';
 import { LeftOutlined, RightOutlined, EditOutlined, DeleteOutlined, PlusOutlined, CalendarOutlined, WhatsAppOutlined, PhoneOutlined, MailOutlined, MoreOutlined } from '@ant-design/icons';
+import { notification } from 'antd';
+import { useEffect } from 'react';
+import { useMemo } from 'react';
+
 
 export default function LeadsInsights({
   onEdit,
@@ -32,7 +36,7 @@ export default function LeadsInsights({
   const [editRevenue, setEditRevenue] = useState(client?.revenue || 0); // Revenue state
 
   // Handle adding a note (persist to backend)
-const handleAddNote = async () => {
+  const handleAddNote = async () => {
     if (!noteHeading.trim()) return; // Only heading is required
     const newNote = {
       heading: noteHeading,
@@ -74,10 +78,40 @@ const handleAddNote = async () => {
   };
 
   // Find the next scheduled followup in the future
-  const nextFollowup = (client?.followups || [])
-    .map(f => new Date(f.date))
-    .filter(date => date > new Date())
-    .sort((a, b) => a - b)[0];
+  const nextFollowup = useMemo(() => {
+    return (client?.followups || [])
+      .map(f => new Date(f.date))
+      .filter(date => date > new Date())
+      .sort((a, b) => a - b)[0];
+  }, [client]);
+
+
+  useEffect(() => {
+    if (!nextFollowup || !client?.name) return;
+
+    const key = `followup_notify_${client._id}`;
+
+    const now = new Date();
+    const fiveMinutesBefore = new Date(nextFollowup.getTime() - 5 * 60 * 1000);
+    const delay = fiveMinutesBefore.getTime() - now.getTime();
+
+    const timeoutId = setTimeout(() => {
+      notification.warning({
+        message: 'Attention!',
+        description: `Followup scheduled with ${client.name} at ${nextFollowup.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}, ${nextFollowup.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })} is due in 5 minutes!`,
+        icon: <CalendarOutlined style={{ color: '#faad14' }} />,
+        duration: 10,
+      });
+
+      console.log(`[Followup Reminder] 🔔 Notification fired for client ${client.name}`);
+      localStorage.setItem(key, nextFollowup.toISOString());
+    }, delay);
+
+    return () => clearTimeout(timeoutId);
+  }, [nextFollowup?.getTime?.(), client?._id, client?.name]);
+
+
+
 
   // Timeline events: single chronological array
   const timelineItems = [
@@ -149,7 +183,7 @@ const handleAddNote = async () => {
   };
 
   return (
-    <div style={{ marginInline:200, backgroundColor: '#ffffff', borderRadius: 10, padding: 20}}>
+    <div style={{ marginInline: 200, backgroundColor: '#ffffff', borderRadius: 10, padding: 20 }}>
       {/* 1. Header */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24, borderBottom: '1px solid #e8e8e8', paddingBottom: 15 }}>
         <div>
@@ -203,7 +237,7 @@ const handleAddNote = async () => {
             >
               {client?.name}
             </h2>
-            
+
             <div>
               <span
                 style={{ cursor: 'pointer' }}
@@ -215,11 +249,11 @@ const handleAddNote = async () => {
                 role="button"
               >
                 {!showStatusSelect ? (
-                  <Tag 
-                    color="red" 
-                    style={{ 
-                      fontSize: 12, 
-                      padding: '4px 12px', 
+                  <Tag
+                    color="red"
+                    style={{
+                      fontSize: 12,
+                      padding: '4px 12px',
                       borderRadius: 16,
                       border: 'none',
                       background: '#ffebee',
@@ -279,162 +313,177 @@ const handleAddNote = async () => {
               </div>
             </div>
           </div>
-                </div>
-
-          {/* Action Buttons */}
-          <div style={{ display: 'flex', gap: 12 }}>
-            <Button
-              icon={<CalendarOutlined />}
-              onClick={() => setFollowupModal(true)}
-              style={
-                nextFollowup
-                  ? {
-                      background: '#fff1f0',
-                      color: '#cf1322',
-                      border: '1px solid #ffa39e',
-                      fontWeight: 600,
-                    }
-                  : undefined
-              }
-            >
-              {nextFollowup
-                ? `Followup scheduled for ${nextFollowup.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}, ${nextFollowup.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}`
-                : 'Schedule Followup'}
-            </Button>
-            <Button
-              icon={<PlusOutlined />}
-              onClick={() => setNotesModal(true)}
-            >
-              Add Note
-            </Button>
-
-            {/* WhatsApp Button (only if phone exists) */}
-            {client?.phone && (
-              <Button
-                icon={<WhatsAppOutlined />}
-                style={{
-                  background: '#25D366',
-                  color: '#fff',
-                  border: 'none',
-                  display: 'flex',
-                  alignItems: 'center'
-                }}
-                href={`https://wa.me/+91${client.phone.replace(/\D/g, '')}?text=${encodeURIComponent('Hi I recieved a query from you')}`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Whatsapp
-              </Button>
-            )}
-
-            {/* Phone Button (only if phone exists) */}
-            {client?.phone && (
-              <Button
-                icon={<PhoneOutlined />}
-                style={{
-                  background: '#1890ff',
-                  color: '#fff',
-                  border: 'none',
-                  display: 'flex',
-                  alignItems: 'center'
-                }}
-                href={`tel:${client.phone}`}
-              >
-                Phone
-              </Button>
-            )}
-
-            {/* Email Button (only if phone exists) */}
-            {client?.email && (
-              <Button
-                icon={<MailOutlined />}
-                style={{
-                  background: '#ea4335',
-                  color: '#fff',
-                  border: 'none',
-                  display: 'flex',
-                  alignItems: 'center'
-                }}
-                href={`mailto:${client.email}`}
-              >
-                Email
-              </Button>
-            )}
-          </div>
         </div>
+
+        {/* Action Buttons */}
+        <div style={{ display: 'flex', gap: 12 }}>
+          <Button
+            icon={<CalendarOutlined />}
+            onClick={() => setFollowupModal(true)}
+            style={
+              nextFollowup
+                ? {
+                  background: '#fff1f0',
+                  color: '#cf1322',
+                  border: '1px solid #ffa39e',
+                  fontWeight: 600,
+                }
+                : undefined
+            }
+          >
+            {nextFollowup
+              ? `Followup scheduled for ${nextFollowup.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}, ${nextFollowup.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}`
+              : 'Schedule Followup'}
+          </Button>
+          <Button
+            icon={<PlusOutlined />}
+            onClick={() => setNotesModal(true)}
+          >
+            Add Note
+          </Button>
+
+          {/* WhatsApp Button (only if phone exists) */}
+          {client?.phone && (
+            <Button
+              icon={<WhatsAppOutlined />}
+              style={{
+                background: '#25D366',
+                color: '#fff',
+                border: 'none',
+                display: 'flex',
+                alignItems: 'center'
+              }}
+              href={`https://wa.me/+91${client.phone.replace(/\D/g, '')}?text=${encodeURIComponent('Hi I recieved a query from you')}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Whatsapp
+            </Button>
+          )}
+
+          {/* Phone Button (only if phone exists) */}
+          {client?.phone && (
+            <Button
+              icon={<PhoneOutlined />}
+              style={{
+                background: '#1890ff',
+                color: '#fff',
+                border: 'none',
+                display: 'flex',
+                alignItems: 'center'
+              }}
+              href={`tel:${client.phone}`}
+            >
+              Phone
+            </Button>
+          )}
+
+          {/* Email Button (only if phone exists) */}
+          {client?.email && (
+            <Button
+              icon={<MailOutlined />}
+              style={{
+                background: '#ea4335',
+                color: '#fff',
+                border: 'none',
+                display: 'flex',
+                alignItems: 'center'
+              }}
+              href={`mailto:${client.email}`}
+            >
+              Email
+            </Button>
+          )}
+        </div>
+      </div>
 
       {/* 5. Timeline */}
-      <div style={{
-        background: '#f5f6fa',
-        borderRadius: 8,
-        padding: 24,
-        boxShadow: '0 1px 3px rgba(0,0,0,0.03)',
-        minHeight: 300,
-        maxHeight: 400,
-        overflowY: 'auto',
-        position: 'relative',
-        paddingTop: 24,
-        paddingBottom: 24
-      }}>
-        <div
-          style={{
-            position: 'sticky',
-            top: 0,
-            zIndex: 1,
-            background: '#f5f6fa',
-          }}
-        >
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h3 style={{ marginTop: 0 }}>Timeline</h3>
-            <a
-              style={{
-                marginLeft: 8,
-                fontSize: 11,
-                color: '#1890ff',
-                cursor: 'pointer',
-              }}
-              onClick={() => setAllNotesModal(true)}
-              tabIndex={0}
-              role="button"
-            >
-              View Client Notes
-            </a>
-          </div>
-          <Divider style={{ margin: '8px 0 16px 0' }} />
-        </div>
-        <Timeline>
-          {timelineItems.map((item, idx) => (
-            <Timeline.Item
-              key={idx}
-              color={item.type === 'followup' ? '#fa8c16' : undefined}
-            >
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span>
-                  {item.label}
-                  {item.type === 'followup' && item.scheduledFor && (
-                    <div
-                      style={{
-                        fontSize: 11,
-                        color: '#aaa',
-                        marginTop: 2,
-                        marginLeft: 2,
-                        fontWeight: 400,
-                      }}
-                    >
-                      for {new Date(item.scheduledFor).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}, {new Date(item.scheduledFor).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}
-                    </div>
-                  )}
-                </span>
-                <span style={{ fontSize: 12, color: '#888' }}>
-                  {item.createdAt
-                    ? `${new Date(item.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}, ${new Date(item.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}`
-                    : ''}
-                </span>
-              </div>
-            </Timeline.Item>
+      <div style={{ display: 'flex', gap: 24 }}>
+        {/* LEFT: Form Data */}
+        <div style={{ flex: 1, background: '#fff', padding: '24px', borderRadius: 8, boxShadow: '0 1px 3px rgba(0,0,0,0.03)' }}>
+          <h3 style={{ marginTop: 0 }}>Form Data</h3>
+          <Divider />
+          {Object.entries(client?.formResponses || {}).map(([key, value]) => (
+            <div key={key} style={{ marginBottom: 12 }}>
+              <strong>{key.replace(/_/g, ' ')}:</strong> {value}
+            </div>
           ))}
-        </Timeline>
+        </div>
+
+        {/* RIGHT: Timeline */}
+        <div style={{
+          flex: 1,
+          background: '#f5f6fa',
+          borderRadius: 8,
+          padding: '0px 24px 24px 24px',
+          boxShadow: '0 1px 3px rgba(0,0,0,0.03)',
+          minHeight: 300,
+          maxHeight: 400,
+          overflowY: 'auto',
+          position: 'relative',
+        }}>
+          <div
+            style={{
+              position: 'sticky',
+              top: 0,
+              paddingTop: 24,
+              zIndex: 1,
+              background: '#f5f6fa',
+            }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <h3 style={{ marginTop: 0 }}>Timeline</h3>
+              <a
+                style={{
+                  marginLeft: 8,
+                  fontSize: 11,
+                  color: '#1890ff',
+                  cursor: 'pointer',
+                }}
+                onClick={() => setAllNotesModal(true)}
+                tabIndex={0}
+                role="button"
+              >
+                View Client Notes
+              </a>
+            </div>
+            <Divider style={{ margin: '8px 0 16px 0' }} />
+          </div>
+          <Timeline>
+            {timelineItems.map((item, idx) => (
+              <Timeline.Item
+                key={idx}
+                color={item.type === 'followup' ? '#fa8c16' : undefined}
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span>
+                    {item.label}
+                    {item.type === 'followup' && item.scheduledFor && (
+                      <div
+                        style={{
+                          fontSize: 11,
+                          color: '#aaa',
+                          marginTop: 2,
+                          marginLeft: 2,
+                          fontWeight: 400,
+                        }}
+                      >
+                        for {new Date(item.scheduledFor).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}, {new Date(item.scheduledFor).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}
+                      </div>
+                    )}
+                  </span>
+                  <span style={{ fontSize: 12, color: '#888' }}>
+                    {item.createdAt
+                      ? `${new Date(item.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}, ${new Date(item.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}`
+                      : ''}
+                  </span>
+                </div>
+              </Timeline.Item>
+            ))}
+          </Timeline>
+        </div>
       </div>
+
 
       {/* Followup Modal */}
       <Modal
@@ -565,4 +614,4 @@ const handleAddNote = async () => {
       </Modal>
     </div>
   );
-}''
+} ''
