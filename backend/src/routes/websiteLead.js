@@ -8,6 +8,7 @@ const allowedOrigins = [
   'http://web.jestycrm.com',
   'https://web.jestycrm.com',
   'http://localhost:3000',
+  'https://maximise.co.in',
 ];
 
 const corsOptions = {
