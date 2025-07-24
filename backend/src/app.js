@@ -29,6 +29,7 @@ const allowedOrigins = [
   'http://web.jestycrm.com',
   'https://web.jestycrm.com',
   'http://localhost:3000',
+  true,
 ];
 
 const corsOptions = {
@@ -57,8 +58,9 @@ app.use(compression());
 app.use((err, req, res, next) => {
   console.log('Route:', req.method, req.originalUrl);
   console.error('Unhandled error:', err);
-  res.status(500).json({ success: false, message: err.message });
-  next();
+    if (!res.headersSent) {
+    res.status(500).json({ success: false, message: err.message });
+  }
 });
 
 // // default options
