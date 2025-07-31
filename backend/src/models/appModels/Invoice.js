@@ -142,6 +142,11 @@ const invoiceSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  organizationId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Organization',
+    required: true,
+  },
   notes: {
     type: String,
   },

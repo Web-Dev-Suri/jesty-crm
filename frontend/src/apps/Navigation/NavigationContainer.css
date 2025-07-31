@@ -10,7 +10,7 @@
 
 .custom-menu-item .anticon {
   font-size: 20px !important;         /* slightly larger */
-  color: #1778f2 !important;
+  color: #ffffff !important;
 }
 
 .logo-image {
@@ -36,6 +36,7 @@
   background-color: transparent !important;
   transition: background 0.3s, color 0.3s;
   border-bottom: 1px solid #333;
+  margin-right: 20px;
 }
 
 /* Hover effect */
@@ -46,15 +47,15 @@
 
 .custom-menu-item:hover .anticon {
   color: #1778f2 !important;
-  font-size: 24px !important;
 }
 
 /* Active state */
 .ant-menu-item-selected.custom-menu-item {
-  background: linear-gradient(90deg, #1778f2, #1e90ff) !important;
+  background: linear-gradient(90deg, #004688, #206cb4) !important;
   color: #fff !important;
   border-top-right-radius: 12px;
   border-bottom-right-radius: 12px;
+  border-left: 6px solid #fff !important;
 }
 
 .ant-menu-item-selected.custom-menu-item .anticon {

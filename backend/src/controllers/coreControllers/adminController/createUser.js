@@ -10,8 +10,14 @@ module.exports = async (req, res) => {
     if (!name || !email || !password)
       return res.status(400).json({ success: false, message: 'Missing fields' });
 
-    // Create user with role 'user'
-    const user = await Admin.create({ name, email, role: 'user', enabled: true });
+    // Get organizationId from the authenticated admin
+    const organizationId = req.user && req.user.organizationId;
+    if (!organizationId) {
+      return res.status(400).json({ success: false, message: 'Organization ID missing from user context' });
+    }
+
+    // Create user with role 'user' and organizationId
+    const user = await Admin.create({ name, email, role: 'user', enabled: true, organizationId });
 
     // Create password entry
     const salt = uniqueId();

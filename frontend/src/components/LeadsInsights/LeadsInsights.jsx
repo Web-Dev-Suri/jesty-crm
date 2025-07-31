@@ -182,13 +182,17 @@ export default function LeadsInsights({
     }
   };
 
+  console.log('clientList:', clientList);
+  console.log('client:', client);
+  console.log('currentIndex:', currentIndex);
+  
   return (
     <div style={{ marginInline: 200, backgroundColor: '#ffffff', borderRadius: 10, padding: 20 }}>
       {/* 1. Header */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24, borderBottom: '1px solid #e8e8e8', paddingBottom: 15 }}>
         <div>
-          <Button icon={<LeftOutlined />} onClick={handlePrev} style={{ marginRight: 8 }} disabled={currentIndex <= 0} />
-          <Button icon={<RightOutlined />} onClick={handleNext} disabled={currentIndex === -1 || currentIndex >= clientList.length - 1} />
+          <Button icon={<LeftOutlined />} onClick={handlePrev} style={{ marginRight: 8, borderRadius: 20 }} disabled={currentIndex <= 0} />
+          <Button icon={<RightOutlined />} onClick={handleNext} style={{ borderRadius: 20 }} disabled={currentIndex === -1 || currentIndex >= clientList.length - 1} />
         </div>
         <Dropdown overlay={menu} trigger={['click']}>
           <div style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', border: '1px solid #d9d9d9', borderRadius: 4, padding: '6px 16px', fontWeight: 600, fontSize: 18, userSelect: 'none' }}>
@@ -614,4 +618,4 @@ export default function LeadsInsights({
       </Modal>
     </div>
   );
-} ''
+}

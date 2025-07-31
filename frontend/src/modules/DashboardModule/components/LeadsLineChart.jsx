@@ -40,7 +40,7 @@ export default function LeadsLineChart({ data, loading }) {
 
   return (
     <ResponsiveContainer width="100%" height={340}>
-      <LineChart data={displayData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
+      <LineChart data={displayData} margin={{ top: 40, right: 30, left: 20, bottom: 20 }}>
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="formattedDate" />
         <YAxis allowDecimals={false} label={{ value: 'Leads', angle: -90, position: 'insideLeft' }} />

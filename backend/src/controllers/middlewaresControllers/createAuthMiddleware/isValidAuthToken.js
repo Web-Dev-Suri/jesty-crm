@@ -61,6 +61,14 @@ const isValidAuthToken = async (req, res, next, { userModel, jwtSecret = 'JWT_SE
         jwtExpired: true,
       });
     else {
+      // Set req.user for downstream access
+      req.user = {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        organizationId: user.organizationId,
+      };
       const reqUserName = userModel.toLowerCase();
       req[reqUserName] = user;
 

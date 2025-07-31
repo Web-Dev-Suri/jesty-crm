@@ -68,6 +68,11 @@ const schema = new mongoose.Schema({
 
   createdBy: { type: mongoose.Schema.ObjectId, ref: 'Admin', autopopulate: true },
   assigned: { type: mongoose.Schema.ObjectId, ref: 'Admin', autopopulate: true },
+  organizationId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Organization',
+    required: true,
+  },
   formResponses: {
   type: Map,
   of: String,

@@ -1,18 +1,17 @@
 const remove = async (Model, req, res) => {
-  // Find the document by id and delete it
-  let updates = {
-    removed: true,
-  };
-  // Find the document by id and delete it
+  // Enforce organizationId filter
+  const orgFilter = req.user && req.user.organizationId ? { organizationId: req.user.organizationId } : {};
   const result = await Model.findOneAndUpdate(
     {
       _id: req.params.id,
+      removed: false,
+      ...orgFilter,
     },
-    { $set: updates },
-    {
-      new: true, // return the new result instead of the old one
-    }
-  ).exec();
+    { removed: true },
+    { new: true }
+  )
+    .populate()
+    .exec();
   // If no results found, return document not found
   if (!result) {
     return res.status(404).json({

@@ -1,9 +1,13 @@
 const read = async (Model, req, res) => {
-  // Find document by id
+  // Enforce organizationId filter
+  const orgFilter = req.user && req.user.organizationId ? { organizationId: req.user.organizationId } : {};
   const result = await Model.findOne({
     _id: req.params.id,
     removed: false,
-  }).exec();
+    ...orgFilter,
+  })
+    .populate()
+    .exec();
   // If no results found, return document not found
   if (!result) {
     return res.status(404).json({

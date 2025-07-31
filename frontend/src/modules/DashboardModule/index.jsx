@@ -15,11 +15,15 @@ import CustomerPreviewCard from './components/CustomerPreviewCard';
 import LeadPieCard from './components/LeadPieCard';
 import { selectMoneyFormat } from '@/redux/settings/selectors';
 import { useSelector } from 'react-redux';
+import { selectCurrentAdmin } from '@/redux/auth/selectors';
 
 export default function DashboardModule() {
   const translate = useLanguage();
   const { moneyFormatter } = useMoney();
   const money_format_settings = useSelector(selectMoneyFormat);
+  const currentAdmin = useSelector(selectCurrentAdmin);
+
+  // Remove greeting logic and display from here
 
   const getStatsData = async ({ entity, currency }) => {
     return await request.summary({
@@ -59,12 +63,7 @@ export default function DashboardModule() {
     ? Math.round((clientResult.totalRevenue / revenueTarget) * 100)
     : 0;
 
-  <CustomerPreviewCard
-    isLoading={clientLoading}
-    totalRevenue={clientResult?.totalRevenue}
-    revenueAchievedPercent={revenueAchievedPercent}
-    newCustomer={clientResult?.new}
-  />
+  // Remove greeting logic and display from here
 
 
   useEffect(() => {
@@ -290,7 +289,7 @@ export default function DashboardModule() {
         <Row gutter={[32, 32]}>
           <Col className="gutter-row w-full" sm={{ span: 24 }} md={{ span: 24 }} lg={{ span: 18 }}>
             <div className="whiteBox shadow" style={{ height: 'auto' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 20px 20px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '20px 20px 20px' }}>
                 <h3 style={{ color: '#22075e', marginBottom: 0 }}>
                   {translate('Leads Over Past 30 Days')}
                 </h3>

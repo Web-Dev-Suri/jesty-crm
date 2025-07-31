@@ -32,6 +32,11 @@ const adminSchema = new Schema({
     default: 'admin',
     enum: ['admin', 'user'],
   },
+  organizationId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Organization',
+    required: true,
+  },
   facebookIntegration: {
     connected: { type: Boolean, default: false },
     fbUserId: { type: String },

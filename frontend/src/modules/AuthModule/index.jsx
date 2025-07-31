@@ -10,13 +10,13 @@ import logo from '@/style/images/logo.png';
 const { Content } = Layout;
 const { Title } = Typography;
 
-const AuthModule = ({ authContent, AUTH_TITLE, isForRegistre = false }) => {
+const AuthModule = ({ authContent, AUTH_TITLE, isForRegister = false }) => {
   const translate = useLanguage();
   return (
     <AuthLayout sideContent={<SideContent />}>
       <Content
         style={{
-          padding: isForRegistre ? '40px 30px 30px' : '100px 30px 30px',
+          padding: isForRegister ? '40px 30px 30px' : '100px 30px 30px',
           maxWidth: '440px',
           margin: '0 auto',
         }}

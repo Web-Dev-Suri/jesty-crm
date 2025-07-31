@@ -112,6 +112,11 @@ const quoteSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  organizationId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Organization',
+    required: true,
+  },
   pdf: {
     type: String,
   },

@@ -57,6 +57,11 @@ const paymentSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  organizationId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Organization',
+    required: true,
+  },
 });
 paymentSchema.plugin(require('mongoose-autopopulate'));
 module.exports = mongoose.model('Payment', paymentSchema);

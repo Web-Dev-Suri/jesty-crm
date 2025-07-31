@@ -19,6 +19,10 @@ const paginatedList = async (Model, req, res) => {
     removed: false,
     ...fields,
   };
+  // Enforce organizationId filter
+  if (req.user && req.user.organizationId) {
+    query.organizationId = req.user.organizationId;
+  }
 
   // Add this block for date range filtering
   if (req.query.created_gte || req.query.created_lte) {

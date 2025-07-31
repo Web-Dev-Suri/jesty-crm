@@ -1,17 +1,17 @@
 const update = async (Model, req, res) => {
-  // Find document by id and updates with the required fields
-  req.body.removed = false;
+  // Enforce organizationId filter
+  const orgFilter = req.user && req.user.organizationId ? { organizationId: req.user.organizationId } : {};
   const result = await Model.findOneAndUpdate(
     {
       _id: req.params.id,
       removed: false,
+      ...orgFilter,
     },
     req.body,
-    {
-      new: true, // return the new result instead of the old one
-      runValidators: true,
-    }
-  ).exec();
+    { new: true }
+  )
+    .populate()
+    .exec();
   if (!result) {
     return res.status(404).json({
       success: false,

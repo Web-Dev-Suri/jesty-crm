@@ -76,7 +76,7 @@ const selectedKey = pathKeyMap[location.pathname] || '';
         mode="inline"
         theme="dark"
         selectedKeys={[selectedKey]}
-          className="custom-menu"
+        className="custom-menu"
         items={items.map(item => ({
           key: item.key,
           icon: item.icon,
@@ -85,7 +85,23 @@ const selectedKey = pathKeyMap[location.pathname] || '';
           className: 'custom-menu-item',
         }))}
       />
+      <div className="help-support-card" style={{padding: '10px', background: '#fff', borderRadius: '10px', margin: '5px'}}>
+        <div style={{fontWeight: 'bold', fontSize: '16px', marginBottom: '12px'}}>Help and Support</div>
+        <div style={{display: 'flex', flexDirection: 'column', gap: '10px'}}>
+          <button style={{display: 'flex', alignItems: 'center', gap: '8px', padding: '8px', border: 'none', background: '#f5f5f5', borderRadius: '4px', cursor: 'pointer'}} onClick={() => {}}>
+            <span role="img" aria-label="video">🎥</span> Video Tutorials
+          </button>
+          <button style={{display: 'flex', alignItems: 'center', gap: '8px', padding: '8px', border: 'none', background: '#f5f5f5', borderRadius: '4px', cursor: 'pointer'}} onClick={() => {}}>
+            <span role="img" aria-label="docs">📄</span> Help Documents
+          </button>
+          <button style={{display: 'flex', alignItems: 'center', gap: '8px', padding: '8px', border: 'none', background: '#f5f5f5', borderRadius: '4px', cursor: 'pointer'}} onClick={() => {}}>
+            <span role="img" aria-label="faq">❓</span> FAQs
+          </button>
+          <button style={{display: 'flex', alignItems: 'center', gap: '8px', padding: '8px', border: 'none', background: '#f5f5f5', borderRadius: '4px', cursor: 'pointer'}} onClick={() => {}}>
+            <span role="img" aria-label="guide">📘</span> Business Guides
+          </button>
+        </div>
+      </div>
     </Sider>
-    
   );
 }

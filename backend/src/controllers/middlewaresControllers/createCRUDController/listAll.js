@@ -5,9 +5,11 @@ const listAll = async (Model, req, res) => {
   //  Query the database for a list of all results
 
   let result;
+  const orgFilter = req.user && req.user.organizationId ? { organizationId: req.user.organizationId } : {};
   if (enabled === undefined) {
     result = await Model.find({
       removed: false,
+      ...orgFilter,
     })
       .sort({ created: sort })
       .populate()
@@ -16,6 +18,7 @@ const listAll = async (Model, req, res) => {
     result = await Model.find({
       removed: false,
       enabled: enabled,
+      ...orgFilter,
     })
       .sort({ created: sort })
       .populate()
