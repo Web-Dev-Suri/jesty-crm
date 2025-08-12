@@ -5,6 +5,7 @@ import { GlobalOutlined, FileExcelOutlined, DownloadOutlined, UploadOutlined } f
 import facebookIcon from '@/style/images/facebook-icon.png';
 import shopifyIcon from '@/style/images/shopify.png';
 import wordpressIcon from '@/style/images/wordpress.png';
+import FacebookDashboard from './FacebookDashboard';
 
 // Dummy connection status for demonstration
 const connectionStatus = {
@@ -59,6 +60,7 @@ const Integrations = () => {
     // Facebook settings state
     const [fbSettings, setFbSettings] = useState(null);
     const [fbLoading, setFbLoading] = useState(false);
+    const [fbConnected, setFbConnected] = useState(false);
 
     // Bulk Import/Export state
     const [bulkVisible, setBulkVisible] = useState(false);
@@ -79,8 +81,14 @@ const Integrations = () => {
         icon: <img src={facebookIcon} alt="Facebook" style={{ width: 40, marginBottom: 20 }} />,
         title: 'Capture Leads from Facebook',
         description: 'Connect your Facebook page to sync leads from Facebook Lead Ads.',
-        status: connectionStatus.facebook,
-        onConnect: () => setStep('facebook'),
+        status: fbConnected,
+        onConnect: () => {
+          if (fbConnected) {
+            setStep('facebook-settings');
+          } else {
+            setStep('facebook');
+          }
+        },
       },
       {
         key: 'bulk',
@@ -122,7 +130,7 @@ const Integrations = () => {
 
     // Fetch Facebook settings after connect/configure
     useEffect(() => {
-        if (step === 'facebook-settings') {
+        if (step === 'select' || step === 'facebook-settings') {
             setFbLoading(true);
             const authData = JSON.parse(localStorage.getItem('auth'));
             fetch(`${import.meta.env.VITE_BACKEND_SERVER}api/facebook/settings`, {
@@ -131,10 +139,12 @@ const Integrations = () => {
                 .then(res => res.json())
                 .then(data => {
                     setFbSettings(data);
+                    setFbConnected(!!data.connected);
                     setFbLoading(false);
                 })
                 .catch(() => {
                     setFbSettings(null);
+                    setFbConnected(false);
                     setFbLoading(false);
                 });
         }
@@ -342,32 +352,7 @@ const Integrations = () => {
 
             {/* Facebook Settings Panel */}
             {step === 'facebook-settings' && (
-                <Card style={{ maxWidth: 600, margin: '0 auto' }} bordered>
-                    {fbLoading ? (
-                        <p>Loading Facebook integration...</p>
-                    ) : fbSettings && fbSettings.connected ? (
-                        <div>
-                            <h3 className="text-lg font-semibold mb-2">Facebook Page Connected</h3>
-                            <p><b>Page ID:</b> {fbSettings.fbPageId}</p>
-                            <p><b>User ID:</b> {fbSettings.fbUserId}</p>
-                            <p><b>Status:</b> <span style={{ color: '#52c41a' }}>Connected</span></p>
-                            {/* You can fetch and show page name/profile pic using FB Graph API if needed */}
-                            <Button type="default" danger style={{ marginTop: 16 }}>
-                                Disconnect
-                            </Button>
-                            <Button style={{ marginLeft: 8 }} onClick={() => setStep('select')}>
-                                Back
-                            </Button>
-                        </div>
-                    ) : (
-                        <div>
-                            <p>No Facebook page connected.</p>
-                            <Button type="primary" onClick={() => setStep('facebook')}>
-                                Connect Facebook
-                            </Button>
-                        </div>
-                    )}
-                </Card>
+                <FacebookDashboard onBack={() => setStep('select')} />
             )}
         </div>
     );

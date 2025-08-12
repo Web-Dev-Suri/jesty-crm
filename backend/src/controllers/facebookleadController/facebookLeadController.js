@@ -168,7 +168,63 @@ exports.facebookSettings = async (req, res) => {
     const token = req.headers.authorization?.split(' ')[1];
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const admin = await Admin.findById(decoded.id);
-    res.json(admin.facebookIntegration || {});
+
+    if (!admin.facebookIntegration?.connected) {
+      return res.json({ connected: false });
+    }
+
+    const userToken = admin.facebookIntegration.pageAccessToken;
+
+    // Get Facebook user info
+    const userRes = await axios.get(`https://graph.facebook.com/v19.0/me`, {
+      params: { access_token: userToken, fields: 'id,name,picture' }
+    });
+
+    // Get all pages
+    const pagesRes = await axios.get(`https://graph.facebook.com/v19.0/me/accounts`, {
+      params: { access_token: userToken, fields: 'id,name,picture,access_token' }
+    });
+
+    // For each page, get lead forms
+    const pages = await Promise.all(
+      (pagesRes.data.data || []).map(async page => {
+        // Get lead forms for this page
+        let forms = [];
+        try {
+          const formsRes = await axios.get(`https://graph.facebook.com/v19.0/${page.id}/leadgen_forms`, {
+            params: { access_token: page.access_token, fields: 'id,name' }
+          });
+          forms = formsRes.data.data || [];
+        } catch (err) {
+          forms = [];
+        }
+        return {
+          id: page.id,
+          name: page.name,
+          picture: page.picture?.data?.url || '',
+          forms
+        };
+      })
+    );
+
+    res.json({
+      connected: true,
+      fbUserId: userRes.data.id,
+      fbUserName: userRes.data.name,
+      fbUserPic: userRes.data.picture?.data?.url || '',
+      pages
+    });
+  } catch (err) {
+    res.status(401).json({ error: 'Unauthorized or Facebook API error', details: err.message });
+  }
+};
+
+exports.facebookDisconnect = async (req, res) => {
+  try {
+    const token = req.headers.authorization?.split(' ')[1];
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    await Admin.findByIdAndUpdate(decoded.id, { $unset: { facebookIntegration: "" } });
+    res.json({ success: true });
   } catch (err) {
     res.status(401).json({ error: 'Unauthorized' });
   }
