@@ -103,7 +103,6 @@ export default function HeaderContent() {
         top: 0,
         zIndex: 100,
         height: '64px',
-        borderBottom: '1px solid #d9d9d9',
       }}
     >
       {/* Settings Icon (link to /settings) */}

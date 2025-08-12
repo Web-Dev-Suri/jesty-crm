@@ -8,7 +8,7 @@ const cookieParser = require('cookie-parser');
 const coreAuthRouter = require('./routes/coreRoutes/coreAuth');
 const coreApiRouter = require('./routes/coreRoutes/coreApi');
 const coreDownloadRouter = require('./routes/coreRoutes/coreDownloadRouter');
-const corePublicRouter = require('./routes/coreRoutes/corePublicRouter');
+const corePublicRouter = require('./routes/coreRoutes/corePublicRouter');  
 const adminAuth = require('./controllers/coreControllers/adminAuth');
 
 const errorHandlers = require('./handlers/errorHandlers');
@@ -20,6 +20,7 @@ const websiteLeadRoutes = require('./routes/websiteLead');
 const facebookLeadRoutes= require('./routes/facebookLeads');
 const formResponseRoutes = require('./routes/appRoutes/formResponse');
 const clientBulkRoutes = require('./routes/clientBulk');
+const aiAgentRoutes = require('./routes/aiAgent');
 
 // create our Express app
 const app = express();
@@ -77,6 +78,7 @@ app.use('/api', adminAuth.isValidAuthToken, erpApiRouter);
 app.use('/download', coreDownloadRouter);
 app.use('/public', corePublicRouter);
 app.use('/api/form-response', formResponseRoutes);
+app.use('/api/ai-agent', aiAgentRoutes);
 
 // If that above routes didnt work, we 404 them and forward to error handler
 app.use(errorHandlers.notFound);

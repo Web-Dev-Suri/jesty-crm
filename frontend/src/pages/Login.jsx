@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 import useLanguage from '@/locale/useLanguage';
 
@@ -52,6 +52,11 @@ const LoginPage = () => {
               {translate('Log in')}
             </Button>
           </Form.Item>
+          <div style={{ textAlign: 'center'}}>
+            <Link to="/signup" style={{ fontStyle: 'italic', color: 'inherit' }}>
+              Not A Registered User?
+            </Link>
+          </div>
         </Form>
       </Loading>
     );

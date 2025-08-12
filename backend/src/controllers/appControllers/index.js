@@ -1,3 +1,4 @@
+require('@/models/appModels/Aiagent');
 const createCRUDController = require('@/controllers/middlewaresControllers/createCRUDController');
 const { routesList } = require('@/models/utils');
 
