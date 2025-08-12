@@ -162,3 +162,14 @@ async function processLead(leadValue) {
     console.error('Error processing lead:', err.response?.data || err.message);
   }
 }
+
+exports.facebookSettings = async (req, res) => {
+  try {
+    const token = req.headers.authorization?.split(' ')[1];
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const admin = await Admin.findById(decoded.id);
+    res.json(admin.facebookIntegration || {});
+  } catch (err) {
+    res.status(401).json({ error: 'Unauthorized' });
+  }
+};

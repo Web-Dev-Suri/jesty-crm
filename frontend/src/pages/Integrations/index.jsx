@@ -1,5 +1,5 @@
 // src/pages/Integrations.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, Card, Upload, message, Modal, Input } from 'antd';
 import { GlobalOutlined, FileExcelOutlined, DownloadOutlined, UploadOutlined } from '@ant-design/icons';
 import facebookIcon from '@/style/images/facebook-icon.png';
@@ -55,6 +55,10 @@ const Integrations = () => {
         formId: '',
     });
     const [submitted, setSubmitted] = useState(false);
+
+    // Facebook settings state
+    const [fbSettings, setFbSettings] = useState(null);
+    const [fbLoading, setFbLoading] = useState(false);
 
     // Bulk Import/Export state
     const [bulkVisible, setBulkVisible] = useState(false);
@@ -116,36 +120,44 @@ const Integrations = () => {
         setSubmitted(true);
     };
 
+    // Fetch Facebook settings after connect/configure
+    useEffect(() => {
+        if (step === 'facebook-settings') {
+            setFbLoading(true);
+            const authData = JSON.parse(localStorage.getItem('auth'));
+            fetch(`${import.meta.env.VITE_BACKEND_SERVER}api/facebook/settings`, {
+                headers: { Authorization: `Bearer ${authData?.current?.token}` }
+            })
+                .then(res => res.json())
+                .then(data => {
+                    setFbSettings(data);
+                    setFbLoading(false);
+                })
+                .catch(() => {
+                    setFbSettings(null);
+                    setFbLoading(false);
+                });
+        }
+    }, [step]);
+
     const handleFacebookConnect = () => {
         const authData = JSON.parse(localStorage.getItem('auth'));
-
         if (!authData?.current?.token) {
             console.error('No JWT token found.');
             return;
         }
-
         const token = authData.current.token;
-
-        // Open popup
         const popup = window.open(
             `${import.meta.env.VITE_BACKEND_SERVER}api/facebook/auth?token=${token}`,
             'fbLogin',
             'width=600,height=700'
         );
-
-        // Listen for message from popup
         const messageListener = (event) => {
             if (event.data === 'facebook-connected') {
-                console.log('✅ Facebook connected successfully!');
-
-                // Optionally, refresh your auth data or UI here
-                window.location.reload(); // Optional: refresh the page to fetch updated user info
-
-                // Clean up listener
+                setStep('facebook-settings'); // Show settings panel after connect
                 window.removeEventListener('message', messageListener);
             }
         };
-
         window.addEventListener('message', messageListener);
     };
 
@@ -325,6 +337,36 @@ const Integrations = () => {
                     <Button style={{ marginLeft: 8 }} onClick={() => setStep('select')}>
                         Back
                     </Button>
+                </Card>
+            )}
+
+            {/* Facebook Settings Panel */}
+            {step === 'facebook-settings' && (
+                <Card style={{ maxWidth: 600, margin: '0 auto' }} bordered>
+                    {fbLoading ? (
+                        <p>Loading Facebook integration...</p>
+                    ) : fbSettings && fbSettings.connected ? (
+                        <div>
+                            <h3 className="text-lg font-semibold mb-2">Facebook Page Connected</h3>
+                            <p><b>Page ID:</b> {fbSettings.fbPageId}</p>
+                            <p><b>User ID:</b> {fbSettings.fbUserId}</p>
+                            <p><b>Status:</b> <span style={{ color: '#52c41a' }}>Connected</span></p>
+                            {/* You can fetch and show page name/profile pic using FB Graph API if needed */}
+                            <Button type="default" danger style={{ marginTop: 16 }}>
+                                Disconnect
+                            </Button>
+                            <Button style={{ marginLeft: 8 }} onClick={() => setStep('select')}>
+                                Back
+                            </Button>
+                        </div>
+                    ) : (
+                        <div>
+                            <p>No Facebook page connected.</p>
+                            <Button type="primary" onClick={() => setStep('facebook')}>
+                                Connect Facebook
+                            </Button>
+                        </div>
+                    )}
                 </Card>
             )}
         </div>

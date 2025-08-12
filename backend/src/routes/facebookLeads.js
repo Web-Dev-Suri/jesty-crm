@@ -6,5 +6,6 @@ router.get('/facebook/auth', facebookLeadController.facebookAuth);
 router.get('/facebook/callback', facebookLeadController.facebookCallback);
 router.post('/facebook/webhook', express.json({ type: '*/*' }), facebookLeadController.facebookWebhook);
 router.get('/facebook/webhook', facebookLeadController.facebookWebhook); // For verification
+router.get('/facebook/settings', facebookLeadController.facebookSettings);
 
 module.exports = router;
