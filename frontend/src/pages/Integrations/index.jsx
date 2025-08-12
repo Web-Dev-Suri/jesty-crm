@@ -66,56 +66,6 @@ const Integrations = () => {
     const [bulkVisible, setBulkVisible] = useState(false);
     const [search, setSearch] = useState('');
 
-    // Move integrationList here so it can use setStep and setBulkVisible
-    const integrationList = [
-      {
-        key: 'website',
-        icon: <GlobalOutlined style={{ fontSize: 40, color: '#1890ff', marginBottom: 20 }} />,
-        title: 'Fetch Leads from Website',
-        description: 'Connect your website forms to automatically capture leads into your CRM.',
-        status: connectionStatus.website,
-        onConnect: () => setStep('form'),
-      },
-      {
-        key: 'facebook',
-        icon: <img src={facebookIcon} alt="Facebook" style={{ width: 40, marginBottom: 20 }} />,
-        title: 'Capture Leads from Facebook',
-        description: 'Connect your Facebook page to sync leads from Facebook Lead Ads.',
-        status: fbConnected,
-        onConnect: () => {
-          if (fbConnected) {
-            setStep('facebook-settings');
-          } else {
-            setStep('facebook');
-          }
-        },
-      },
-      {
-        key: 'bulk',
-        icon: <FileExcelOutlined style={{ fontSize: 40, color: '#52c41a', marginBottom: 20 }} />,
-        title: 'Bulk Import/Export',
-        description: 'Import or export your client data in bulk to a csv which you can import in excel or sheets.',
-        status: connectionStatus.bulk,
-        onConnect: () => setBulkVisible(true),
-      },
-      {
-        key: 'shopify',
-        icon: <img src={shopifyIcon} alt="Shopify" style={{ width: 40, marginBottom: 20 }} />,
-        title: 'Capture Leads from Shopify',
-        description: 'Connect your Shopify store through our custom webhook to sync customer leads automatically.',
-        status: connectionStatus.shopify,
-        onConnect: () => setStep('form'),
-      },
-      {
-        key: 'wordpress',
-        icon: <img src={wordpressIcon} alt="WordPress" style={{ width: 40, marginBottom: 20 }} />,
-        title: 'Capture Leads from WordPress',
-        description: 'Connect your WordPress site to capture and sync leads directly.',
-        status: connectionStatus.wordpress,
-        onConnect: () => setStep('form'),
-      },
-    ];
-
     const handleChange = (e) => {
         setFormData(prev => ({
             ...prev,
@@ -151,24 +101,24 @@ const Integrations = () => {
     }, [step]);
 
     const handleFacebookConnect = () => {
-        const authData = JSON.parse(localStorage.getItem('auth'));
-        if (!authData?.current?.token) {
-            console.error('No JWT token found.');
-            return;
+      const authData = JSON.parse(localStorage.getItem('auth'));
+      if (!authData?.current?.token) {
+        // Show error or redirect to login
+        return;
+      }
+      const token = authData.current.token;
+      const popup = window.open(
+        `${import.meta.env.VITE_BACKEND_SERVER}api/facebook/auth?token=${token}`,
+        'fbLogin',
+        'width=600,height=700'
+      );
+      const messageListener = (event) => {
+        if (event.data === 'facebook-connected') {
+          setStep('facebook-settings'); // Show dashboard after connect
+          window.removeEventListener('message', messageListener);
         }
-        const token = authData.current.token;
-        const popup = window.open(
-            `${import.meta.env.VITE_BACKEND_SERVER}api/facebook/auth?token=${token}`,
-            'fbLogin',
-            'width=600,height=700'
-        );
-        const messageListener = (event) => {
-            if (event.data === 'facebook-connected') {
-                setStep('facebook-settings'); // Show settings panel after connect
-                window.removeEventListener('message', messageListener);
-            }
-        };
-        window.addEventListener('message', messageListener);
+      };
+      window.addEventListener('message', messageListener);
     };
 
     const scriptSnippet = `
@@ -207,6 +157,55 @@ const Integrations = () => {
             message.error(`${info.file.name} file upload failed.`);
         }
     };
+
+    const integrationList = [
+      {
+        key: 'website',
+        icon: <GlobalOutlined style={{ fontSize: 40, color: '#1890ff', marginBottom: 20 }} />,
+        title: 'Fetch Leads from Website',
+        description: 'Connect your website forms to automatically capture leads into your CRM.',
+        status: connectionStatus.website,
+        onConnect: () => setStep('form'),
+      },
+      {
+        key: 'facebook',
+        icon: <img src={facebookIcon} alt="Facebook" style={{ width: 40, marginBottom: 20 }} />,
+        title: 'Capture Leads from Facebook',
+        description: 'Connect your Facebook page to sync leads from Facebook Lead Ads.',
+        status: fbConnected,
+        onConnect: () => {
+          if (fbConnected) {
+            setStep('facebook-settings');
+          } else {
+            handleFacebookConnect();
+          }
+        },
+      },
+      {
+        key: 'bulk',
+        icon: <FileExcelOutlined style={{ fontSize: 40, color: '#52c41a', marginBottom: 20 }} />,
+        title: 'Bulk Import/Export',
+        description: 'Import or export leads in bulk using Excel files.',
+        status: connectionStatus.bulk,
+        onConnect: () => setBulkVisible(true),
+      },
+      {
+        key: 'shopify',
+        icon: <img src={shopifyIcon} alt="Shopify" style={{ width: 40, marginBottom: 20 }} />,
+        title: 'Shopify Integration',
+        description: 'Sync leads and customers from your Shopify store.',
+        status: connectionStatus.shopify,
+        onConnect: () => message.info('Shopify integration coming soon!'),
+      },
+      {
+        key: 'wordpress',
+        icon: <img src={wordpressIcon} alt="WordPress" style={{ width: 40, marginBottom: 20 }} />,
+        title: 'WordPress Integration',
+        description: 'Connect your WordPress site to capture leads.',
+        status: connectionStatus.wordpress,
+        onConnect: () => message.info('WordPress integration coming soon!'),
+      },
+    ];
 
     const filteredIntegrations = integrationList.filter(
       item =>

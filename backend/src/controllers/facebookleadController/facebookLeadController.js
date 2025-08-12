@@ -85,7 +85,7 @@ exports.facebookCallback = async (req, res) => {
 
     console.log('Page subscribed successfully and saved to DB.');
 
-    res.redirect(`${process.env.FRONTEND_URL}/settings?fb_connected=1`);
+    res.redirect(`${process.env.FRONTEND_URL}/integrations?fb_connected=1`);
   } catch (err) {
     console.error('Facebook callback error:', err.response?.data || err.message);
     res.status(500).send('Facebook callback error');
