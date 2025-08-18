@@ -40,8 +40,14 @@ const adminSchema = new Schema({
   facebookIntegration: {
     connected: { type: Boolean, default: false },
     fbUserId: { type: String },
-    accessToken: { type: String },
-    connectedPageId: { type: String },
+    fbPages: [
+      {
+        id: { type: String },
+        accessToken: { type: String },
+        name: { type: String }
+      }
+    ],
+    pageAccessToken: { type: String }, // For backward compatibility
   },
    permissions: [{  
     type: String,  
