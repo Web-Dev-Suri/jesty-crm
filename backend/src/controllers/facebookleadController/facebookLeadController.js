@@ -136,7 +136,6 @@ async function processLead(leadValue) {
     const leadId = leadValue.leadgen_id;
     const pageId = leadValue.page_id;
 
-    // Fetch the correct Admin by matching the stored fbPageId
     const admin = await Admin.findOne({
       'facebookIntegration.connected': true,
       'facebookIntegration.fbPages': { $elemMatch: { id: pageId } }
@@ -146,22 +145,28 @@ async function processLead(leadValue) {
       console.error('Admin with connected Facebook page not found.');
       return;
     }
+
+    // Debug: Log organizationId
+    console.log('Admin organizationId:', admin.organizationId);
+
     const pageObj = admin.facebookIntegration.fbPages.find(p => p.id === pageId);
     const pageAccessToken = pageObj.accessToken;
 
-    // Fetch lead details from Facebook API
     const leadDetailsRes = await axios.get(`https://graph.facebook.com/v19.0/${leadId}`, {
-      params: {
-        access_token: pageAccessToken
-      }
+      params: { access_token: pageAccessToken }
     });
 
     const leadData = leadDetailsRes.data.field_data;
 
-    // Extract required fields
     const name = leadData.find(f => f.name === 'full_name')?.values?.[0] || 'FB Lead';
     const email = leadData.find(f => f.name === 'email')?.values?.[0] || '';
     const phone = leadData.find(f => f.name === 'phone_number')?.values?.[0] || '';
+
+    // Ensure organizationId is present
+    if (!admin.organizationId) {
+      console.error('Admin is missing organizationId. Cannot save lead.');
+      return;
+    }
 
     await Client.create({
       name,
@@ -170,7 +175,8 @@ async function processLead(leadValue) {
       source: 'Meta Campaign A',
       status: 'New Lead',
       createdBy: admin._id,
-      organizationId: admin.organizationId // <-- Add this line
+      organizationId: admin.organizationId,
+      formResponses: leadData
     });
 
     console.log(`Lead ${leadId} processed and saved.`);
@@ -190,6 +196,7 @@ exports.facebookSettings = async (req, res) => {
     }
 
     const userToken = admin.facebookIntegration.pageAccessToken;
+    console.log('facebookSettings admin:', admin._id, admin.facebookIntegration);
 
     // Get Facebook user info
     const userRes = await axios.get(`https://graph.facebook.com/v19.0/me`, {
