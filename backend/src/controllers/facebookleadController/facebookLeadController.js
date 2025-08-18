@@ -164,7 +164,8 @@ async function processLead(leadValue) {
       phone,
       source: 'Meta Campaign A',
       status: 'New Lead',
-      createdBy: admin._id
+      createdBy: admin._id,
+      organizationId: admin.organizationId // <-- Add this line
     });
 
     console.log(`Lead ${leadId} processed and saved.`);
