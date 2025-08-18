@@ -1,0 +1,1846 @@
+<div class="row product-single">
+  <div class="col-12 col-md-6">
+    <div class="photos">
+      <div class="photos__item photos__item--main">
+        <div class="my-gallery" itemscope itemtype="http://schema.org/ImageGallery">
+          {%- assign featured_image = current_variant.featured_image | default: product.featured_image -%}
+          {%- for image in product.images -%}
+            <figure
+              itemprop="associatedMedia"
+              itemscope
+              itemtype="http://schema.org/ImageObject"
+              class="product-single__photo product__photo-container product__photo-container-{{ section.id }} js{% unless image == featured_image %} hide{% endunless %}"
+              id="ProductPhoto{{ section.id }}"
+              style="max-width: {% include 'image-width' with image: image, width: 480 %}px;"
+              data-image-id="{{ image.id }}"
+            >
+              <a
+                href="{{ image | img_url: '1400x' }}"
+                itemprop="contentUrl"
+                data-size="1400x1400"
+                class="product__photo-wrapper product__photo-wrapper-{{ section.id }} zoom_image zoom zoom_enabled"
+                style="padding-top:{{ 1 | divided_by: image.aspect_ratio | times: 100}}%;"
+              >
+                {% assign img_url = image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' %}
+                <img
+                  itemprop="thumbnail"
+                  class="lazyload {% unless image == featured_image %} lazypreload{% endunless %}"
+                  src="{{ image | img_url: '1200x' }}"
+                  data-src="{{ img_url }}"
+                  data-widths="[180, 240, 360, 480, 720, 960, 1080, 1296, 1512, 1728, 2048]"
+                  data-aspectratio="{{ image.aspect_ratio }}"
+                  data-sizes="auto"
+                  alt="{{ image.alt | escape }}"
+                >
+              </a>
+            </figure>
+          {%- endfor -%}
+        </div>
+        <noscript>
+          <a href="{{ featured_image | img_url: '1200x' }}">
+            <img
+              src="{{ featured_image | img_url: product_image_size }}"
+              alt="{{ featured_image.alt | escape }}"
+              id="ProductPhotoImg-{{ section.id }}"
+            >
+          </a>
+        </noscript>
+      </div>
+      <div class="photos__item photos__item--thumbs">
+        {% for media in product.media %}
+          {% render 'productVideo', media: media %}
+        {% endfor %}
+        <div class="product-single__thumbnails product-single__thumbnails-{{ section.id }} product-single__thumbnails--static">
+          {%- for image in product.images -%}
+            <div
+              class="product-single__thumbnail-item product-single__thumbnail-item-{{ section.id }}{% if image == featured_image %} is-active{% endif %}"
+              data-image-id="{{ image.id }}"
+            >
+              <a
+                href="{{ image | img_url: '1400x' }}"
+                data-zoom="{{ image.src | img_url: '1400x' }}"
+                class="product-single__thumbnail product-single__thumbnail-{{ section.id }} js-modal-open-product-modal  product__photo-wrapper-{{ section.id }}"
+              >
+                {% assign img_url = image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' %}
+                <img
+                  class="lazyload {% unless image == featured_image %} lazypreload{% endunless %}"
+                  src="{{ image | img_url: '1200x' }}"
+                  data-src="{{ img_url }}"
+                  data-widths="[180, 240, 360, 480, 720, 960, 1080, 1296, 1512, 1728, 2048]"
+                  data-aspectratio="{{ image.aspect_ratio }}"
+                  data-sizes="auto"
+                  alt="{{ image.alt | escape }}"
+                >
+              </a>
+            </div>
+          {%- endfor -%}
+        </div>
+      </div>
+      <script>
+        {%- capture arrow_left -%}{%- include 'icon-arrow-left' -%}{%- endcapture -%}
+        {%- capture arrow_right -%}{%- include 'icon-arrow-right' -%}{%- endcapture -%}
+        {%- capture arrow_up -%}{%- include 'icon-arrow-up' -%}{%- endcapture -%}
+        {%- capture arrow_down -%}{%- include 'icon-arrow-down' -%}{%- endcapture -%}
+        var sliderArrows = {
+          left: {{ arrow_left | json }},
+          right: {{ arrow_right | json }},
+          up: {{ arrow_up | json }},
+          down: {{ arrow_down | json }}
+        }
+      </script>
+      <div style="background-color: #fff5f5 !important; padding: 20px; margin-bottom: 2rem; margin-top: 2rem; border-radius: 5px;">
+        <div class="points-about-design">
+          <!-- heading + faq link -->
+          <div
+            class="border-below"
+            style="display:flex;justify-content:space-between;align-items:center;line-height:1.2;"
+          >
+            <h2 style="font-size:20px;margin:0;color:var(--g-color-heading);">Imp points you need to know</h2>
+
+            <!-- faq link (right‑aligned) -->
+            <a
+              href="/pages/faqs#disclaimers_about_replication_of_design"
+              target="_blank"
+              style="font-size:20px;color:#f27f6f;text-decoration:none;"
+            >
+              About&nbsp;Design
+            </a>
+          </div>
+        </div>
+        
+        <ul style="max-width: 500px; margin: 1rem 0; font-size: 15px !important; color: #363636;line-height:1.2;">
+          <li>
+            Because of handcrafted nature of cakes — the size, shades of colours and design of the cake may
+            vary from the picture above.<br>
+            <br>
+          </li>
+          <li>
+            The name/message shown on the picture above is indicative only. We will use the message specified by you (if any) in your order details and write it at a suitable place on
+            the cake/board.<br>
+            <br>
+          </li>
+          <li>
+            The cake topper seen in the picture above can be changed as per availability.<br>
+            <br>
+          </li>
+          <li>We recommend consumption of the cake on the same day.</li>
+        </ul>
+
+        <!-- ─────────  PICKUP / DELIVERY INFO  ───────── -->
+        <div class="pickup-delivery-info" style="margin-top:2rem;">
+          <!-- heading + policy link -->
+          <div
+            class="border-below"
+            style="display:flex;justify-content:space-between;align-items:center;line-height:1.2;"
+          >
+            <h2 style="font-size:20px;margin:0;color:var(--g-color-heading);">Pickup / Delivery Info</h2>
+
+            <!-- Delivery‑policy link (right‑aligned) -->
+            <a
+              href="/pages/delivery-policy"
+              target="_blank"
+              style="font-size:20px;color:#f27f6f;text-decoration:none;"
+            >
+              Delivery&nbsp;Policy
+            </a>
+          </div>
+
+          <ul style="max-width: 500px; margin: 1rem 0; font-size: 15px !important; color: #363636;line-height:1.2;">
+            <li>
+              You can pick up your order from our studio: <a
+                href="https://maps.app.goo.gl/hj4421VKkR8QMRrt7"
+                target="_blank"
+                style="color:#f27f6f;text-decoration:none;"
+                >Shop No. 13, First Floor, Central Plaza Mall, Golf Course Road, Sector 53, Gurgaon, Haryana 122003</a>
+              <br>
+              <br>
+            </li>
+            <li>
+              We provide delivery all over Delhi‑NCR (Gurgaon, Delhi, Faridabad, Noida, Greater Noida, Ghaziabad and neighbouring
+              regions).<br><br>
+            </li>
+            <li>Need delivery outside Delhi-NCR? Please
+            <a
+              href="https://wa.me/919818115946"
+              target="_blank"
+              style="color:#f27f6f;text-decoration:none;"
+            >WhatsApp us
+            </a>, we’ll see what we can do!
+            </li>
+          </ul>
+        </div>
+        <!-- ──────────────────────────────────────────── -->
+      </div>
+
+      {% if section.settings.positiontab == 'left' %}
+        <div class="pl-md-5 pl-0">
+          {% if section.settings.enable_tabvertical %}
+            {%- include 'product-information-vertical' -%}
+          {% else %}
+            {%- include 'product-information' -%}
+          {% endif %}
+        </div>
+      {% endif %}
+    </div>
+  </div>
+  <div class="col-12 col-md-6 order-1" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
+    <div class="product-single__info-wrapper">
+      <meta itemprop="priceCurrency" content="{{ shop.currency }}">
+      <link
+        itemprop="availability"
+        href="http://schema.org/{% if product.available %}InStock{% else %}OutOfStock{% endif %}"
+      >
+      <div class="product-single__meta small--text-center">
+        {%- include 'breadcrumb' -%}
+        <div class="border-below" style="display: flex; justify-content: space-between; align-items: center;">
+          <h1 itemprop="name" class="product-single__title align-items-center" style="margin: 0;">
+            <!-- dietary symbol -->
+            {% if product.metafields.custom.food_symbol %}
+              <span class="product-symbol" style="display: inline-block;">
+                <img
+                  src="{{ product.metafields.custom.food_symbol | image_url: width: 24 }}"
+                  alt="Food Type Symbol"
+                  width="24"
+                  height="24"
+                  loading="lazy"
+                >
+              </span>
+            {% endif %}
+            <span>{{ product.title }}</span>
+            <sup>
+              <span
+                id="ProductSaleTag-{{ section.id }}"
+                class="{% unless product.compare_at_price > product.price %}hide{% endunless %}"
+              >
+                <span class="product-tag gradient-theme">
+                  {{ 'products.product.on_sale' | t }}
+                </span>
+              </span>
+            </sup>
+          </h1>
+
+          {% if settings.enable_wishlsit %}
+            <span
+              data-tooltip="true"
+              class="js-btn-wishlist"
+              title="{{ 'products.product.wishlist_text' | t }}"
+              data-handle="{{product.handle}}"
+              style="margin-left: 1rem; color: var(--g-cta-button)"
+            >
+              {% include 'icon-heart' %}
+            </span>
+          {% endif %}
+        </div>
+
+        <style>
+          .product-symbol img {
+            vertical-align: middle;
+            display: inline-block;
+          }
+        </style>
+        <div class="review">
+          <span class="shopify-product-reviews-badge" data-id="{{ product.id }}"></span>
+        </div>
+        <ul class="pb-3 product-single__meta-list border-below list--inline{% if shop.taxes_included or shop.shipping_policy.body != blank %} product-single__price-container{% endif %}">
+          <li>
+            {%- unless product.compare_at_price_max > product.price -%}
+              <span class="visually-hidden">{{ 'products.product.regular_price' | t }}</span>
+            {%- endunless -%}
+            <span class="product-single__price" itemprop="price">
+              Price
+              <span
+                id="ProductPrice-{{ section.id }}"
+                class="money"
+                data-price="{{ current_variant.price }}"
+              >
+                {{ current_variant.price | money }}
+              </span>
+              <span class="gst-text">(Taxes calculated at checkout)</span>
+            </span>
+          </li>
+          {% if product.compare_at_price_max > product.price %}
+            <li>
+              <span class="visually-hidden">{{ 'products.product.regular_price' | t }}</span>
+              <s id="ComparePrice-{{ section.id }}" class="product-single__price product-single__price--compare">
+                Price {{ current_variant.compare_at_price | money }}
+                <span class="gst-text">(Taxes calculated at checkout)</span>
+              </s>
+            </li>
+          {% endif %}
+
+          {%- if section.settings.stock_enable -%}
+            <li>{%- include 'productStock' -%}</li>
+          {%- endif -%}
+        </ul>
+      </div>
+
+      {% if product.metafields.info.affiliate_link != blank %}
+        {% comment %}AFFILIATE PRODUCT{% endcomment %}
+        <a
+          href="{{product.metafields.info.affiliate_link}}"
+          class="my-3 btn btn--full product-form__cart-submit {% if section.settings.enable_payment_button %}product-form__cart-submit--outline{% endif %}"
+        >
+          {{ product.metafields.info.affiliate_button }}
+        </a>
+
+      {% else %}
+        {% comment %}NORMAL PRODUCT{% endcomment %}
+        {% capture "form_class" %}product-form{% if section.settings.enable_payment_button %} product-form--payment-button{% endif %}{%- endcapture %}
+        {% capture "form_id" %}AddToCartForm-{{ section.id }}{%- endcapture %}
+        {% form 'product', product, class: form_class, id: form_id %}
+          {% unless product.has_only_default_variant %}
+            {% for option in product.options_with_values %}
+              <div class="selector-wrapper js product-form__item">
+                {% include 'productOption' %}
+              </div>
+            {% endfor %}
+          {% endunless %}
+          <select name="id" id="ProductSelect-{{ section.id }}" class="product-form__variants no-js">
+            {% for variant in product.variants %}
+              <option
+                {% if variant == current_variant %}
+                  selected="selected"
+                {% endif %}
+                data-sku="{{ variant.sku }}"
+                value="{{ variant.id }}"
+                {% unless variant.available %}
+                  disabled="disabled"
+                {% endunless %}
+              >
+                {% if variant.available %}
+                  {{ variant.title }} - {{ variant.price | money_with_currency }}
+                {% else %}
+                  {{ variant.title }} - {{ 'products.product.sold_out' | t }}
+                {% endif %}
+              </option>
+            {% endfor %}
+          </select>
+
+          <!-- Message on cake text input -->
+          <div class="product__custom-message">
+            <div
+              class="border-below"
+              style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;"
+            >
+              <span
+                ><label style="font-size: 20px; color: var(--g-color-heading); line-height:normal; font-weight:500;"
+                  >Message on Cake<span class="gst-text">(Optional)</span></label
+                ></span
+              >
+              <span id="char-count">0/30</span>
+            </div>
+            <textarea
+              id="custom-message"
+              name="properties[Message on Cake]"
+              maxlength="30"
+              placeholder="Write your wish..."
+            ></textarea>
+            <style>
+              .product__custom-message input, textarea{
+                background-color: transparent !important;
+                color: var(--g-color-body);
+                width: 100% !important;
+                height: 50px !important;
+                overflow: hidden;
+                border: 0.75px solid #a43820 !important;
+                border-radius: 5px !important;
+              }
+              #char-count{
+                font-size: 20px !important;
+              }
+            </style>
+
+            <script>
+              document.addEventListener('DOMContentLoaded', function () {
+                var textarea = document.getElementById('custom-message');
+                var counter = document.getElementById('char-count');
+                var form = document.querySelector('form');
+
+                if (textarea && counter) {
+                  // Character counter
+                  textarea.addEventListener('input', function () {
+                    var len = textarea.value.length;
+                    counter.textContent = len + '/30';
+                  });
+                }
+
+                // Set default message only if empty
+                function setDefaultMessage() {
+                  if (textarea && (!textarea.value || !textarea.value.trim())) {
+                    textarea.value = 'No Message';
+                  }
+                }
+
+                // Hook into form submission
+                if (form) {
+                  form.addEventListener('submit', function () {
+                    setDefaultMessage();
+                  });
+                }
+              });
+            </script>
+          </div>
+
+          <!-- Date & Time Selection -->
+          <div class="border-below" style="display: flex; justify-content: space-between; align-items: center;">
+            <label style="font-size: 20px; color: var(--g-color-heading); font-weight:500;">Select Date and Time</label>
+            <span class="serving-info-container">
+              <span style="font-size: 20px; color:#f27f6f !important;">Availability</span>
+              <div class="serving-tooltip">
+                <div class="info-container">We need 1 day’s lead time for a cake.</div>
+                <div class="info-container">So, the availability of time slots starts from 24-hour onwards.</div>
+              </div>
+            </span>
+          </div>
+          <div class="product__custom-datetime p-4">
+            <div class="row gx-4 gy-3">
+              <div class="col-md-6 pb-sm-0 pb-3">
+                <label for="delivery-date" class="form-label"><strong>Select Date:</strong></label>
+                <div class="clickable-date-wrapper" style="cursor: pointer;">
+                  <input
+                    type="date"
+                    class="form-control"
+                    name="properties[Delivery Date]"
+                    id="delivery-date"
+                    required
+                  >
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <label for="time-slot" class="form-label"><strong>Time Slot:</strong></label>
+                <div class="select-wrapper">
+                  <select
+                    class="form-select custom-input"
+                    name="properties[Delivery Time Slot]"
+                    id="time-slot"
+                    required
+                  >
+                    <option value="">- Select a Time Slot -</option>
+                    <option value="10 AM - 12 PM">10 AM - 12 PM</option>
+                    <option value="1 PM - 3 PM">1 PM - 3 PM</option>
+                    <option value="4 PM - 6 PM">4 PM - 6 PM</option>
+                    <option value="7 PM - 9 PM">7 PM - 9 PM</option>
+                  </select>
+                  <span class="dropdown-icon">›</span>
+                  <!-- You can change icon here -->
+                </div>
+              </div>
+            </div>
+          </div>
+          <p style="font-size: 15px; color: #363636; margin-bottom: 20px !important; line-height: 1.4;">
+            *Your desired time slot not available? Please 
+            <a href="https://api.whatsapp.com/send?phone=919818115946&text=Hi%2C%20I%20need%20to%20order%20this%20cake%20for%20today!" target="_blank"
+              style="color:#f27f6f;text-decoration:none;"
+              >WhatsApp us at 9818115946</a> to check for earlier delivery of this cake.
+          </p>
+
+          <style>
+              .select-wrapper {
+              position: relative;
+              display: inline-block;
+              width: 100%;
+            }
+
+            .select-wrapper select {
+              width: 100%;
+              appearance: none; /* hide native arrow */
+              -webkit-appearance: none;
+              -moz-appearance: none;
+              padding-right: 2.5rem; /* space for the icon */
+            }
+
+            .dropdown-icon {
+              position: absolute;
+              right: 1rem;
+              top: 50%;
+              transform: translateY(-50%);
+              pointer-events: none;
+              font-size: 1rem;
+              color: #666;
+            }
+
+                                .gst-text{
+                                  padding: 5px;
+                                  margin-bottom: 2px !important;
+                                  border-radius: 5px;
+                                  font-size: 15px;
+                                  color: var(--g-color-heading);
+                                }
+                                .product-single__meta-list{
+                                  margin-top:20px !important;
+                                }
+                                  .custom-input {
+                                  padding: 10px 12px;
+                                  border: 1px solid #daac7961;
+                                  border-radius: 20px;
+                                  font-size: 15px;
+                                  background-color: transparent;
+                                  color: #56253a;
+                                  transition: border-color 0.2s ease;
+                                  height: 45px; /* Force equal height */
+                                }
+
+                                .custom-input:focus {
+                                  border-color: #f27f6f;
+                                  box-shadow: none;
+                                  outline: none;
+                                }
+
+                                  .product__custom-datetime label {
+                                    font-size: clamp(15px, 1vw, 19px);
+                                    color: #333;
+                                  }
+
+                                  .product__custom-datetime{
+                                    background-color: transparent;
+                                    border: 1px solid #a43820  !important;
+                                    border-radius: 5px !important;
+                                    margin-bottom: 10px;
+                                  }
+
+                                  .product__custom-delivery{
+                                    background-color: transparent;
+                                    border: 1px solid #a43820 !important;
+                                    border-radius: 5px !important;
+                                    display: flex;
+                                    padding: 20px;
+                                    margin-bottom: 10px;
+                                  }
+
+                                  .product__custom-delivery label {
+                                    font-size: clamp(15px, 1vw, 19px);
+                                    color: #333;
+                                    font-weight: 600;
+                                    display: flex;
+                                    align-items: center;
+                                  }
+
+                                  #delivery-date,
+                                  #time-slot {
+                                    padding: 10px 12px;
+                                    border: 1px solid #a4382059;
+                                    border-radius: 5px;
+                                    font-size: 15px;
+                                    width: 100%;
+                                    background-color: #fff !important;
+                                    color: #56253a;
+                                    transition: border-color 0.2s ease;
+                                    height: 45px;
+                                  }
+
+                                  #delivery-date:focus,
+                                  #time-slot:focus {
+                                    border-color: #f27f6f;
+                                    outline: none;
+                                  }
+
+
+                                  .serving-info-container {
+                                    position: relative;
+                                    cursor: pointer;
+                                    display: flex;
+                                    align-items: center;
+                                    gap: 4px;
+                                  }
+
+                                  .info-icon {
+                                    display: inline-block;
+                                    background-color: #f27f6f;
+                                    color: white;
+                                    font-weight: bold;
+                                    border-radius: 50%;
+                                    width: 18px;
+                                    height: 18px;
+                                    text-align: center;
+                                    line-height: 18px;
+                                    font-size: 12px;
+                                  }
+
+                                  .serving-tooltip {
+                                    position: absolute;
+                                    top: 25px;
+                                    right: 0;
+                                    z-index: 10;
+                                    background: #fff;
+                                    color: #333;
+                                    border: 1px solid #ddd;
+                                    padding: 10px;
+                                    font-size: 12px;
+                                    line-height: 1.4;
+                                    width: 200px;
+                                    border-radius: 5px;
+                                      box-shadow: 0 0 0 rgb(0 0 0 / 10%), 0 0 0 0 rgb(255 255 255), .3em .3em 1em rgb(0 0 0 / 30%);
+                                    display: none;
+                                  }
+
+                                  .serving-info-container:hover .serving-tooltip {
+                                    display: block;
+                                  }
+
+                                    .delivery-disabled {
+                                      pointer-events: none;
+                      }
+          </style>
+          <div class="border-below" style="display: flex; justify-content: space-between; align-items: center;">
+            <label for="city-selector" style="font-size: 20px; color: var(--g-color-heading); font-weight: 500;">
+              Select Pickup/Delivery
+            </label>
+            {%- comment -%}
+              <span
+                class="serving-info-container"
+                style="position: relative; color:#f27f6f;"
+              >
+                Can't find your city?
+                <div class="serving-tooltip" style="width: 220px;">
+                  We'll service in your location soon.<br>
+                  You can also do pickups from our
+                  <a href="/pages/contact">Studio</a>!
+                </div>
+              </span>
+            {%- endcomment -%}
+          </div>
+
+          <div class="product__custom-delivery" id="delivery-method">
+            <div class="row">
+              <!-- Pickup Column -->
+              <div class="col-md-6 order-sm-1 order-2">
+                <label>
+                  <input class="mr-2" type="radio" name="delivery_option" value="pickup" required onclick="toggleDeliveryOption()">
+                  I will pick up
+                </label>
+                <div id="pickup-details" style="margin-top: 10px; line-height: normal;">
+                  <a href="https://maps.app.goo.gl/ArRHqvmgqoGbEkmh6" style="font-size: 15px; color:#363636;">
+                    Shop No. 13, First Floor, Central Plaza Mall, Golf Course Road, DLF Phase 5, Sector 53, Gurgaon, Haryana 122003
+                  </a>
+                  <p style="font-size: 15px; font-style: italic; margin-top: 8px;">
+                    Please read our
+                    <a href="/pages/delivery-policy#pickup-instructions" target="_blank" style="color:#f27f6f;">pickup policy.</a>
+                  </p>
+                </div>
+              </div>
+
+              <!-- Delivery Column -->
+              <div class="col-md-6 pb-sm-0 pb-3 order-sm-2 order-1">
+                <label>
+                  <input class="mr-2" type="radio" name="delivery_option" value="delivery" required onclick="toggleDeliveryOption()">
+                  I want delivery
+                </label>
+                <div id="delivery-details" style="margin-top: 10px;">
+                  <div class="city-dropdown" id="cityDropdown">
+                    <!-- Hidden Input for Shopify & Required Validation -->
+                    <select
+                      name="properties[City]"
+                      id="selectedCityInput"
+                      required
+                      style="position:absolute;opacity:0;height:0;width:0;pointer-events:none;"
+                    >
+                      <option value="">- Select -</option>
+                      <option value="Gurgaon">Gurgaon</option>
+                      <option value="Delhi">Delhi</option>
+                      <option value="Faridabad">Faridabad</option>                      
+                      <option value="Noida">Noida</option>
+                      <option value="Greater Noida">Greater Noida</option>                       
+                      <option value="Ghaziabad">Ghaziabad</option>
+                    </select>
+
+                    <!-- Visible Toggle -->
+                    <div class="city-dropdown-toggle" id="dropdownToggle">
+                      <span
+                        ><span class="selected-icon">📍</span
+                        ><span id="dropdownSelectedText">Select your city</span></span
+                      >
+                      <span class="dropdown-icon">›</span>
+                    </div>
+
+                    <!-- Options -->
+                    <div class="city-options" id="dropdownOptions">                      
+                      <div class="city-option" data-value="Gurgaon"><span>🌆</span> Gurgaon</div>                      
+                      <div class="city-option" data-value="Delhi"><span>🏙️</span> Delhi</div>                      
+                      <div class="city-option" data-value="Faridabad"><span>🌇</span> Faridabad</div>
+                      <div class="city-option" data-value="Noida"><span>🏢</span> Noida</div>
+                      <div class="city-option" data-value="Greater Noida"><span>🌄</span> Greater Noida</div>
+                      <div class="city-option" data-value="Ghaziabad"><span>🌃</span> Ghaziabad</div>
+                    </div>
+                  </div>
+                  <p style="font-size: 15px; font-style: italic; margin-top: 8px;">
+                    Please read our <a href="/pages/delivery-policy#delivery-system" target="_blank" style="color:#f27f6f;">delivery policy.</a>
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <input type="hidden" name="properties[Delivery Date]" id="deliveryDateLineItem" value="">
+            <input type="hidden" name="properties[Delivery Slot]" id="deliverySlotLineItem" value="">
+            <input type="hidden" name="properties[Pickup/Delivery Option]" id="deliveryOptionLineItem" value="">
+            <input type="hidden" name="properties[City]" id="cityLineItem" value="">
+          </div>
+
+          {% comment %} <script>
+            function toggleDeliveryOption() {
+              const selected = document.querySelector('input[name="delivery_option"]:checked')?.value;
+
+              const pickupDiv = document.getElementById('pickup-details');
+              const deliveryDiv = document.getElementById('delivery-details');
+              const citySelect = document.getElementById('selectedCityInput');
+              const selectedText = document.getElementById('dropdownSelectedText');
+              const cityLineItem = document.getElementById('cityLineItem');
+              const deliveryOptionLineItem = document.getElementById('deliveryOptionLineItem');
+
+              // Add or remove greying-out styles
+              pickupDiv.classList.toggle('delivery-disabled', selected !== 'pickup');
+              deliveryDiv.classList.toggle('delivery-disabled', selected !== 'delivery');
+
+              // Update delivery option line item
+              if (selected === 'pickup') {
+                deliveryOptionLineItem.value = 'I will pick up my cake';
+                cityLineItem.value = ''; // Clear city for pickup
+              } else if (selected === 'delivery') {
+                deliveryOptionLineItem.value = 'I want delivery';
+                // Update city line item if city is already selected
+                if (citySelect.value) {
+                  cityLineItem.value = citySelect.value;
+                }
+              }
+
+              // Handle city selection requirement
+              if (selected === 'delivery') {
+                citySelect.setAttribute('required', '');
+                // Update delivery date immediately when switching to delivery
+                updateDeliveryDateLineItem();
+              } else if (selected === 'pickup') {
+                citySelect.removeAttribute('required');
+                citySelect.value = ''; // Clear city selection for pickup
+                selectedText.textContent = 'Select your city'; // Reset dropdown display
+                cityLineItem.value = ''; // Clear city line item for pickup
+                // Update delivery date immediately when switching to pickup
+                updateDeliveryDateLineItem();
+              }
+            }
+
+            // Function to format date as dd-mm-yyyy
+            function formatDateToDDMMYYYY(dateString) {
+              if (!dateString) return '';
+
+              const date = new Date(dateString);
+              if (isNaN(date.getTime())) return dateString; // Return original if invalid date
+
+              const day = String(date.getDate()).padStart(2, '0');
+              const month = String(date.getMonth() + 1).padStart(2, '0');
+              const year = date.getFullYear();
+
+              return `${day}-${month}-${year}`;
+            }
+
+            function setDefaultCustomMessage() {
+              // Handle custom message field - set default if empty
+              const customMessageTextarea = document.getElementById('custom-message');
+              if (customMessageTextarea && (!customMessageTextarea.value || !customMessageTextarea.value.trim())) {
+                customMessageTextarea.value = 'No Message';
+              }
+            }
+            function updateDeliveryDateLineItem() {
+              const deliveryDateInput = document.querySelector(
+                'input[name*="delivery_date"], input[name*="Delivery Date"]'
+              );
+              const deliveryDateLineItem = document.getElementById('deliveryDateLineItem');
+
+              if (deliveryDateInput && deliveryDateLineItem) {
+                const formattedDate = formatDateToDDMMYYYY(deliveryDateInput.value);
+                deliveryDateLineItem.value = formattedDate;
+              }
+            }
+
+            // Handle form submission
+            document.addEventListener('DOMContentLoaded', function () {
+              // Find the form element
+              const form = document.querySelector('form');
+              if (form) {
+                form.addEventListener('submit', function (e) {
+                  const selected = document.querySelector('input[name="delivery_option"]:checked');
+                  const city = document.getElementById('selectedCityInput');
+
+                  if (!selected) {
+                    alert('Please choose either pickup or delivery.');
+                    e.preventDefault();
+                    return false;
+                  }
+
+                  // Only check city if delivery is selected
+                  if (selected.value === 'delivery') {
+                    if (!city.value || city.value === '') {
+                      alert('Please select a city for delivery.');
+                      city.focus();
+                      e.preventDefault();
+                      return false;
+                    }
+                  }
+
+                  // For pickup, ensure no city is submitted (optional, for data cleanliness)
+                  if (selected.value === 'pickup') {
+                    city.value = '';
+                  }
+
+                  // Update delivery date format before submission
+                  updateDeliveryDateLineItem();
+
+                  // Don't prevent default - let the form submit naturally
+                  return true;
+                });
+              }
+            });
+
+            // Initialize everything when DOM is loaded
+            document.addEventListener('DOMContentLoaded', function () {
+              // Initialize delivery option visual state
+              toggleDeliveryOption();
+
+              // Setup city dropdown functionality
+              const toggle = document.getElementById('dropdownToggle');
+              const options = document.getElementById('dropdownOptions');
+              const selectedText = document.getElementById('dropdownSelectedText');
+              const hiddenSelect = document.getElementById('selectedCityInput');
+
+              if (toggle && options && selectedText && hiddenSelect) {
+                // Toggle dropdown
+                toggle.addEventListener('click', function (e) {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  options.classList.toggle('show');
+                });
+
+                // Handle option selection
+                document.querySelectorAll('.city-option').forEach(function (option) {
+                  option.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    const value = option.getAttribute('data-value');
+                    selectedText.textContent = value;
+                    hiddenSelect.value = value;
+
+                    // Update city line item immediately
+                    const cityLineItem = document.getElementById('cityLineItem');
+                    if (cityLineItem) {
+                      cityLineItem.value = value;
+                    }
+
+                    options.classList.remove('show');
+                  });
+                });
+
+                // Close dropdown if clicking outside
+                document.addEventListener('click', function (e) {
+                  if (!toggle.contains(e.target) && !options.contains(e.target)) {
+                    options.classList.remove('show');
+                  }
+                });
+              }
+
+              // Watch for delivery date changes
+              const deliveryDateInput = document.querySelector(
+                'input[name*="delivery_date"], input[name*="Delivery Date"]'
+              );
+              if (deliveryDateInput) {
+                deliveryDateInput.addEventListener('change', updateDeliveryDateLineItem);
+                deliveryDateInput.addEventListener('blur', updateDeliveryDateLineItem);
+              }
+
+              // Also watch for any date input changes using MutationObserver
+              const observer = new MutationObserver(function (mutations) {
+                mutations.forEach(function (mutation) {
+                  if (mutation.type === 'childList') {
+                    const dateInputs = document.querySelectorAll(
+                      'input[type="date"], input[name*="delivery_date"], input[name*="Delivery Date"]'
+                    );
+                    dateInputs.forEach(function (input) {
+                      if (!input.hasAttribute('data-listener-added')) {
+                        input.setAttribute('data-listener-added', 'true');
+                        input.addEventListener('change', updateDeliveryDateLineItem);
+                        input.addEventListener('blur', updateDeliveryDateLineItem);
+                      }
+                    });
+                  }
+                });
+              });
+
+              observer.observe(document.body, { childList: true, subtree: true });
+            });
+          </script> {% endcomment %}
+
+          {%- if section.settings.enable_hurrify -%}
+            <span class="js-hurrify {% if current_variant.inventory_management %}{% if current_variant.inventory_quantity >= 10 or current_variant.inventory_quantity <= 0 %}hide{% endif %}{% else %}hide{% endif %}">
+              <p class="text-danger font-weight-bold">{{ 'products.product.hurrify' | t }}</p>
+              <div class="progress">
+                <div class="progress-bar" style="width:{{current_variant.inventory_quantity | times: 10}}%"></div>
+              </div>
+            </span>
+          {%- endif -%}
+          <div class="product-form__quantity-submit pt-2">
+            {% comment %} <div class="product-form__item product-form__item--quantity">
+              <label class="hide" for="Quantity">{{ 'products.product.quantity' | t }}</label>
+              <input
+                type="number"
+                id="Quantity"
+                name="quantity"
+                value="1"
+                min="1"
+                class="product-form__input product-form__quantity"
+              >
+            </div> {% endcomment %}
+            <div class="product-form__item product-form__item--submit">
+              <button
+                type="submit"
+                name="add"
+                id="AddToCart-{{ section.id }}"
+                class="btn btn--full btn-theme product-form__cart-submit {% if section.settings.enable_payment_button %}product-form__cart-submit--outline{% endif %}{% unless current_variant.available %} btn--sold-out{% endunless %}"
+                {% unless current_variant.available %}
+                  disabled="disabled"
+                {% endunless %}
+              >
+                <span id="AddToCartText-{{ section.id }}">
+                  {% unless current_variant.available %}
+                    {{ 'products.product.sold_out' | t }}
+                  {% else %}
+                    {{ 'products.product.add_to_cart' | t }}
+                  {% endunless %}
+                </span>
+              </button>
+            </div>
+            {% if section.settings.enable_payment_button %}
+              <div class="product-form__buynow">
+                {{ form | payment_button }}
+                {% if current_variant.available == false %}
+                  <style>
+                    .shopify-payment-button{display:none}
+                  </style>
+                {% endif %}
+              </div>
+            {% endif %}
+          </div>
+
+          {% if product.metafields.info.shortdesc != blank %}
+            <div class="pt-3 rte product-single__description text-justify" itemprop="description">
+              {{ product.metafields.info.shortdesc }}
+            </div>
+          {% endif %}
+          <div class="row pt-3">
+            <div class="col-md-3 col-6">
+              <div class="usp-box">
+                <img src="https://dv35ws-bt.myshopify.com/cdn/shop/files/Whisk_Best_Cake_Studio_in_India.png">
+                <h3>India's Best & Most Trusted</h3>
+              </div>
+            </div>
+            <div class="col-md-3 col-6">
+              <div class="usp-box">
+                <img src="https://dv35ws-bt.myshopify.com/cdn/shop/files/Whisk_Best_Customized_Cakes.png">
+                <h3>Top Designer Cakes</h3>
+              </div>
+            </div>
+            <div class="col-md-3 col-6">
+              <div class="usp-box">
+                <img src="https://dv35ws-bt.myshopify.com/cdn/shop/files/trust.png">
+                <h3>A team you can trust</h3>
+              </div>
+            </div>
+            <div class="col-md-3 col-6">
+              <div class="usp-box">
+                <img src="https://dv35ws-bt.myshopify.com/cdn/shop/files/Whisk_Trusted_Cake_Delivery_8d309f9f-efac-418e-bf30-e84d7dd037ec.png">
+                <h3>Reliable Delivery</h3>
+              </div>
+            </div>
+          </div>
+          {%- if section.settings.waitlist -%}
+            <div class="js-contact-soldout {% if current_variant.available %}hide{% endif %}">
+              <span
+                class="btn btn-waitlist btn-theme"
+                data-toggle="modal"
+                data-target="#jsSoldout"
+                title="{{ 'products.product.soldout_messenger' | t }}"
+              >
+                {{- 'products.product.waitlist' | t -}}
+              </span>
+            </div>
+          {%- endif -%}
+        {% endform %}
+        {% include 'notifySoldoutProduct' %}
+      {% endif %}
+
+      <div class="row text-left pt-2">
+        <div class="product-single__information col text-uppercase">
+          {% if section.settings.product_vendor_enable %}
+            <p class="product-single__vendor">
+              <small class="text-body">{{ 'products.product.vendor' | t }}: </small><small>{{ product.vendor }}</small>
+            </p>
+          {% endif %}
+          {% if section.settings.product_type_enable %}
+            <p class="product-single__type">
+              <small class="text-body">{{ 'products.product.type' | t }}: </small><small>{{ product.type }}</small>
+            </p>
+          {% endif %}
+          {% if section.settings.variant_sku_enable %}
+            <p class="product-single__sku ">
+              <small class="text-body">{{ 'products.product.sku' | t }}: </small
+              ><small class="js-variant-sku">{{ current_variant.sku | default: 'null' }}</small>
+            </p>
+          {% endif %}
+          {% if section.settings.variant_available_enable %}
+            <p class="product-single__availability ">
+              <small class="text-body">{{ 'products.product.available' | t }}: </small
+              ><small>
+                {%- if current_variant.available -%}
+                  {{- 'products.product.available' | t -}}
+                {%- else -%}
+                  {{- 'products.product.sold_out' | t -}}
+                {%- endif -%}
+              </small>
+            </p>
+          {% endif %}
+        </div>
+        {% if settings.safe_checkout_detail != blank %}
+          <div class="safe-checkout-detail col">
+            <img class="lazyload img-fluid w-100" data-src="{{ settings.safe_checkout_detail | img_url: '600x' }}">
+          </div>
+        {% endif %}
+      </div>
+      {% include 'fake-viewer' %}
+      {% include 'free-shipping' %}
+      {% include 'shipping-time' %}
+      {% if settings.enable_countdown_page %}
+        {% include 'product-countdown' %}
+      {% endif %}
+
+      {% if section.settings.positiontab == 'right' %}
+        {% if section.settings.enable_tabvertical %}
+          {%- include 'product-information-vertical' -%}
+        {% else %}
+          {%- include 'product-information' -%}
+        {% endif %}
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<style>
+  .product__custom-message textarea.placeholder-text {
+  color: #999 !important;
+  font-style: italic;
+  }
+
+  .city-dropdown {
+    position: relative;
+    width: 100%;
+    max-width: 300px;
+    cursor: pointer;
+  }
+
+  .city-dropdown-toggle {
+    padding: 13px 15px;
+    border: 0.75px solid #a43820;
+    border-radius: 6px;
+    background: #fff;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+
+  .city-dropdown-toggle .selected-icon {
+    margin-right: 10px;
+  }
+
+  .city-options {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    border: 0.75px solid #a43820;
+    background-color: #fff;
+    z-index: 1000;
+    display: none;
+    max-height: 200px;
+    overflow-y: auto;
+    border-radius: 5px;
+
+  }
+
+  .city-options.open {
+    display: block;
+  }
+
+  .city-option {
+    padding: 10px 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 15px;
+    cursor: pointer;
+    margin: 10px;
+    background-color: #fff5f5;
+    border-radius: 5px;
+  }
+
+  .city-option:hover {
+    background: #f5f5f5;
+  }
+  .usp-box {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  text-align: center;
+  gap: 10px;
+  background-color: #fff5f5;
+  border-radius: 5px;
+  padding: 15px 5px;
+  height: 126px;
+  justify-content: flex-start;
+  margin-bottom: 20px;
+  }
+  .usp-box img{
+    width:50px;
+  }
+  .usp-box h3{
+    font-size:15px !important;
+    color: var(--header-menucolor);
+
+  }
+    .serving-info-container {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+  }
+
+  .info-icon {
+    font-size: 10px;
+    font-weight: bold;
+    background-color: #e0e0e0;
+    color: #000;
+    padding: 1px 7px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+    .border-below {
+    border-bottom: 1px solid #dee2e6 !important;
+    padding-bottom: 5px !important;
+    margin-bottom: 10px !important;
+    line-height:normal;
+  }
+    .product__custom-message{
+       padding: 0 0 20px 0;
+      line-height:normal;
+    }
+
+    label{
+    margin-bottom:0 !important;
+    }
+</style>
+
+{% comment %} <script>
+  // REPLACE THE EXISTING DATE VALIDATION SCRIPT WITH THIS CODE
+
+  const dateInput = document.getElementById('delivery-date');
+  const timeSlot = document.getElementById('time-slot');
+  const addToCartButton = document.getElementById('AddToCart-{{ section.id }}');
+
+  // Set minimum date and initialize properly
+  function initializeDateTimeValidation() {
+    const now = new Date();
+
+    // Set minimum date to tomorrow (not today + 24 hours)
+    const tomorrow = new Date(now);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    tomorrow.setHours(0, 0, 0, 0);
+
+    const yyyy = tomorrow.getFullYear();
+    const mm = String(tomorrow.getMonth() + 1).padStart(2, '0');
+    const dd = String(tomorrow.getDate()).padStart(2, '0');
+    const tomorrowStr = `${yyyy}-${mm}-${dd}`;
+
+    // Set minimum date and default value
+    dateInput.min = tomorrowStr;
+    dateInput.value = tomorrowStr;
+
+    // Update available time slots
+    updateAvailableTimeSlots();
+  }
+
+  // Convert time slot string to hour number
+  function getHourFromSlot(slotText) {
+    if (!slotText) return null;
+
+    const startTime = slotText.split('-')[0].trim();
+    const timeParts = startTime.match(/(\d+)\s*(AM|PM)/i);
+
+    if (!timeParts) return null;
+
+    let hour = parseInt(timeParts[1], 10);
+    const period = timeParts[2].toUpperCase();
+
+    if (period === 'PM' && hour !== 12) {
+      hour += 12;
+    } else if (period === 'AM' && hour === 12) {
+      hour = 0;
+    }
+
+    return hour;
+  }
+
+  // Update available time slots based on selected date
+  function updateAvailableTimeSlots() {
+    const selectedDate = dateInput.value;
+    const now = new Date();
+
+    if (!selectedDate) return;
+
+    const selectedDay = new Date(selectedDate + 'T00:00:00');
+    const tomorrow = new Date(now);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    tomorrow.setHours(0, 0, 0, 0);
+
+    // Check if selected date is tomorrow
+    const isTomorrow = selectedDay.getTime() === tomorrow.getTime();
+
+    // Get all time slot options
+    const options = timeSlot.querySelectorAll('option');
+
+    // Reset all options
+    options.forEach((option) => {
+      if (option.value) {
+        option.disabled = false;
+        option.style.display = '';
+        option.style.color = '';
+      }
+    });
+
+    // If selecting tomorrow, disable time slots that don't meet 24-hour requirement
+    if (isTomorrow) {
+      const currentHour = now.getHours();
+      const currentMinutes = now.getMinutes();
+
+      // Add 1 hour buffer to ensure we have enough lead time
+      const minimumHour = currentHour + 1;
+
+      options.forEach((option) => {
+        if (option.value) {
+          const slotHour = getHourFromSlot(option.value);
+          if (slotHour !== null && slotHour <= minimumHour) {
+            option.disabled = true;
+            option.style.color = '#999';
+          }
+        }
+      });
+    }
+
+    // Clear selection if currently selected slot is now disabled
+    const currentSelection = timeSlot.value;
+    if (currentSelection) {
+      const selectedOption = timeSlot.querySelector(`option[value="${currentSelection}"]`);
+      if (selectedOption && selectedOption.disabled) {
+        timeSlot.value = '';
+      }
+    }
+  }
+
+  // Comprehensive validation function
+  function validateDateTimeSelection() {
+    const selectedDate = dateInput.value;
+    const selectedSlot = timeSlot.value;
+
+    if (!selectedDate || !selectedSlot) {
+      return {
+        isValid: false,
+        message: 'Please select both date and time slot.',
+      };
+    }
+
+    const now = new Date();
+    const selectedDateTime = new Date(selectedDate + 'T00:00:00');
+    const slotHour = getHourFromSlot(selectedSlot);
+
+    if (slotHour === null) {
+      return {
+        isValid: false,
+        message: 'Invalid time slot selected.',
+      };
+    }
+
+    // Set the exact time for the selected slot
+    selectedDateTime.setHours(slotHour, 0, 0, 0);
+
+    // Check if selected date-time is at least 24 hours from now
+    const minAllowedTime = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+
+    if (selectedDateTime <= minAllowedTime) {
+      const minDate = minAllowedTime.toLocaleDateString();
+      const minTime = minAllowedTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      return {
+        isValid: false,
+        message: `Please select a date and time at least 24 hours from now. Minimum allowed: ${minDate} at ${minTime}`,
+      };
+    }
+
+    return { isValid: true };
+  }
+
+  // Prevent past date selection through manual input
+  dateInput.addEventListener('input', function () {
+    const inputDate = new Date(this.value + 'T00:00:00');
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    tomorrow.setHours(0, 0, 0, 0);
+
+    if (inputDate < tomorrow) {
+      this.value = '';
+      alert('Cannot select past dates. Please select tomorrow or later.');
+    }
+  });
+
+  // Event listeners
+  dateInput.addEventListener('change', function () {
+    updateAvailableTimeSlots();
+
+    // Validate immediately if both date and time are selected
+    if (timeSlot.value) {
+      const validation = validateDateTimeSelection();
+      if (!validation.isValid) {
+        timeSlot.value = ''; // Clear invalid time selection
+      }
+    }
+  });
+
+  timeSlot.addEventListener('change', function () {
+    // Validate when time slot changes
+    const validation = validateDateTimeSelection();
+    if (!validation.isValid && this.value) {
+      alert(validation.message);
+      this.value = '';
+    }
+  });
+
+  // Enhanced form submission validation
+  addToCartButton.addEventListener(
+    'click',
+    function (e) {
+      const validation = validateDateTimeSelection();
+
+      if (!validation.isValid) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        alert('⚠️ ' + (validation.message || 'Please select a valid date and time slot at least 24 hours from now.'));
+        return false;
+      }
+    },
+    true
+  );
+
+  // Also add validation to the form submit event as backup
+  document.querySelector('form').addEventListener('submit', function (e) {
+    const validation = validateDateTimeSelection();
+
+    if (!validation.isValid) {
+      e.preventDefault();
+      alert('⚠️ ' + validation.message);
+      return false;
+    }
+  });
+
+  // Initialize everything when page loads
+  document.addEventListener('DOMContentLoaded', function () {
+    initializeDateTimeValidation();
+  });
+
+  // Also initialize immediately if DOM is already loaded
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeDateTimeValidation);
+  } else {
+    initializeDateTimeValidation();
+  }
+</script>
+<script>
+  document.querySelector('.clickable-date-wrapper').addEventListener('click', function () {
+    document.getElementById('delivery-date').showPicker?.() || document.getElementById('delivery-date').focus();
+  });
+</script> {% endcomment %}
+
+<script>
+(function() {
+  'use strict';
+
+  // ============================================================================
+  // DATE VALIDATION AND TIME SLOT MANAGEMENT
+  // ============================================================================
+
+  const dateInput = document.getElementById('delivery-date');
+  const timeSlot = document.getElementById('time-slot');
+  const addToCartButton = document.getElementById('AddToCart-{{ section.id }}');
+
+  // Set minimum date and initialize properly
+  function initializeDateTimeValidation() {
+    if (!dateInput) return;
+
+    const now = new Date();
+
+    // Set minimum date to tomorrow (not today + 24 hours)
+    const tomorrow = new Date(now);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    tomorrow.setHours(0, 0, 0, 0);
+
+    const yyyy = tomorrow.getFullYear();
+    const mm = String(tomorrow.getMonth() + 1).padStart(2, '0');
+    const dd = String(tomorrow.getDate()).padStart(2, '0');
+    const tomorrowStr = `${yyyy}-${mm}-${dd}`;
+
+    // Set minimum date but DON'T set default value
+    dateInput.min = tomorrowStr;
+
+    // Set placeholder text
+    dateInput.setAttribute('placeholder', '- Select a Date -');
+
+    // Update available time slots
+    updateAvailableTimeSlots();
+  }
+
+  // Convert time slot string to hour number
+  function getHourFromSlot(slotText) {
+    if (!slotText) return null;
+
+    const startTime = slotText.split('-')[0].trim();
+    const timeParts = startTime.match(/(\d+)\s*(AM|PM)/i);
+
+    if (!timeParts) return null;
+
+    let hour = parseInt(timeParts[1], 10);
+    const period = timeParts[2].toUpperCase();
+
+    if (period === 'PM' && hour !== 12) {
+      hour += 12;
+    } else if (period === 'AM' && hour === 12) {
+      hour = 0;
+    }
+
+    return hour;
+  }
+
+  // Update available time slots based on selected date
+  function updateAvailableTimeSlots() {
+    if (!dateInput || !timeSlot) return;
+
+    const selectedDate = dateInput.value;
+    const now = new Date();
+
+    if (!selectedDate) return;
+
+    const selectedDay = new Date(selectedDate + 'T00:00:00');
+    const tomorrow = new Date(now);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    tomorrow.setHours(0, 0, 0, 0);
+
+    // Check if selected date is tomorrow
+    const isTomorrow = selectedDay.getTime() === tomorrow.getTime();
+
+    // Get all time slot options
+    const options = timeSlot.querySelectorAll('option');
+
+    // Reset all options
+    options.forEach((option) => {
+      if (option.value) {
+        option.disabled = false;
+        option.style.display = '';
+        option.style.color = '';
+      }
+    });
+
+    // If selecting tomorrow, disable time slots that don't meet 24-hour requirement
+    if (isTomorrow) {
+      const currentHour = now.getHours();
+
+      // Add 1 hour buffer to ensure we have enough lead time
+      const minimumHour = currentHour + 1;
+
+      options.forEach((option) => {
+        if (option.value) {
+          const slotHour = getHourFromSlot(option.value);
+          if (slotHour !== null && slotHour <= minimumHour) {
+            option.disabled = true;
+            option.style.color = '#999';
+          }
+        }
+      });
+    }
+
+    // Clear selection if currently selected slot is now disabled
+    const currentSelection = timeSlot.value;
+    if (currentSelection) {
+      const selectedOption = timeSlot.querySelector(`option[value="${currentSelection}"]`);
+      if (selectedOption && selectedOption.disabled) {
+        timeSlot.value = '';
+      }
+    }
+  }
+
+  // Comprehensive validation function
+  function validateDateTimeSelection() {
+    if (!dateInput || !timeSlot) return { isValid: true };
+
+    const selectedDate = dateInput.value;
+    const selectedSlot = timeSlot.value;
+
+    if (!selectedDate || !selectedSlot) {
+      return {
+        isValid: false,
+        message: 'Please select both date and time slot.',
+      };
+    }
+
+    const now = new Date();
+    const selectedDateTime = new Date(selectedDate + 'T00:00:00');
+    const slotHour = getHourFromSlot(selectedSlot);
+
+    if (slotHour === null) {
+      return {
+        isValid: false,
+        message: 'Invalid time slot selected.',
+      };
+    }
+
+    // Set the exact time for the selected slot
+    selectedDateTime.setHours(slotHour, 0, 0, 0);
+
+    // Check if selected date-time is at least 24 hours from now
+    const minAllowedTime = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+
+    if (selectedDateTime <= minAllowedTime) {
+      // Format date in dd-mm-yyyy for user display
+      const minDate = minAllowedTime.getDate().toString().padStart(2, '0') + '-' +
+                     (minAllowedTime.getMonth() + 1).toString().padStart(2, '0') + '-' +
+                     minAllowedTime.getFullYear();
+      const minTime = minAllowedTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      return {
+        isValid: false,
+        message: `Please select a date and time at least 24 hours from now. Minimum allowed: ${minDate} at ${minTime}`,
+      };
+    }
+
+    return { isValid: true };
+  }
+
+  // ============================================================================
+  // FORM MANAGEMENT AND DELIVERY OPTIONS
+  // ============================================================================
+
+  // Function to format date as dd-mm-yyyy
+  function formatDateToDDMMYYYY(dateString) {
+    if (!dateString) return '';
+
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return dateString; // Return original if invalid date
+
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+
+    return `${day}-${month}-${year}`;
+  }
+
+  function updateDeliveryDateLineItem() {
+    const deliveryDateInput = document.querySelector(
+      'input[name*="delivery_date"], input[name*="Delivery Date"], #delivery-date'
+    );
+    const deliveryDateLineItem = document.getElementById('deliveryDateLineItem');
+
+    if (deliveryDateInput && deliveryDateLineItem) {
+      const formattedDate = formatDateToDDMMYYYY(deliveryDateInput.value);
+      deliveryDateLineItem.value = formattedDate;
+    }
+  }
+
+  function toggleDeliveryOption() {
+    const selected = document.querySelector('input[name="delivery_option"]:checked')?.value;
+
+    const pickupDiv = document.getElementById('pickup-details');
+    const deliveryDiv = document.getElementById('delivery-details');
+    const citySelect = document.getElementById('selectedCityInput');
+    const selectedText = document.getElementById('dropdownSelectedText');
+    const cityLineItem = document.getElementById('cityLineItem');
+    const deliveryOptionLineItem = document.getElementById('deliveryOptionLineItem');
+
+    if (pickupDiv && deliveryDiv) {
+      // Add or remove greying-out styles
+      pickupDiv.classList.toggle('delivery-disabled', selected !== 'pickup');
+      deliveryDiv.classList.toggle('delivery-disabled', selected !== 'delivery');
+    }
+
+    if (deliveryOptionLineItem) {
+      // Update delivery option line item
+      if (selected === 'pickup') {
+        deliveryOptionLineItem.value = 'I will pick up';
+        if (cityLineItem) cityLineItem.value = ''; // Clear city for pickup
+      } else if (selected === 'delivery') {
+        deliveryOptionLineItem.value = 'I want delivery';
+        // Update city line item if city is already selected
+        if (citySelect && citySelect.value && cityLineItem) {
+          cityLineItem.value = citySelect.value;
+        }
+      }
+    }
+
+    // Handle city selection requirement
+    if (citySelect) {
+      if (selected === 'delivery') {
+        citySelect.setAttribute('required', '');
+        updateDeliveryDateLineItem();
+      } else if (selected === 'pickup') {
+        citySelect.removeAttribute('required');
+        citySelect.value = ''; // Clear city selection for pickup
+        if (selectedText) selectedText.textContent = 'Select your city'; // Reset dropdown display
+        if (cityLineItem) cityLineItem.value = ''; // Clear city line item for pickup
+        updateDeliveryDateLineItem();
+      }
+    }
+  }
+
+  function setDefaultCustomMessage() {
+    // Handle custom message field - set default if empty
+    const customMessageTextarea = document.getElementById('custom-message');
+    if (customMessageTextarea && (!customMessageTextarea.value || !customMessageTextarea.value.trim())) {
+      customMessageTextarea.value = 'No Message';
+    }
+  }
+
+  // ============================================================================
+  // EVENT LISTENERS
+  // ============================================================================
+
+  function setupDateInputListeners() {
+    if (!dateInput) return;
+
+    // Prevent past date selection through manual input
+    dateInput.addEventListener('input', function () {
+      const inputDate = new Date(this.value + 'T00:00:00');
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      tomorrow.setHours(0, 0, 0, 0);
+
+      if (inputDate < tomorrow) {
+        this.value = '';
+        // Format tomorrow's date in dd-mm-yyyy for alert
+        const dd = String(tomorrow.getDate()).padStart(2, '0');
+        const mm = String(tomorrow.getMonth() + 1).padStart(2, '0');
+        const yyyy = tomorrow.getFullYear();
+        alert(`Cannot select past dates. Please select ${dd}-${mm}-${yyyy} or later.`);
+      }
+    });
+
+    // Date change listener
+    dateInput.addEventListener('change', function () {
+      updateAvailableTimeSlots();
+
+      // Validate immediately if both date and time are selected
+      if (timeSlot && timeSlot.value) {
+        const validation = validateDateTimeSelection();
+        if (!validation.isValid) {
+          timeSlot.value = ''; // Clear invalid time selection
+        }
+      }
+
+      // Update delivery date line item
+      updateDeliveryDateLineItem();
+    });
+
+    // Also add blur listener for additional formatting triggers
+    dateInput.addEventListener('blur', function () {
+      updateDeliveryDateLineItem();
+    });
+  }
+
+  function setupTimeSlotListeners() {
+    if (!timeSlot) return;
+
+    timeSlot.addEventListener('change', function () {
+      // Validate when time slot changes
+      const validation = validateDateTimeSelection();
+      if (!validation.isValid && this.value) {
+        alert(validation.message);
+        this.value = '';
+      }
+    });
+  }
+
+  function setupFormSubmissionListeners() {
+    // Enhanced form submission validation for add to cart button
+    if (addToCartButton) {
+      addToCartButton.addEventListener(
+        'click',
+        function (e) {
+          const validation = validateDateTimeSelection();
+
+          if (!validation.isValid) {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            alert('⚠️ ' + (validation.message || 'Please select a valid date and time slot at least 24 hours from now.'));
+            return false;
+          }
+        },
+        true
+      );
+    }
+
+    // Form submission validation
+    const form = document.querySelector('form');
+    if (form) {
+      form.addEventListener('submit', function (e) {
+        // Date/time validation
+        const validation = validateDateTimeSelection();
+        if (!validation.isValid) {
+          e.preventDefault();
+          alert('⚠️ ' + validation.message);
+          return false;
+        }
+
+        // Delivery option validation
+        const selected = document.querySelector('input[name="delivery_option"]:checked');
+        const city = document.getElementById('selectedCityInput');
+
+        if (!selected) {
+          alert('Please choose either pickup or delivery.');
+          e.preventDefault();
+          return false;
+        }
+
+        // Only check city if delivery is selected
+        if (selected.value === 'delivery' && city) {
+          if (!city.value || city.value === '') {
+            alert('Please select a city for delivery.');
+            city.focus();
+            e.preventDefault();
+            return false;
+          }
+        }
+
+        // For pickup, ensure no city is submitted (optional, for data cleanliness)
+        if (selected.value === 'pickup' && city) {
+          city.value = '';
+        }
+
+        // Update delivery date format before submission
+        updateDeliveryDateLineItem();
+
+        // Set default custom message if needed
+        setDefaultCustomMessage();
+
+        return true;
+      });
+    }
+  }
+
+  function setupCityDropdownListeners() {
+    const toggle = document.getElementById('dropdownToggle');
+    const options = document.getElementById('dropdownOptions');
+    const selectedText = document.getElementById('dropdownSelectedText');
+    const hiddenSelect = document.getElementById('selectedCityInput');
+
+    if (toggle && options && selectedText && hiddenSelect) {
+      // Toggle dropdown
+      toggle.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        options.classList.toggle('show');
+      });
+
+      // Handle option selection
+      document.querySelectorAll('.city-option').forEach(function (option) {
+        option.addEventListener('click', function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+
+          const value = option.getAttribute('data-value');
+          selectedText.textContent = value;
+          hiddenSelect.value = value;
+
+          // Update city line item immediately
+          const cityLineItem = document.getElementById('cityLineItem');
+          if (cityLineItem) {
+            cityLineItem.value = value;
+          }
+
+          options.classList.remove('show');
+        });
+      });
+
+      // Close dropdown if clicking outside
+      document.addEventListener('click', function (e) {
+        if (!toggle.contains(e.target) && !options.contains(e.target)) {
+          options.classList.remove('show');
+        }
+      });
+    }
+  }
+
+  function setupClickableDateWrapper() {
+    const clickableWrapper = document.querySelector('.clickable-date-wrapper');
+    if (clickableWrapper && dateInput) {
+      clickableWrapper.addEventListener('click', function () {
+        dateInput.showPicker?.() || dateInput.focus();
+      });
+    }
+  }
+
+  function setupDeliveryOptionListeners() {
+    // Listen for delivery option changes
+    document.querySelectorAll('input[name="delivery_option"]').forEach(function(radio) {
+      radio.addEventListener('change', toggleDeliveryOption);
+    });
+  }
+
+  // ============================================================================
+  // INITIALIZATION
+  // ============================================================================
+
+  function initializeAll() {
+    // Initialize date validation
+    initializeDateTimeValidation();
+
+    // Initialize delivery option visual state
+    toggleDeliveryOption();
+
+    // Setup all event listeners
+    setupDateInputListeners();
+    setupTimeSlotListeners();
+    setupFormSubmissionListeners();
+    setupCityDropdownListeners();
+    setupClickableDateWrapper();
+    setupDeliveryOptionListeners();
+
+    // Watch for dynamically added date inputs using MutationObserver
+    const observer = new MutationObserver(function (mutations) {
+      mutations.forEach(function (mutation) {
+        if (mutation.type === 'childList') {
+          const dateInputs = document.querySelectorAll(
+            'input[type="date"], input[name*="delivery_date"], input[name*="Delivery Date"], #delivery-date'
+          );
+          dateInputs.forEach(function (input) {
+            if (!input.hasAttribute('data-listener-added')) {
+              input.setAttribute('data-listener-added', 'true');
+              input.addEventListener('change', updateDeliveryDateLineItem);
+              input.addEventListener('blur', updateDeliveryDateLineItem);
+            }
+          });
+        }
+      });
+    });
+
+    observer.observe(document.body, { childList: true, subtree: true });
+  }
+
+  // Initialize when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeAll);
+  } else {
+    initializeAll();
+  }
+
+})();
+</script>

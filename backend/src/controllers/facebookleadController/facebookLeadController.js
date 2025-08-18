@@ -74,18 +74,28 @@ exports.facebookCallback = async (req, res) => {
     });
 
     // Step 5: Save Facebook info to Admin
+    const pages = pagesRes.data.data.map(page => ({
+      id: page.id,
+      accessToken: page.access_token,
+      name: page.name,
+    }));
+
     await Admin.findByIdAndUpdate(adminId, {
       facebookIntegration: {
         connected: true,
-        fbUserId: page.id,
-        fbPageId: pageId,
-        pageAccessToken: pageAccessToken,
+        fbUserId: pages[0].id,
+        fbPages: pages,
       }
     });
 
     console.log('Page subscribed successfully and saved to DB.');
 
-    res.redirect(`${process.env.FRONTEND_URL}/integrations?fb_connected=1`);
+    res.send(`
+      <script>
+        window.opener && window.opener.postMessage('facebook-connected', '*');
+        window.close();
+      </script>
+    `);
   } catch (err) {
     console.error('Facebook callback error:', err.response?.data || err.message);
     res.status(500).send('Facebook callback error');
@@ -126,13 +136,13 @@ async function processLead(leadValue) {
     const pageId = leadValue.page_id;
 
     // Fetch the correct Admin by matching the stored fbPageId
-    const admin = await Admin.findOne({ 'facebookIntegration.fbPageId': pageId });
+    const admin = await Admin.findOne({ 'facebookIntegration.fbPages.id': pageId });
     if (!admin) {
       console.error('Admin with connected Facebook page not found.');
       return;
     }
-
-    const pageAccessToken = admin.facebookIntegration.pageAccessToken;
+    const pageObj = admin.facebookIntegration.fbPages.find(p => p.id === pageId);
+    const pageAccessToken = pageObj.accessToken;
 
     // Fetch lead details from Facebook API
     const leadDetailsRes = await axios.get(`https://graph.facebook.com/v19.0/${leadId}`, {

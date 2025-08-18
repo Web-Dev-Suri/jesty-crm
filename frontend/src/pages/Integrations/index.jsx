@@ -102,10 +102,7 @@ const Integrations = () => {
 
     const handleFacebookConnect = () => {
       const authData = JSON.parse(localStorage.getItem('auth'));
-      if (!authData?.current?.token) {
-        // Show error or redirect to login
-        return;
-      }
+      if (!authData?.current?.token) return;
       const token = authData.current.token;
       const popup = window.open(
         `${import.meta.env.VITE_BACKEND_SERVER}api/facebook/auth?token=${token}`,
@@ -114,7 +111,7 @@ const Integrations = () => {
       );
       const messageListener = (event) => {
         if (event.data === 'facebook-connected') {
-          setStep('facebook-settings'); // Show dashboard after connect
+          setStep('facebook-settings'); // Show dashboard
           window.removeEventListener('message', messageListener);
         }
       };
