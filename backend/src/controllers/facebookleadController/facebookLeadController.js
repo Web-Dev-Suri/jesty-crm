@@ -81,10 +81,11 @@ exports.facebookCallback = async (req, res) => {
     }));
 
     await Admin.findByIdAndUpdate(adminId, {
-      facebookIntegration: {
-        connected: true,
-        fbUserId: pages[0].id,
-        fbPages: pages,
+      $set: {
+        'facebookIntegration.connected': true,
+        'facebookIntegration.fbUserId': pages[0].id,
+        'facebookIntegration.fbPages': pages,
+        'facebookIntegration.pageAccessToken': pages[0].accessToken // <-- Needed for frontend
       }
     });
 
