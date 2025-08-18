@@ -137,7 +137,11 @@ async function processLead(leadValue) {
     const pageId = leadValue.page_id;
 
     // Fetch the correct Admin by matching the stored fbPageId
-    const admin = await Admin.findOne({ 'facebookIntegration.fbPages.id': pageId });
+    const admin = await Admin.findOne({
+      'facebookIntegration.connected': true,
+      'facebookIntegration.fbPages': { $elemMatch: { id: pageId } }
+    });
+    console.log('Admin found for pageId:', pageId, admin ? admin._id : 'None');
     if (!admin) {
       console.error('Admin with connected Facebook page not found.');
       return;
