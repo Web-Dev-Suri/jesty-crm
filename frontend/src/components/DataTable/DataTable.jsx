@@ -276,7 +276,7 @@ if (statusColIdx !== -1) {
       page: pagination?.current || 1,
       items: pagination?.pageSize || list.result?.pagination?.pageSize || 10,
       sortBy: 'created',
-      sortValue: 'asc',
+      sortValue: 'desc',
     };
     dispatch(crud.list({ entity, options }));
   },
@@ -292,7 +292,7 @@ if (statusColIdx !== -1) {
       page: 1,
       items: pagination?.pageSize || 10,
       sortBy: 'created',
-      sortValue: 'asc',
+      sortValue: 'desc',
     };
     dispatch(crud.list({ entity, options }));
   };
@@ -302,7 +302,7 @@ if (statusColIdx !== -1) {
     page: pageArg || pagination?.current || 1,
     items: pagination?.pageSize || 10,
     sortBy: 'created',
-    sortValue: 'asc',
+    sortValue: 'desc',
   };
   dispatch(crud.list({ entity, options }));
 };
@@ -335,7 +335,7 @@ if (statusColIdx !== -1) {
       page: 1,
       items: pagination?.pageSize || 10,
       sortBy: 'created',
-      sortValue: 'asc',
+      sortValue: 'desc',
     };
     if (Array.isArray(dateRange) && dateRange.length === 2) {
       params.created_gte = dateRange[0].startOf('day').toISOString();
