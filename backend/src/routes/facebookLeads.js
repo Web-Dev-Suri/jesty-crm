@@ -8,5 +8,6 @@ router.post('/facebook/webhook', express.json({ type: '*/*' }), facebookLeadCont
 router.get('/facebook/webhook', facebookLeadController.facebookWebhook); // For verification
 router.get('/facebook/settings', facebookLeadController.facebookSettings);
 router.post('/facebook/disconnect', facebookLeadController.facebookDisconnect);
+router.post('/facebook/toggle-form', facebookLeadController.toggleForm);
 
 module.exports = router;

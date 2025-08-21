@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import { Card, Avatar, List, Button, Spin, message } from 'antd';
+import React, { useEffect, useMemo, useState } from 'react';
+import { Card, Avatar, List, Button, Spin, message, Switch } from 'antd';
 
 const FacebookDashboard = ({ onBack }) => {
   const [fbData, setFbData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [selectedPage, setSelectedPage] = useState(null);
+  const [selectedPageId, setSelectedPageId] = useState(null);
   const [disconnecting, setDisconnecting] = useState(false);
 
   useEffect(() => {
@@ -15,6 +15,9 @@ const FacebookDashboard = ({ onBack }) => {
       .then(res => res.json())
       .then(data => {
         setFbData(data);
+        if (data?.connected && Array.isArray(data.pages) && data.pages.length) {
+          setSelectedPageId((prev) => prev || data.pages[0].id);
+        }
         setLoading(false);
       })
       .catch(() => {
@@ -57,6 +60,42 @@ const FacebookDashboard = ({ onBack }) => {
     );
   }
 
+  const pages = fbData.pages || [];
+  const selectedPage = useMemo(
+    () => pages.find((p) => p.id === selectedPageId) || pages[0],
+    [pages, selectedPageId]
+  );
+
+  const toggleForm = async (formId, enabled) => {
+    try {
+      const authData = JSON.parse(localStorage.getItem('auth'));
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_SERVER}api/facebook/toggle-form`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${authData?.current?.token}`,
+        },
+        body: JSON.stringify({ formId, enabled }),
+      });
+      if (!res.ok) throw new Error('Toggle failed');
+      // Optimistic update
+      setFbData((prev) => ({
+        ...prev,
+        pages: (prev.pages || []).map((page) =>
+          page.id !== selectedPage.id
+            ? page
+            : {
+                ...page,
+                forms: (page.forms || []).map((f) => (f.id === formId ? { ...f, enabled } : f)),
+              }
+        ),
+      }));
+      message.success(`Form ${enabled ? 'enabled' : 'disabled'}`);
+    } catch (e) {
+      message.error('Failed to update form setting');
+    }
+  };
+
   return (
     <div style={{ maxWidth: 900, margin: '0 auto' }}>
       <Card>
@@ -71,39 +110,42 @@ const FacebookDashboard = ({ onBack }) => {
           </div>
         </div>
       </Card>
-      <h3 style={{ marginTop: 32 }}>Connected Pages</h3>
-      <List
-        itemLayout="horizontal"
-        dataSource={fbData.pages}
-        renderItem={page => (
-          <List.Item
-            actions={[
-              <Button type="link" onClick={() => setSelectedPage(page)}>View Forms</Button>
-            ]}
+      <h3 style={{ marginTop: 24 }}>Connected Pages</h3>
+      <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+        {pages.map((page) => (
+          <Button
+            key={page.id}
+            onClick={() => setSelectedPageId(page.id)}
+            type={selectedPage?.id === page.id ? 'primary' : 'default'}
+            style={{ display: 'flex', alignItems: 'center', gap: 8 }}
           >
-            <List.Item.Meta
-              avatar={<Avatar src={page.picture} />}
-              title={page.name}
-              description={`Page ID: ${page.id}`}
-            />
-          </List.Item>
-        )}
-      />
+            <Avatar src={page.picture} size={24} /> {page.name}
+          </Button>
+        ))}
+      </div>
+
       {selectedPage && (
-        <Card style={{ marginTop: 32 }}>
-          <h3>{selectedPage.name} - Lead Forms</h3>
+        <Card style={{ marginTop: 24 }}>
+          <h3 style={{ marginTop: 0 }}>{selectedPage.name} - Lead Forms</h3>
           <List
             dataSource={selectedPage.forms}
-            renderItem={form => (
-              <List.Item>
-                <List.Item.Meta
-                  title={form.name}
-                  description={`Form ID: ${form.id}`}
-                />
+            locale={{ emptyText: 'No Lead Forms found on this page' }}
+            renderItem={(form) => (
+              <List.Item
+                actions={[
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <span style={{ color: '#888' }}>{form.enabled ? 'Enabled' : 'Disabled'}</span>
+                    <Switch
+                      checked={!!form.enabled}
+                      onChange={(checked) => toggleForm(form.id, checked)}
+                    />
+                  </div>,
+                ]}
+              >
+                <List.Item.Meta title={form.name} description={`Form ID: ${form.id}`} />
               </List.Item>
             )}
           />
-          <Button style={{ marginTop: 16 }} onClick={() => setSelectedPage(null)}>Back to Pages</Button>
         </Card>
       )}
       <Button style={{ marginTop: 32 }} onClick={onBack}>Back to Integrations</Button>

@@ -212,16 +212,20 @@ const Integrations = () => {
 
     return (
         <div className="p-6">
-            <h2 className="text-2xl font-bold mb-6" style={{maxWidth: '1000px', margin: '20px auto'}}>Integrations</h2>
-            <div style={{ maxWidth: '700px', margin: '0 auto 20px auto' }}>
-              <Input
-                placeholder="Search integrations..."
-                value={search}
-                onChange={e => setSearch(e.target.value)}
-                allowClear
-                style={{ marginBottom: 20, height: '50px', borderRadius: '10px' }}
-              />
-            </div>
+            {step !== 'facebook-settings' && (
+              <>
+                <h2 className="text-2xl font-bold mb-6" style={{maxWidth: '1000px', margin: '20px auto'}}>Integrations</h2>
+                <div style={{ maxWidth: '700px', margin: '0 auto 20px auto' }}>
+                  <Input
+                    placeholder="Search integrations..."
+                    value={search}
+                    onChange={e => setSearch(e.target.value)}
+                    allowClear
+                    style={{ marginBottom: 20, height: '50px', borderRadius: '10px' }}
+                  />
+                </div>
+              </>
+            )}
             {step === 'select' && (
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px', maxWidth: '1000px', margin: '0 auto' }}>
                   {filteredIntegrations.map(item => (

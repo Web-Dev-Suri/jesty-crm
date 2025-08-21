@@ -203,6 +203,7 @@ exports.facebookSettings = async (req, res) => {
     let userRes = null;
     let pagesRes = null;
     let pages = [];
+    const disabledFormIds = admin.facebookIntegration?.disabledFormIds || [];
     try {
       // Prefer USER token for these calls
       userRes = await axios.get(`https://graph.facebook.com/v19.0/me`, {
@@ -220,7 +221,11 @@ exports.facebookSettings = async (req, res) => {
             const formsRes = await axios.get(`https://graph.facebook.com/v19.0/${page.id}/leadgen_forms`, {
               params: { access_token: page.access_token, fields: 'id,name' }
             });
-            forms = formsRes.data.data || [];
+            forms = (formsRes.data.data || []).map(f => ({
+              id: f.id,
+              name: f.name,
+              enabled: !disabledFormIds.includes(f.id),
+            }));
           } catch (err) {
             forms = [];
           }
@@ -242,7 +247,11 @@ exports.facebookSettings = async (req, res) => {
             const formsRes = await axios.get(`https://graph.facebook.com/v19.0/${p.id}/leadgen_forms`, {
               params: { access_token: p.accessToken, fields: 'id,name' }
             });
-            forms = formsRes.data.data || [];
+            forms = (formsRes.data.data || []).map(f => ({
+              id: f.id,
+              name: f.name,
+              enabled: !disabledFormIds.includes(f.id),
+            }));
           } catch (e) {
             forms = [];
           }
@@ -265,6 +274,36 @@ exports.facebookSettings = async (req, res) => {
     });
   } catch (err) {
     res.status(401).json({ error: 'Unauthorized or Facebook API error', details: err.message });
+  }
+};
+
+// Enable/disable a specific Facebook lead form
+exports.toggleForm = async (req, res) => {
+  try {
+    const token = req.headers.authorization?.split(' ')[1];
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const adminId = decoded.id;
+    const { formId, enabled } = req.body || {};
+
+    if (!formId || typeof enabled !== 'boolean') {
+      return res.status(400).json({ error: 'Invalid payload' });
+    }
+
+    if (enabled === false) {
+      await Admin.findByIdAndUpdate(adminId, {
+        $addToSet: { 'facebookIntegration.disabledFormIds': formId },
+        $set: { 'facebookIntegration.connected': true },
+      });
+    } else {
+      await Admin.findByIdAndUpdate(adminId, {
+        $pull: { 'facebookIntegration.disabledFormIds': formId },
+        $set: { 'facebookIntegration.connected': true },
+      });
+    }
+
+    res.json({ success: true });
+  } catch (err) {
+    res.status(401).json({ error: 'Unauthorized' });
   }
 };
 
