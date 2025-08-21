@@ -27,10 +27,11 @@ import { generate as uniqueId } from 'shortid';
 
 import { useCrudContext } from '@/context/crud';
 
-// import { erp } from '@/redux/erp/actions';
+import { erp } from '@/redux/erp/actions';
 
 import { Tag } from 'antd';
 import 'antd/dist/reset.css';
+ 
 
 // Utility to assign a color based on a string (user name or id)
 const userColors = [
@@ -85,20 +86,10 @@ const statusColors = {
   DND: 'red',
 };
 
-function AddNewItem({ config }) {
-  const dispatch = useDispatch();
-  const { crudContextAction } = useCrudContext();
-  const { collapsedBox, panel } = crudContextAction;
+function AddNewItem({ config, onAdd }) {
   const { ADD_NEW_ENTITY } = config;
-
-  const handelClick = () => {
-    dispatch(erp.currentAction({ actionType: 'create', data: {} }));
-    panel.open();
-    collapsedBox.close();
-  };
-
   return (
-    <Button onClick={handelClick} type="primary">
+    <Button onClick={onAdd} type="primary">
       {ADD_NEW_ENTITY}
     </Button>
   );
@@ -341,6 +332,14 @@ if (statusColIdx !== -1) {
     // eslint-disable-next-line
   }, [dateRange, selectedAgents, selectedStatus]);
 
+  // Handler for Add Client button - open SidePanel Create form
+  const handleAddClient = () => {
+    dispatch(crud.currentItem({ data: {} }));
+    dispatch(crud.currentAction({ actionType: 'create', data: {} }));
+    panel.open();
+    collapsedBox.open();
+  };
+
   return (
     <>
       <PageHeader
@@ -385,7 +384,7 @@ if (statusColIdx !== -1) {
           // <Button onClick={handelDataTableLoad} key={`${uniqueId()}`} icon={<RedoOutlined />}>
           //   {translate('Refresh')}
           // </Button>,
-          <AddNewItem key={`${uniqueId()}`} config={config} />,
+          <AddNewItem key={`${uniqueId()}`} config={config} onAdd={handleAddClient} />,
         ]}
         style={{
           padding: '20px 0',
@@ -403,6 +402,7 @@ if (statusColIdx !== -1) {
           onClick: () => handleRead(record),
         })}
       />
+      
     </>
   );
 }

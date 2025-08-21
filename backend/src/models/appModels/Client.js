@@ -74,10 +74,14 @@ const schema = new mongoose.Schema({
     required: true,
   },
   formResponses: {
-  type: Map,
-  of: String,
-  default: {}
-},
+    type: [
+      {
+        name: { type: String },
+        values: { type: [String] }
+      }
+    ],
+    default: []
+  },
 });
 
 schema.plugin(require('mongoose-autopopulate'));

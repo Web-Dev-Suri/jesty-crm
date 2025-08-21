@@ -2,6 +2,7 @@ import { useLayoutEffect } from 'react';
 
 import UpdateForm from '@/components/UpdateForm';
 import DeleteModal from '@/components/DeleteModal';
+import CreateForm from '@/components/CreateForm';
 
 import LeadsInsights from '@/components/LeadsInsights/LeadsInsights';
 import DataTable from '@/components/DataTable/DataTable';
@@ -13,30 +14,18 @@ import { useCrudContext } from '@/context/crud';
 
 import { CrudLayout } from '@/layout';
 
-function SidePanelTopContent({ config, formElements, withUpload }) {
-  const { crudContextAction, state } = useCrudContext();
-  const { modal, editBox } = crudContextAction;
+function SidePanelTopContent({ config, createForm, updateForm, withUpload }) {
+  const { state } = useCrudContext();
+  const { actionType } = state.currentAction || {};
 
-  const { isReadBoxOpen, isEditBoxOpen } = state;
-  const dispatch = useDispatch();
-
-  const removeItem = () => {
-    dispatch(crud.currentAction({ actionType: 'delete', data: currentItem }));
-    modal.open();
-  };
-  const editItem = () => {
-    dispatch(crud.currentAction({ actionType: 'update', data: currentItem }));
-    editBox.open();
-  };
-
-  return (
-    <>
-      {/* Removed the Row with edit/remove buttons and search bar */}
-      {/* <ReadItem config={config} /> */}
-      <LeadsInsights config={config} />
-      <UpdateForm config={config} formElements={formElements} withUpload={withUpload} />
-    </>
-  );
+  if (actionType === 'create') {
+    return <CreateForm config={config} formElements={createForm} withUpload={withUpload} />;
+  }
+  if (actionType === 'update') {
+    return <UpdateForm config={config} formElements={updateForm} withUpload={withUpload} />;
+  }
+  // Default: show client details
+  return <LeadsInsights config={config} />;
 }
 
 function FixHeaderPanel({ config }) {
@@ -44,7 +33,7 @@ function FixHeaderPanel({ config }) {
   return null;
 }
 
-function CrudModule({ config, updateForm, withUpload = false, filterOptions }) {
+function CrudModule({ config, createForm, updateForm, withUpload = false, filterOptions }) {
   const dispatch = useDispatch();
 
   useLayoutEffect(() => {
@@ -56,7 +45,12 @@ function CrudModule({ config, updateForm, withUpload = false, filterOptions }) {
       config={config}
       fixHeaderPanel={<FixHeaderPanel config={config} />}
       sidePanelTopContent={
-        <SidePanelTopContent config={config} formElements={updateForm} withUpload={withUpload} />
+        <SidePanelTopContent
+          config={config}
+          createForm={createForm}
+          updateForm={updateForm}
+          withUpload={withUpload}
+        />
       }
     >
       <DataTable config={config} filterOptions={filterOptions} />

@@ -14,7 +14,8 @@ export default function LeadsInsights({
   onDelete,
 }) {
   const { result: client } = useSelector(selectCurrentItem);
-  const clientList = useSelector(selectListItems)?.items || [];
+  const listState = useSelector(selectListItems);
+  const clientList = listState?.result?.items || [];
   const dispatch = useDispatch();
 
   // Find current index for prev/next
@@ -407,11 +408,23 @@ export default function LeadsInsights({
         <div style={{ flex: 1, background: '#fff', padding: '24px', borderRadius: 8, boxShadow: '0 1px 3px rgba(0,0,0,0.03)' }}>
           <h3 style={{ marginTop: 0 }}>Form Data</h3>
           <Divider />
-          {Object.entries(client?.formResponses || {}).map(([key, value]) => (
-            <div key={key} style={{ marginBottom: 12 }}>
-              <strong>{key.replace(/_/g, ' ')}:</strong> {value}
-            </div>
-          ))}
+          {Array.isArray(client?.formResponses)
+            ? client.formResponses.map((field, idx) => {
+                const label = field.name?.replace?.(/_/g, ' ') || `Field ${idx + 1}`;
+                const value = Array.isArray(field.values)
+                  ? field.values.join(', ')
+                  : field.values || field.value || '';
+                return (
+                  <div key={idx} style={{ marginBottom: 12 }}>
+                    <strong>{label}:</strong> {String(value)}
+                  </div>
+                );
+              })
+            : Object.entries(client?.formResponses || {}).map(([key, value]) => (
+                <div key={key} style={{ marginBottom: 12 }}>
+                  <strong>{key.replace(/_/g, ' ')}:</strong> {String(value)}
+                </div>
+              ))}
         </div>
 
         {/* RIGHT: Timeline */}

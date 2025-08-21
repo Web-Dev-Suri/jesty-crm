@@ -49,8 +49,8 @@ export default function Customer() {
     request.list({ entity: '/admin', options: { role: 'user' } }).then(res => {
       setUserOptions(
         (res.result || []).map(user => ({
-          value: user._id,
-          label: user.name,
+          value: String(user._id),
+          label: typeof user.name === 'string' ? user.name : JSON.stringify(user.name),
         }))
       );
     });

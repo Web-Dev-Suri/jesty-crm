@@ -113,7 +113,7 @@ export default function CreateItem({ config, CreateForm }) {
         title={translate('New')}
         ghost={false}
         tags={<Tag>{translate('Draft')}</Tag>}
-        // subTitle="This is create page"
+        subTitle="This is create page"
         extra={[
           <Button
             key={`${uniqueId()}`}

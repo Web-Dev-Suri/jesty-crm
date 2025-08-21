@@ -10,7 +10,7 @@ exports.facebookAuth = (req, res) => {
 
   if (!token) return res.status(400).send('Missing JWT token.');
 
-  const redirectUri = encodeURIComponent(`${process.env.API_URL}/facebook/callback`);
+  const redirectUri = encodeURIComponent(`${process.env.API_URL}/api/facebook/callback`);
   const state = encodeURIComponent(token);
 
   const url = `https://www.facebook.com/v19.0/dialog/oauth?client_id=${fbAppId}&redirect_uri=${redirectUri}&scope=pages_show_list,leads_retrieval,pages_read_engagement,pages_manage_metadata&state=${state}`;
@@ -30,7 +30,7 @@ exports.facebookCallback = async (req, res) => {
 
     const fbAppId = process.env.FB_APP_ID;
     const fbAppSecret = process.env.FB_APP_SECRET;
-    const redirectUri = `${process.env.API_URL}/facebook/callback`;
+    const redirectUri = `${process.env.API_URL}/api/facebook/callback`;
 
     // Step 1: Get Facebook user access token
     const tokenRes = await axios.get(`https://graph.facebook.com/v19.0/oauth/access_token`, {
@@ -146,7 +146,6 @@ async function processLead(leadValue) {
       return;
     }
 
-    // Debug: Log organizationId
     console.log('Admin organizationId:', admin.organizationId);
 
     const pageObj = admin.facebookIntegration.fbPages.find(p => p.id === pageId);

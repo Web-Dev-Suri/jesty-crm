@@ -45,12 +45,15 @@ const FacebookDashboard = ({ onBack }) => {
 
   if (loading) return <Spin style={{ margin: '100px auto', display: 'block' }} />;
 
-  if (!fbData?.connected) {
+  if (!fbData || !fbData.connected) {
     return (
-      <Card style={{ maxWidth: 600, margin: '0 auto' }}>
-        <p>No Facebook account connected.</p>
-        <Button type="primary" onClick={onBack}>Back</Button>
-      </Card>
+      <div style={{ maxWidth: 900, margin: '0 auto' }}>
+        <Card>
+          <h3 style={{ margin: 0 }}>Facebook is not connected</h3>
+          <p style={{ color: '#888' }}>Please connect your Facebook account from the Integrations page.</p>
+          <Button onClick={onBack}>Back to Integrations</Button>
+        </Card>
+      </div>
     );
   }
 
