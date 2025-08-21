@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, Avatar, List, Button, Spin, message, Switch } from 'antd';
 
 const FacebookDashboard = ({ onBack }) => {
@@ -60,11 +60,8 @@ const FacebookDashboard = ({ onBack }) => {
     );
   }
 
-  const pages = fbData.pages || [];
-  const selectedPage = useMemo(
-    () => pages.find((p) => p.id === selectedPageId) || pages[0],
-    [pages, selectedPageId]
-  );
+  const pages = Array.isArray(fbData.pages) ? fbData.pages : [];
+  const selectedPage = pages.find((p) => p.id === selectedPageId) || pages[0] || null;
 
   const toggleForm = async (formId, enabled) => {
     try {
