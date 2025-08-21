@@ -273,27 +273,36 @@ if (statusColIdx !== -1) {
   const handelDataTableLoad = useCallback(
   (pagination) => {
     const options = {
-      page: pagination.current || 1,
-      items: pagination.pageSize || 10,
+      page: pagination?.current || 1,
+      items: pagination?.pageSize || list.result?.pagination?.pageSize || 10,
       sortBy: 'created',
       sortValue: 'asc',
     };
     dispatch(crud.list({ entity, options }));
   },
-  []
+  [entity, dispatch, list.result?.pagination?.pageSize]
 );
 
 
   const filterTable = (e) => {
     const value = e.target.value;
-    const options = { q: value, fields: searchConfig?.searchFields || '' };
+    const options = {
+      q: value,
+      fields: searchConfig?.searchFields || '',
+      page: 1,
+      items: pagination?.pageSize || 10,
+      sortBy: 'created',
+      sortValue: 'asc',
+    };
     dispatch(crud.list({ entity, options }));
   };
 
-  const dispatcher = () => {
+  const dispatcher = (pageArg) => {
   const options = {
+    page: pageArg || pagination?.current || 1,
+    items: pagination?.pageSize || 10,
     sortBy: 'created',
-    sortValue: 'desc',
+    sortValue: 'asc',
   };
   dispatch(crud.list({ entity, options }));
 };
@@ -302,10 +311,15 @@ if (statusColIdx !== -1) {
   useEffect(() => {
     const controller = new AbortController();
     dispatcher();
+    // polling for near real-time updates without altering backend
+    const intervalId = setInterval(() => {
+      dispatcher(pagination?.current || 1);
+    }, 15000);
     return () => {
       controller.abort();
+      clearInterval(intervalId);
     };
-  }, []);
+  }, [pagination?.current, pagination?.pageSize]);
 
   // Filter state and options
   const [dateRange, setDateRange] = useState([]);
@@ -317,7 +331,12 @@ if (statusColIdx !== -1) {
 
   // Filtering logic
   const handleFilter = () => {
-    const params = {};
+    const params = {
+      page: 1,
+      items: pagination?.pageSize || 10,
+      sortBy: 'created',
+      sortValue: 'asc',
+    };
     if (Array.isArray(dateRange) && dateRange.length === 2) {
       params.created_gte = dateRange[0].startOf('day').toISOString();
       params.created_lte = dateRange[1].endOf('day').toISOString();

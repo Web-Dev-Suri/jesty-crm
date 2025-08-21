@@ -60,12 +60,9 @@ const paginatedList = async (Model, req, res) => {
     .populate()
     .exec();
 
-  // Counting the total documents
+  // Counting the total documents using the SAME query conditions
   const countPromise = Model.countDocuments({
-    removed: false,
-
-    [filter]: equal,
-    ...fields,
+    ...query,
   });
   // Resolving both promises
   const [result, count] = await Promise.all([resultsPromise, countPromise]);
