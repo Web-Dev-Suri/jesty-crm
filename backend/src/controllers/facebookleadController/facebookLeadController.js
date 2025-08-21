@@ -10,7 +10,7 @@ exports.facebookAuth = (req, res) => {
 
   if (!token) return res.status(400).send('Missing JWT token.');
 
-  const redirectUri = encodeURIComponent(`${process.env.API_URL}/api/facebook/callback`);
+  const redirectUri = encodeURIComponent(`${process.env.API_URL}/facebook/callback`);
   const state = encodeURIComponent(token);
 
   const url = `https://www.facebook.com/v19.0/dialog/oauth?client_id=${fbAppId}&redirect_uri=${redirectUri}&scope=pages_show_list,leads_retrieval,pages_read_engagement,pages_manage_metadata&state=${state}`;
@@ -30,7 +30,7 @@ exports.facebookCallback = async (req, res) => {
 
     const fbAppId = process.env.FB_APP_ID;
     const fbAppSecret = process.env.FB_APP_SECRET;
-    const redirectUri = `${process.env.API_URL}/api/facebook/callback`;
+    const redirectUri = `${process.env.API_URL}/facebook/callback`;
 
     // Step 1: Get Facebook user access token
     const tokenRes = await axios.get(`https://graph.facebook.com/v19.0/oauth/access_token`, {
@@ -83,9 +83,12 @@ exports.facebookCallback = async (req, res) => {
     await Admin.findByIdAndUpdate(adminId, {
       $set: {
         'facebookIntegration.connected': true,
+        // Persist the long-lived USER token for future API calls
+        'facebookIntegration.userAccessToken': longLivedUserToken,
+        // Keep existing fields for backwards compatibility
         'facebookIntegration.fbUserId': pages[0].id,
         'facebookIntegration.fbPages': pages,
-        'facebookIntegration.pageAccessToken': pages[0].accessToken // <-- Needed for frontend
+        'facebookIntegration.pageAccessToken': pages[0].accessToken // legacy fallback
       }
     });
 
@@ -194,46 +197,70 @@ exports.facebookSettings = async (req, res) => {
       return res.json({ connected: false });
     }
 
-    const userToken = admin.facebookIntegration.pageAccessToken;
-    console.log('facebookSettings admin:', admin._id, admin.facebookIntegration);
+    const userToken = admin.facebookIntegration.userAccessToken || admin.facebookIntegration.pageAccessToken;
+    console.log('facebookSettings admin:', admin._id);
 
-    // Get Facebook user info
-    const userRes = await axios.get(`https://graph.facebook.com/v19.0/me`, {
-      params: { access_token: userToken, fields: 'id,name,picture' }
-    });
+    let userRes = null;
+    let pagesRes = null;
+    let pages = [];
+    try {
+      // Prefer USER token for these calls
+      userRes = await axios.get(`https://graph.facebook.com/v19.0/me`, {
+        params: { access_token: userToken, fields: 'id,name,picture' }
+      });
 
-    // Get all pages
-    const pagesRes = await axios.get(`https://graph.facebook.com/v19.0/me/accounts`, {
-      params: { access_token: userToken, fields: 'id,name,picture,access_token' }
-    });
+      pagesRes = await axios.get(`https://graph.facebook.com/v19.0/me/accounts`, {
+        params: { access_token: userToken, fields: 'id,name,picture,access_token' }
+      });
 
-    // For each page, get lead forms
-    const pages = await Promise.all(
-      (pagesRes.data.data || []).map(async page => {
-        // Get lead forms for this page
-        let forms = [];
-        try {
-          const formsRes = await axios.get(`https://graph.facebook.com/v19.0/${page.id}/leadgen_forms`, {
-            params: { access_token: page.access_token, fields: 'id,name' }
-          });
-          forms = formsRes.data.data || [];
-        } catch (err) {
-          forms = [];
-        }
-        return {
-          id: page.id,
-          name: page.name,
-          picture: page.picture?.data?.url || '',
-          forms
-        };
-      })
-    );
+      pages = await Promise.all(
+        (pagesRes.data.data || []).map(async page => {
+          let forms = [];
+          try {
+            const formsRes = await axios.get(`https://graph.facebook.com/v19.0/${page.id}/leadgen_forms`, {
+              params: { access_token: page.access_token, fields: 'id,name' }
+            });
+            forms = formsRes.data.data || [];
+          } catch (err) {
+            forms = [];
+          }
+          return {
+            id: page.id,
+            name: page.name,
+            picture: page.picture?.data?.url || '',
+            forms
+          };
+        })
+      );
+    } catch (err) {
+      // Fallback: Use stored page tokens to at least fetch forms
+      const storedPages = admin.facebookIntegration.fbPages || [];
+      pages = await Promise.all(
+        storedPages.map(async p => {
+          let forms = [];
+          try {
+            const formsRes = await axios.get(`https://graph.facebook.com/v19.0/${p.id}/leadgen_forms`, {
+              params: { access_token: p.accessToken, fields: 'id,name' }
+            });
+            forms = formsRes.data.data || [];
+          } catch (e) {
+            forms = [];
+          }
+          return {
+            id: p.id,
+            name: p.name,
+            picture: '',
+            forms
+          };
+        })
+      );
+    }
 
     res.json({
       connected: true,
-      fbUserId: userRes.data.id,
-      fbUserName: userRes.data.name,
-      fbUserPic: userRes.data.picture?.data?.url || '',
+      fbUserId: userRes?.data?.id || null,
+      fbUserName: userRes?.data?.name || null,
+      fbUserPic: userRes?.data?.picture?.data?.url || '',
       pages
     });
   } catch (err) {
