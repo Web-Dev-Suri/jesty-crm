@@ -4,26 +4,33 @@ import { Card, Avatar, List, Button, Spin, message, Switch } from 'antd';
 const FacebookDashboard = ({ onBack }) => {
   const [fbData, setFbData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [selectedPageId, setSelectedPageId] = useState(null);
+  const [selectedPage, setSelectedPage] = useState(null);
   const [disconnecting, setDisconnecting] = useState(false);
 
-  useEffect(() => {
+  const loadSettings = () => {
     const authData = JSON.parse(localStorage.getItem('auth'));
-    fetch(`${import.meta.env.VITE_BACKEND_SERVER}api/facebook/settings`, {
-      headers: { Authorization: `Bearer ${authData?.current?.token}` }
+    return fetch(`${import.meta.env.VITE_BACKEND_SERVER}api/facebook/settings`, {
+      headers: { Authorization: `Bearer ${authData?.current?.token}` },
     })
-      .then(res => res.json())
-      .then(data => {
+      .then((res) => res.json())
+      .then((data) => {
         setFbData(data);
         if (data?.connected && Array.isArray(data.pages) && data.pages.length) {
-          setSelectedPageId((prev) => prev || data.pages[0].id);
+          // Preserve selection if still present
+          setSelectedPage((prev) => {
+            if (!prev) return data.pages[0];
+            const found = data.pages.find((p) => p.id === prev.id);
+            return found || data.pages[0];
+          });
         }
-        setLoading(false);
-      })
-      .catch(() => {
-        message.error('Failed to load Facebook integration.');
-        setLoading(false);
       });
+  };
+
+  useEffect(() => {
+    setLoading(true);
+    loadSettings()
+      .catch(() => message.error('Failed to load Facebook integration.'))
+      .finally(() => setLoading(false));
   }, []);
 
   const handleDisconnect = () => {
@@ -61,7 +68,6 @@ const FacebookDashboard = ({ onBack }) => {
   }
 
   const pages = Array.isArray(fbData.pages) ? fbData.pages : [];
-  const selectedPage = pages.find((p) => p.id === selectedPageId) || pages[0] || null;
 
   const toggleForm = async (formId, enabled) => {
     try {
@@ -75,18 +81,17 @@ const FacebookDashboard = ({ onBack }) => {
         body: JSON.stringify({ formId, enabled }),
       });
       if (!res.ok) throw new Error('Toggle failed');
-      // Optimistic update
+      // Optimistic update then refresh
       setFbData((prev) => ({
         ...prev,
         pages: (prev.pages || []).map((page) =>
-          page.id !== selectedPage.id
+          !selectedPage || page.id !== selectedPage.id
             ? page
-            : {
-                ...page,
-                forms: (page.forms || []).map((f) => (f.id === formId ? { ...f, enabled } : f)),
-              }
+            : { ...page, forms: (page.forms || []).map((f) => (f.id === formId ? { ...f, enabled } : f)) }
         ),
       }));
+      // Re-fetch to ensure consistency
+      loadSettings();
       message.success(`Form ${enabled ? 'enabled' : 'disabled'}`);
     } catch (e) {
       message.error('Failed to update form setting');
@@ -107,19 +112,26 @@ const FacebookDashboard = ({ onBack }) => {
           </div>
         </div>
       </Card>
-      <h3 style={{ marginTop: 24 }}>Connected Pages</h3>
-      <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-        {pages.map((page) => (
-          <Button
-            key={page.id}
-            onClick={() => setSelectedPageId(page.id)}
-            type={selectedPage?.id === page.id ? 'primary' : 'default'}
-            style={{ display: 'flex', alignItems: 'center', gap: 8 }}
+      <h3 style={{ marginTop: 32 }}>Connected Pages</h3>
+      <List
+        itemLayout="horizontal"
+        dataSource={pages}
+        renderItem={(page) => (
+          <List.Item
+            actions={[
+              <Button type="link" onClick={() => setSelectedPage(page)}>
+                View Forms
+              </Button>,
+            ]}
           >
-            <Avatar src={page.picture} size={24} /> {page.name}
-          </Button>
-        ))}
-      </div>
+            <List.Item.Meta
+              avatar={<Avatar src={page.picture} />}
+              title={page.name}
+              description={`Page ID: ${page.id}`}
+            />
+          </List.Item>
+        )}
+      />
 
       {selectedPage && (
         <Card style={{ marginTop: 24 }}>
@@ -143,6 +155,10 @@ const FacebookDashboard = ({ onBack }) => {
               </List.Item>
             )}
           />
+          <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
+            <Button onClick={() => setSelectedPage(null)}>Back to Pages</Button>
+            <Button onClick={() => loadSettings()}>Refresh</Button>
+          </div>
         </Card>
       )}
       <Button style={{ marginTop: 32 }} onClick={onBack}>Back to Integrations</Button>
