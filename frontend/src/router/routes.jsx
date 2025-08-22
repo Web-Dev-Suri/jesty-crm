@@ -31,6 +31,7 @@ const Taxes = lazy(() => import('@/pages/Taxes'));
 const Profile = lazy(() => import('@/pages/Profile'));
 
 const About = lazy(() => import('@/pages/About'));
+const AIAgentDemo = lazy(() => import('@/pages/AIAgentDemo'));
 
 let routes = {
   expense: [],
@@ -137,6 +138,10 @@ let routes = {
     {
       path: '/integrations',
       element: <Integrations />,
+    },
+    {
+      path: '/aiagent',
+      element: <AIAgentDemo />,
     }
   ],
 };

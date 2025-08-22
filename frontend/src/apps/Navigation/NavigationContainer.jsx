@@ -6,6 +6,7 @@ import {
   SettingOutlined,
   ReconciliationOutlined,
   LayoutFilled,
+  RobotFilled
 } from '@ant-design/icons';
 import { useNavigate, useLocation } from 'react-router-dom';
 import useLanguage from '@/locale/useLanguage';
@@ -39,10 +40,10 @@ export default function Navigation() {
       path: '/integrations',
     },
     {
-      key: 'generalSettings',
-      icon: <SettingOutlined />,
-      label: translate('settings'),
-      path: '/settings',
+      key: 'aiAgentDemo',
+      icon: <RobotFilled />,
+      label: translate('AI Agent'),
+      path: '/aiagent',
     },
     {
       key: 'about',
@@ -53,14 +54,14 @@ export default function Navigation() {
   ];
 
   const pathKeyMap = {
-  '/': 'dashboard',
-  '/customer': 'leads',
-  '/integrations': 'integrations',
-  '/settings': 'generalSettings',
-  '/about': 'about',
-};
+    '/': 'dashboard',
+    '/customer': 'leads',
+    '/integrations': 'integrations',
+    '/aiagent': 'aiAgentDemo',
+    '/about': 'about',
+  };
 
-const selectedKey = pathKeyMap[location.pathname] || '';
+  const selectedKey = pathKeyMap[location.pathname] || '';
 
   return (
     <Sider
