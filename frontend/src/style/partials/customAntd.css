@@ -81,6 +81,29 @@ h6 {
 .ant-table-cell{
   font-size: 12px;
 }
+.ant-drawer-header{
+  display: none !important;
+}
+
+.leads-insights-columns {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.leads-insights-col {
+  flex: 1 1 0;
+  min-width: 0;
+  max-width: 50%;
+}
+@media (max-width: 768px) {
+  .leads-insights-columns {
+    flex-direction: column;
+    gap: 16px;
+  }
+  .leads-insights-col {
+    max-width: 100%;
+  }
+}
 @media (max-width: 768px) {
   .tabContent .ant-tabs-right > .ant-tabs-content-holder > .ant-tabs-content > .ant-tabs-tabpane {
     padding-right: 0;

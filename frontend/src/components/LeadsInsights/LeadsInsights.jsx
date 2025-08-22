@@ -188,7 +188,7 @@ export default function LeadsInsights({
   console.log('currentIndex:', currentIndex);
   
   return (
-    <div style={{ marginInline: 200, backgroundColor: '#ffffff', borderRadius: 10, padding: 20 }}>
+    <div style={{ marginInline: 'clamp(200px, 0px, 100px) !important', backgroundColor: '#ffffff', borderRadius: 10, padding: 20 }}>
       {/* 1. Header */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24, borderBottom: '1px solid #e8e8e8', paddingBottom: 15 }}>
         <div>
@@ -298,7 +298,7 @@ export default function LeadsInsights({
           </div>
 
           {/* Client Details */}
-          <div style={{ display: 'flex', gap: 48, marginBottom: 40 }}>
+          <div style={{ display: 'flex', gap: 48, marginBottom: 40, flexWrap: 'wrap' }}>
             <div>
               <div style={{ fontSize: 13, fontWeight: 500, color: '#666', marginBottom: 4 }}>Mobile Number</div>
               <div style={{ fontSize: 16, color: '#22304a', fontWeight: 600 }}>
@@ -321,7 +321,7 @@ export default function LeadsInsights({
         </div>
 
         {/* Action Buttons */}
-        <div style={{ display: 'flex', gap: 12 }}>
+        <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
           <Button
             icon={<CalendarOutlined />}
             onClick={() => setFollowupModal(true)}
@@ -403,9 +403,9 @@ export default function LeadsInsights({
       </div>
 
       {/* 5. Timeline */}
-      <div style={{ display: 'flex', gap: 24 }}>
+      <div className="leads-insights-columns">
         {/* LEFT: Form Data */}
-        <div style={{ flex: 1, background: '#fff', padding: '24px', borderRadius: 8, boxShadow: '0 1px 3px rgba(0,0,0,0.03)' }}>
+        <div className="leads-insights-col" style={{ background: '#fff', padding: '24px', borderRadius: 8, boxShadow: '0 1px 3px rgba(0,0,0,0.03)' }}>
           <h3 style={{ marginTop: 0 }}>Form Data</h3>
           <Divider />
           {Array.isArray(client?.formResponses)
@@ -428,8 +428,7 @@ export default function LeadsInsights({
         </div>
 
         {/* RIGHT: Timeline */}
-        <div style={{
-          flex: 1,
+        <div className="leads-insights-col" style={{
           background: '#f5f6fa',
           borderRadius: 8,
           padding: '0px 24px 24px 24px',
@@ -554,7 +553,7 @@ export default function LeadsInsights({
               [...client.notes]
                 .reverse()
                 .map((note, idx) => (
-                  <div key={idx} style={{ marginBottom: 12, padding: 8, background: '#fafafa', borderRadius: 4 }}>
+                  <div key={idx} style={{ marginBottom: 12, padding: 10, background: '#fafafa', borderRadius: 4 }}>
                     <div style={{ fontWeight: 'bold' }}>{note.heading}</div>
                     <div style={{ fontSize: 12, color: '#888' }}>
                       {note.createdAt ? new Date(note.createdAt).toLocaleString() : ''}
@@ -582,7 +581,7 @@ export default function LeadsInsights({
             [...client.notes]
               .reverse()
               .map((note, idx) => (
-                <div key={idx} style={{ marginBottom: 12, padding: 8, background: '#fafafa', borderRadius: 4 }}>
+                <div key={idx} style={{ marginBottom: 12, padding: 10, background: '#fafafa', borderRadius: 4 }}>
                   <div style={{ fontWeight: 'bold' }}>{note.heading}</div>
                   <div style={{ fontSize: 12, color: '#888' }}>
                     {note.createdAt ? new Date(note.createdAt).toLocaleString() : ''}

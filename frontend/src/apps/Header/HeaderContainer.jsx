@@ -9,6 +9,7 @@ import {
   LogoutOutlined,
   ToolOutlined,
   UserOutlined,
+  MenuOutlined,
 } from '@ant-design/icons';
 import { useNavigate, Link } from 'react-router-dom';
 
@@ -18,7 +19,7 @@ import useLanguage from '@/locale/useLanguage';
 
 const { Header } = Layout;
 
-export default function HeaderContent() {
+export default function HeaderContent({ onHamburgerClick, isMobile }) {
   const currentAdmin = useSelector(selectCurrentAdmin);
   const translate = useLanguage();
   const navigate = useNavigate();
@@ -105,12 +106,24 @@ export default function HeaderContent() {
         height: '64px',
       }}
     >
+      {isMobile && (
+        <MenuOutlined
+          onClick={onHamburgerClick}
+          style={{
+            fontSize: 24,
+            marginRight: 16,
+            cursor: 'pointer',
+            color: '#001529',
+          }}
+        />
+      )}
+
       {/* Settings Icon (link to /settings) */}
-        <Link to="/settings" style={{ paddingTop: '7px' }}>
-              <Tooltip title="Settings">
+      <Link to="/settings" style={{ paddingTop: '7px' }}>
+        <Tooltip title="Settings">
           <SettingOutlined style={{ fontSize: '25px', color: '#555', cursor: 'pointer' }} />
-                </Tooltip>
-        </Link>
+        </Tooltip>
+      </Link>
 
       {/* Notification Icon */}
       <Dropdown menu={notificationMenu} trigger={['click']} placement="bottomRight">

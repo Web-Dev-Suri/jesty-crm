@@ -1,9 +1,8 @@
 import React from 'react';
-import { Layout, Menu } from 'antd';
+import { Layout, Menu, Drawer } from 'antd';
 import {
   UnorderedListOutlined,
   ContainerOutlined,
-  SettingOutlined,
   ReconciliationOutlined,
   LayoutFilled,
   RobotFilled
@@ -15,7 +14,7 @@ import jestyLogo from '@/style/images/logo.png';
 
 const { Sider } = Layout;
 
-export default function Navigation() {
+export default function Navigation({ isMobile, open, onClose }) {
   const location = useLocation();
   const navigate = useNavigate();
   const translate = useLanguage();
@@ -63,13 +62,8 @@ export default function Navigation() {
 
   const selectedKey = pathKeyMap[location.pathname] || '';
 
-  return (
-    <Sider
-      width={200}
-      theme="dark"
-      className="custom-sidebar"
-      style={{ position: 'sticky', left: 0, top: 0, bottom: 0, zIndex: 1000, overflowY: 'hidden'}}
-    >
+  const SidebarContent = (
+    <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
       <div className="sidebar-logo">
         <img src={jestyLogo} alt="Logo" className="logo-image" />
       </div>
@@ -82,7 +76,10 @@ export default function Navigation() {
           key: item.key,
           icon: item.icon,
           label: item.label,
-          onClick: () => navigate(item.path),
+          onClick: () => {
+            navigate(item.path);
+            if (isMobile && onClose) onClose();
+          },
           className: 'custom-menu-item',
         }))}
       />
@@ -103,6 +100,30 @@ export default function Navigation() {
           </button>
         </div>
       </div>
+    </div>
+  );
+
+  return isMobile ? (
+    <Drawer
+      title="Navigation"
+      placement="left"
+      closable={false}
+      onClose={onClose}
+      open={open}
+      bodyStyle={{ padding: 0, backgroundColor: '#001529' }}
+      headerStyle={{ backgroundColor: '#001529', color: '#fff' }}
+      width={250}
+    >
+      {SidebarContent}
+    </Drawer>
+  ) : (
+    <Sider
+      width={200}
+      theme="dark"
+      className="custom-sidebar"
+      style={{ position: 'sticky', left: 0, top: 0, bottom: 0, zIndex: 1000, overflowY: 'hidden'}}
+    >
+      {SidebarContent}
     </Sider>
   );
 }

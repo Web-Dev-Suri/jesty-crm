@@ -1,4 +1,4 @@
-import { useLayoutEffect } from 'react';
+import { useLayoutEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Layout } from 'antd';
 
@@ -17,6 +17,7 @@ export default function ErpCrmApp() {
   const dispatch = useDispatch();
   const { isMobile } = useResponsive();
   const { isSuccess: settingIsloaded } = useSelector(selectSettings);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useLayoutEffect(() => {
     dispatch(settingsAction.list({ entity: 'setting' }));
@@ -26,10 +27,16 @@ export default function ErpCrmApp() {
 
   return (
     <Layout style={{ minHeight: '100vh' }}>
-      {!isMobile && <Navigation />}
-
+      <Navigation
+        isMobile={isMobile}
+        open={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+      />
       <Layout style={{ background: '#ffffff' }}>
-        <HeaderContent />
+        <HeaderContent
+          onHamburgerClick={() => setSidebarOpen(true)}
+          isMobile={isMobile}
+        />
         <Content style={{ maxWidth: 1400, margin: 'auto', width: '100%', background: '#eceef3ff', padding: '20px' }}>
           <AppRouter />
         </Content>

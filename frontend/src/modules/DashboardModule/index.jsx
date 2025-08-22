@@ -236,7 +236,7 @@ export default function DashboardModule() {
     return (
       <>
         <Row gutter={[20, 20]}>
-          <Col xs={24} sm={12} md={12} lg={6}>
+          <Col xs={12} sm={12} md={12} lg={6}>
             <LeadPieCard
               data={leadPieData}
               total={totalLeads}
@@ -248,7 +248,7 @@ export default function DashboardModule() {
               labels={STATUS_LABELS}
             />
           </Col>
-          <Col xs={24} sm={12} md={12} lg={6}>
+          <Col xs={12} sm={12} md={12} lg={6}>
             <LeadPieCard
               data={assignedPieData}
               total={totalAssigned}
@@ -260,7 +260,7 @@ export default function DashboardModule() {
               labels={assignedLabels}
             />
           </Col>
-          <Col xs={24} sm={12} md={12} lg={6}>
+          <Col xs={12} sm={12} md={12} lg={6}>
             <LeadPieCard
               data={leadPieData}
               total={totalLeads}
@@ -272,7 +272,7 @@ export default function DashboardModule() {
               labels={STATUS_LABELS}
             />
           </Col>
-          <Col xs={24} sm={12} md={12} lg={6}>
+          <Col xs={12} sm={12} md={12} lg={6}>
             <LeadPieCard
               data={assignedPieData}
               total={totalAssigned}
