@@ -362,10 +362,10 @@ if (statusColIdx !== -1) {
   return (
     <>
       <PageHeader
-        onBack={() => window.history.back()}
-        backIcon={<ArrowLeftOutlined />}
-        title={DATATABLE_TITLE}
-        ghost={false}
+        // onBack={() => window.history.back()}
+        // backIcon={<ArrowLeftOutlined />}
+        // title={DATATABLE_TITLE}
+        // ghost={false}
         extra={[
           <Input
             key="search"

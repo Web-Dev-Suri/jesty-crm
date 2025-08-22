@@ -78,6 +78,9 @@ h6 {
 .ant-menu-item {
   height: 36px !important;
 }
+.ant-table-cell{
+  font-size: 12px;
+}
 @media (max-width: 768px) {
   .tabContent .ant-tabs-right > .ant-tabs-content-holder > .ant-tabs-content > .ant-tabs-tabpane {
     padding-right: 0;
