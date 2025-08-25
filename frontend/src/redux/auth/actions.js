@@ -37,7 +37,11 @@ export const register =
       type: actionTypes.REQUEST_LOADING,
     });
 
-    const data = await authService.register({ registerData });
+    // Map fullName to name for backend compatibility
+    const payload = { ...registerData, name: registerData.fullName };
+    delete payload.fullName;
+
+    const data = await authService.signup({ registerData: payload });
 
     if (data.success === true) {
       const auth_state = {

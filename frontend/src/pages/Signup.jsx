@@ -7,7 +7,7 @@ import { Form, Button } from 'antd';
 
 import { register } from '@/redux/auth/actions';
 import { selectAuth } from '@/redux/auth/selectors';
-import LoginForm from '@/forms/LoginForm';
+import SignupForm from '@/forms/SignupForm'; // <-- Use this instead of LoginForm
 import Loading from '@/components/Loading';
 import AuthModule from '@/modules/AuthModule';
 
@@ -18,7 +18,7 @@ const SignupPage = () => {
   const dispatch = useDispatch();
 
   const onFinish = (values) => {
-    dispatch(register({ signupData: values }));
+    dispatch(register({ registerData: values }));
   };
 
   useEffect(() => {
@@ -28,7 +28,7 @@ const SignupPage = () => {
   const FormContainer = () => (
     <Loading isLoading={isLoading}>
       <Form layout="vertical" onFinish={onFinish}>
-        <LoginForm mode="signup" />
+        <SignupForm /> {/* <-- Use SignupForm here */}
         <Form.Item>
           <Button type="primary" htmlType="submit" loading={isLoading} size="large">
             {translate('Sign up')}
