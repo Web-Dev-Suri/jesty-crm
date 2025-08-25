@@ -3,20 +3,38 @@ const bcrypt = require('bcrypt');
 const mongoose = require('mongoose');
 const Organization = require('@/models/coreModels/Organization');
 
-const signup = async (req, res, { userModel }) => {
+const signup = async (req, res, {
+  userModel
+}) => {
   const UserPasswordModel = mongoose.model(userModel + 'Password');
   const UserModel = mongoose.model(userModel);
-  const { email, password, name, organizationName } = req.body;
+  const {
+    email,
+    password,
+    name,
+    organizationName
+  } = req.body;
 
   // validate
   const objectSchema = Joi.object({
     name: Joi.string().required(),
-    email: Joi.string().email({ tlds: { allow: true } }).required(),
+    email: Joi.string().email({
+      tlds: {
+        allow: true
+      }
+    }).required(),
     password: Joi.string().min(6).required(),
     organizationName: Joi.string().required(),
   });
 
-  const { error } = objectSchema.validate({ email, password, name, organizationName });
+  const {
+    error
+  } = objectSchema.validate({
+    email,
+    password,
+    name,
+    organizationName
+  });
   if (error) {
     return res.status(400).json({
       success: false,
@@ -25,7 +43,10 @@ const signup = async (req, res, { userModel }) => {
     });
   }
 
-  const existingUser = await UserModel.findOne({ email, removed: false });
+  const existingUser = await UserModel.findOne({
+    email,
+    removed: false
+  });
   if (existingUser) {
     return res.status(409).json({
       success: false,
@@ -34,22 +55,43 @@ const signup = async (req, res, { userModel }) => {
   }
 
   // Create organization
-  const organization = await Organization.create({ name: organizationName });
+  const organizationId = new mongoose.Types.ObjectId();
+  console.log('Creating organization with:', {
+    _id: organizationId,
+    organizationId: organizationId,
+    name: organizationName
+  });
+  const organization = await Organization.create({
+    _id: organizationId,
+    organizationId: organizationId,
+    name: organizationName
+  });
 
   // Create user with organizationId
-  const newUser = await UserModel.create({ name, email, enabled: true, organizationId: organization._id });
+  const newUser = await UserModel.create({
+    name,
+    email,
+    enabled: true,
+    organizationId: organization._id
+  });
 
   // Hash and store password
-  const hashedPassword = await bcrypt.hash(password, 10);
+  const salt = await bcrypt.genSalt(10);
+  const hashedPassword = await bcrypt.hash(salt + password, 10);
   await UserPasswordModel.create({
     user: newUser._id,
     password: hashedPassword,
+    salt: salt, // <-- Add this line
   });
 
   return res.status(201).json({
     success: true,
     message: 'User registered successfully.',
-    result: { id: newUser._id, email: newUser.email, organizationId: organization._id },
+    result: {
+      id: newUser._id,
+      email: newUser.email,
+      organizationId: organization._id
+    },
   });
 };
 
