@@ -26,23 +26,19 @@ export const login = async ({ loginData }) => {
   }
 };
 
-export const signup = async ({ signupData }) => {
-  try {
-    const response = await axios.post(API_BASE_URL + `signup`, signupData);
+export const signup = async (signupData) => {
+  const response = await axios.post(API_BASE_URL + `signup`, signupData);
 
-    const { status, data } = response;
+  const { status, data } = response;
 
-    successHandler(
-      { data, status },
-      {
-        notifyOnSuccess: true,
-        notifyOnFailed: true,
-      }
-    );
-    return data;
-  } catch (error) {
-    return errorHandler(error);
-  }
+  successHandler(
+    { data, status },
+    {
+      notifyOnSuccess: true,
+      notifyOnFailed: true,
+    }
+  );
+  return data;
 };
 
 export const verify = async ({ userId, emailToken }) => {

@@ -41,7 +41,7 @@ export const register =
     const payload = { ...registerData, name: registerData.fullName };
     delete payload.fullName;
 
-    const data = await authService.signup({ registerData: payload });
+    const data = await authService.signup(payload);
 
     if (data.success === true) {
       const auth_state = {
