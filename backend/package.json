@@ -29,6 +29,7 @@
     "express-rate-limit": "^7.1.5",
     "fast-csv": "^5.0.2",
     "glob": "10.3.10",
+    "google-auth-library": "^10.2.1",
     "html-pdf": "^3.0.1",
     "joi": "^17.11.0",
     "jsonwebtoken": "^9.0.2",

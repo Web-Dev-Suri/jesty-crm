@@ -13,7 +13,6 @@ import logo from '@/style/images/jesty-crm-logo-black.png';
 
 const features = [
   'Get started in 30 seconds',
-  'Unlock Pro features for 14 days',
   'Free forever for core features',
 ];
 
@@ -183,110 +182,141 @@ const SignupPage = () => {
   }, [isSuccess]);
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh' }}>
-      {/* Left Side */}
-      <div
-        style={{
-          flex: 1,
-          background: '#eceef3',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          padding: '48px 0px 48px 200px',
-        }}
-      >
-        {/* Logo */}
-        <img
-          src={logo}
-          alt="Jesty CRM Logo Black"
-          style={{ margin: '0 0 20px', display: 'block' }}
-          width='300px'
-          height='auto'
-        />
-        <h2
-          style={{
-            fontWeight: 700,
-            fontSize: 28,
-            marginBottom: 16,
-          }}
-        >
-          World's 1st AI-Driven <br />
-          Lead Management CRM
-        </h2>
+    <>
+      <style>
+        {`
+          .signup-flex-container {
+            display: flex;
+            min-height: 100vh;
+          }
+          .signup-left, .signup-right {
+            flex: 1;
+            min-width: 0;
+          }
+          @media (max-width: 900px) {
+            .signup-flex-container {
+              flex-direction: column;
+            }
+            .signup-left {
+              padding: 32px 16px 0 16px !important;
+              min-height: 220px;
+              align-items: center !important;
+              text-align: center !important;
+            }
+            .signup-right {
+              min-height: unset !important;
+              padding: 32px 0 32px 0 !important;
+              justify-content: center !important;
+              padding: 0 !important;
+            }
+          }
+        `}
+      </style>
+      <div className="signup-flex-container">
+        {/* Left Side */}
         <div
+          className="signup-left"
           style={{
-            fontSize: 16,
-            marginBottom: 32,
+            background: '#eceef3',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            padding: '48px 0px 48px 200px',
           }}
         >
-          Automate first contact in under 10 seconds <br />
-          and convert up to 52% of your leads into <br />
-          meetings - without  expanding your sales team.
-        </div>
-        <ul
-          style={{
-            listStyle: 'none',
-            padding: 0,
-            margin: 0,
-            fontSize: 16,
-          }}
-        >
-          {features.map((f, i) => (
-            <li
-              key={i}
-              style={{
-                marginBottom: 12,
-                display: 'flex',
-                alignItems: 'center',
-              }}
-            >
-              <CheckCircleTwoTone twoToneColor="#52c41a" style={{ marginRight: 8 }} />
-              {f}
-            </li>
-          ))}
-        </ul>
-      </div>
-      {/* Right Side */}
-      <div
-        style={{
-          flex: 1,
-          background: '#fff',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          minHeight: '100vh',
-          position: 'relative'
-        }}
-      >
-        {/* Back button at top left */}
-        {step > 1 && (
-          <Button
-            type="text"
-            icon={<ArrowLeftOutlined />}
-            onClick={() => setStep(step - 1)}
+          {/* Logo */}
+          <img
+            src={logo}
+            alt="Jesty CRM Logo Black"
+            style={{ margin: '0 0 20px', display: 'block' }}
+            width='300px'
+            height='auto'
+          />
+          <h2
             style={{
-              position: 'absolute',
-              top: 24,
-              left: 24,
-              color: '#888',
-              fontWeight: 500,
-              zIndex: 2,
+              fontWeight: 700,
+              fontSize: 28,
+              marginBottom: 16,
             }}
           >
-            Back
-          </Button>
-        )}
-        <div style={{ width: 360, maxWidth: '90%' }}>
-          <Loading isLoading={isLoading}>
-            <Form form={form} layout="vertical" onFinish={onFinish} autoComplete="off">
-              {step === 1 && <Step1 />}
-              {step === 2 && <Step2 />}
-              {step === 3 && <Step3 />}
-            </Form>
-          </Loading>
+            World's 1st AI-Driven <br />
+            Lead Management CRM
+          </h2>
+          <div
+            style={{
+              fontSize: 16,
+              marginBottom: 32,
+            }}
+          >
+            Automate first contact in under 10 seconds <br />
+            and convert up to 52% of your leads into <br />
+            meetings - without  expanding your sales team.
+          </div>
+          <ul
+            style={{
+              listStyle: 'none',
+              padding: 0,
+              margin: 0,
+              fontSize: 16,
+            }}
+          >
+            {features.map((f, i) => (
+              <li
+                key={i}
+                style={{
+                  marginBottom: 12,
+                  display: 'flex',
+                  alignItems: 'center',
+                }}
+              >
+                <CheckCircleTwoTone twoToneColor="#52c41a" style={{ marginRight: 8 }} />
+                {f}
+              </li>
+            ))}
+          </ul>
+        </div>
+        {/* Right Side */}
+        <div
+          className="signup-right"
+          style={{
+            background: '#fff',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            minHeight: '100vh',
+            position: 'relative'
+          }}
+        >
+          {/* Back button at top left */}
+          {step > 1 && (
+            <Button
+              type="text"
+              icon={<ArrowLeftOutlined />}
+              onClick={() => setStep(step - 1)}
+              style={{
+                position: 'absolute',
+                top: 24,
+                left: 24,
+                color: '#888',
+                fontWeight: 500,
+                zIndex: 2,
+              }}
+            >
+              Back
+            </Button>
+          )}
+          <div style={{ width: 360, maxWidth: '90%' }}>
+            <Loading isLoading={isLoading}>
+              <Form form={form} layout="vertical" onFinish={onFinish} autoComplete="off">
+                {step === 1 && <Step1 />}
+                {step === 2 && <Step2 />}
+                {step === 3 && <Step3 />}
+              </Form>
+            </Loading>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

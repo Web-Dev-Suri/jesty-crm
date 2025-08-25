@@ -11,6 +11,7 @@ const leadCreatedPerDay = async (Model, req, res) => {
         $match: {
           removed: false,
           enabled: true,
+          organization,
           created: {
             $gte: new Date(startDate.setHours(0, 0, 0, 0)),
             $lte: new Date(endDate.setHours(23, 59, 59, 999))

@@ -9,7 +9,7 @@ const leadStatusSummary = async (Model, req, res) => {
 
     // Aggregate counts for each status
     const pipeline = [
-      { $match: { removed: false, enabled: true } },
+      { $match: { removed: false, enabled: true, organization } },
       { $group: { _id: '$status', count: { $sum: 1 } } }
     ];
 

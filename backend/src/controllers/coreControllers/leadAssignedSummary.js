@@ -1,7 +1,7 @@
 const leadAssignedSummary = async (Model, req, res) => {
   try {
     const pipeline = [
-      { $match: { removed: false, enabled: true } },
+      { $match: { removed: false, enabled: true, organization } },
       {
         $group: {
           _id: '$assigned',
